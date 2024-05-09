@@ -64,3 +64,28 @@ enum MTATrain: String, CaseIterable {
   case w = "W"
   case s = "S"
 }
+
+func getLineForTrain(train: MTATrain) -> MTALine {
+  switch train {
+  case .a, .c, .e:
+    return .ace
+  case .one, .two, .three:
+    return .oneTwoThree
+  case .four, .five, .six:
+    return .fourFiveSix
+  case .seven:
+    return MTALine.seven
+  case .b, .d, .f, .m:
+    return .bdfm
+  case .g:
+    return MTALine.g
+  case .j, .z:
+    return .jz
+  case .l:
+    return MTALine.l
+  case .n, .q, .r, .w:
+    return .nqrw
+  case .s:
+    return MTALine.s
+  }
+}
