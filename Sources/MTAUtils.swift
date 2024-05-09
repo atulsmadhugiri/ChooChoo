@@ -89,3 +89,8 @@ func getLineForTrain(train: MTATrain) -> MTALine {
     return MTALine.s
   }
 }
+
+func getColorForTrain(train: MTATrain) -> Color {
+    let line = getLineForTrain(train: train)
+    return getColorForLine(line: line)
+}
