@@ -11,6 +11,8 @@
 		B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */; };
 		B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = B78613AF2C4EEAEA00F8A35B /* SwiftProtobuf */; };
 		B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B78613B12C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary */; };
+		B78613B82C4EF39B00F8A35B /* nyct-subway.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */; };
+		B78613BA2C4EF3A000F8A35B /* gtfs-realtime.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613B92C4EF3A000F8A35B /* gtfs-realtime.pb.swift */; };
 		B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */; };
 		B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856902BB3848D00D571AA /* ChooChooApp.swift */; };
 		B7A856932BB3848D00D571AA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856922BB3848D00D571AA /* ContentView.swift */; };
@@ -22,6 +24,8 @@
 /* Begin PBXFileReference section */
 		B78613A82C4EE8EA00F8A35B /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
+		B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "nyct-subway.pb.swift"; sourceTree = "<group>"; };
+		B78613B92C4EF3A000F8A35B /* gtfs-realtime.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "gtfs-realtime.pb.swift"; sourceTree = "<group>"; };
 		B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBadge.swift; sourceTree = "<group>"; };
 		B7A8568D2BB3848D00D571AA /* ChooChoo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChooChoo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7A856902BB3848D00D571AA /* ChooChooApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooChooApp.swift; sourceTree = "<group>"; };
@@ -44,10 +48,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B78613B42C4EF29900F8A35B /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				B78613B92C4EF3A000F8A35B /* gtfs-realtime.pb.swift */,
+				B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */,
+			);
+			path = Generated;
+			sourceTree = "<group>";
+		};
 		B7A856842BB3848D00D571AA = {
 			isa = PBXGroup;
 			children = (
 				B7A8568F2BB3848D00D571AA /* Sources */,
+				B78613B42C4EF29900F8A35B /* Generated */,
 				B7A8568E2BB3848D00D571AA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -160,6 +174,8 @@
 				B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */,
 				B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */,
 				B7A856932BB3848D00D571AA /* ContentView.swift in Sources */,
+				B78613B82C4EF39B00F8A35B /* nyct-subway.pb.swift in Sources */,
+				B78613BA2C4EF3A000F8A35B /* gtfs-realtime.pb.swift in Sources */,
 				B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */,
 				B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */,
 			);
