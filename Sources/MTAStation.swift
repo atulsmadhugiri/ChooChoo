@@ -1,5 +1,6 @@
 import CoreLocation
 import Foundation
+import TabularData
 
 struct MTAStation {
   let stationID: Int
@@ -24,5 +25,44 @@ struct MTAStation {
 
   var location: CLLocation {
     CLLocation(latitude: self.gtfsLatitude, longitude: self.gtfsLongitude)
+  }
+
+  init?(from row: DataFrame.Row) {
+    guard
+      let stationID = row["Station ID"] as? Int,
+      let complexID = row["Complex ID"] as? Int,
+      let gtfsStopID = row["GTFS Stop ID"] as? String,
+      let division = row["Division"] as? String,
+      let line = row["Line"] as? String,
+      let stopName = row["Stop Name"] as? String,
+      let borough = row["Borough"] as? String,
+      let daytimeRoutes = row["Daytime Routes"] as? String,
+      let structure = row["Structure"] as? String,
+      let gtfsLatitude = row["GTFS Latitude"] as? Double,
+      let gtfsLongitude = row["GTFS Longitude"] as? Double
+    else {
+      return nil
+    }
+
+    self.stationID = stationID
+    self.complexID = complexID
+    self.gtfsStopID = gtfsStopID
+    self.division = division
+    self.line = line
+    self.stopName = stopName
+    self.borough = borough
+    self.daytimeRoutes = daytimeRoutes
+    self.structure = structure
+    self.gtfsLatitude = gtfsLatitude
+    self.gtfsLongitude = gtfsLongitude
+
+    self.northDirectionLabel = row["North Direction Label"] as? String ?? ""
+    self.southDirectionLabel = row["South Direction Label"] as? String ?? ""
+    self.ada = row["ADA"] as? String ?? ""
+    self.adaDirectionNotes = row["ADA Direction Notes"] as? String ?? ""
+    self.adaNB = row["ADA NB"] as? String ?? ""
+    self.adaSB = row["ADA SB"] as? String ?? ""
+    self.capitalOutageNB = row["Capital Outage NB"] as? String ?? ""
+    self.capitalOutageSB = row["Capital Outage SB"] as? String ?? ""
   }
 }
