@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */; };
 		B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856902BB3848D00D571AA /* ChooChooApp.swift */; };
 		B7A856932BB3848D00D571AA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856922BB3848D00D571AA /* ContentView.swift */; };
 		B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A856942BB3848E00D571AA /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBadge.swift; sourceTree = "<group>"; };
 		B7A8568D2BB3848D00D571AA /* ChooChoo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChooChoo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7A856902BB3848D00D571AA /* ChooChooApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooChooApp.swift; sourceTree = "<group>"; };
 		B7A856922BB3848D00D571AA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 			children = (
 				B7A856902BB3848D00D571AA /* ChooChooApp.swift */,
 				B7A856922BB3848D00D571AA /* ContentView.swift */,
+				B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */,
 				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
 				B7A856942BB3848E00D571AA /* Assets.xcassets */,
 				B7A856962BB3848E00D571AA /* Preview Content */,
@@ -140,6 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */,
 				B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */,
 				B7A856932BB3848D00D571AA /* ContentView.swift in Sources */,
 				B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */,
