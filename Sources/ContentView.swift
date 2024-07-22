@@ -4,12 +4,20 @@ struct ContentView: View {
   @StateObject private var locationFetcher = LocationFetcher()
   var body: some View {
     VStack {
-      Image(systemName: "globe")
-        .imageScale(.large)
-        .foregroundStyle(.tint)
-      Text(locationFetcher.location.debugDescription)
       if let nearestStation = locationFetcher.nearestStation {
-        Text(nearestStation.stopName)
+        HStack {
+          Image(systemName: "tram.fill")
+            .imageScale(.large)
+            .foregroundStyle(.black)
+          Text(nearestStation.stopName)
+            .font(.title2)
+        }
+
+        HStack {
+          ForEach(nearestStation.daytimeRoutes) { route in
+            TrainBadge(train: route, badgeSize: .small)
+          }
+        }
       }
     }
     .padding()

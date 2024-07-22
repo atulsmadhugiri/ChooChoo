@@ -39,7 +39,7 @@ func getColorForLine(line: MTALine) -> Color {
   }
 }
 
-enum MTATrain: String, CaseIterable {
+enum MTATrain: String, CaseIterable, Identifiable {
   case one = "1"
   case two = "2"
   case three = "3"
@@ -63,6 +63,8 @@ enum MTATrain: String, CaseIterable {
   case r = "R"
   case w = "W"
   case s = "S"
+  
+  var id: String { self.rawValue }
 }
 
 func getLineForTrain(train: MTATrain) -> MTALine {
