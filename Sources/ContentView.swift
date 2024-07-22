@@ -8,6 +8,9 @@ struct ContentView: View {
         .imageScale(.large)
         .foregroundStyle(.tint)
       Text(locationFetcher.location.debugDescription)
+      if let nearestStation = locationFetcher.nearestStation {
+        Text(nearestStation.stopName)
+      }
     }
     .padding()
   }
