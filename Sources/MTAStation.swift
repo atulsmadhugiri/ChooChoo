@@ -66,3 +66,18 @@ struct MTAStation {
     self.capitalOutageSB = row["Capital Outage SB"] as? String ?? ""
   }
 }
+
+func loadStationsFromCSV() -> [MTAStation] {
+  guard let stationsFile = Bundle.main.url(forResource: "Stations", withExtension: "csv") else {
+    print("Stations.csv not found.")
+    return []
+  }
+
+  do {
+    let df = try DataFrame(contentsOfCSVFile: stationsFile)
+    return df.rows.compactMap { MTAStation(from: $0)}
+  } catch {
+    print("Error reading CSV file: \(error)")
+    return []
+  }
+}
