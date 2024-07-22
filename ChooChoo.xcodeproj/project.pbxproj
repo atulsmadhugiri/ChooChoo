@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613A82C4EE8EA00F8A35B /* Secrets.swift */; };
 		B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */; };
+		B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = B78613AF2C4EEAEA00F8A35B /* SwiftProtobuf */; };
+		B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B78613B12C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary */; };
 		B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */; };
 		B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856902BB3848D00D571AA /* ChooChooApp.swift */; };
 		B7A856932BB3848D00D571AA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856922BB3848D00D571AA /* ContentView.swift */; };
@@ -34,6 +36,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */,
+				B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +127,9 @@
 				Base,
 			);
 			mainGroup = B7A856842BB3848D00D571AA;
+			packageReferences = (
+				B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */,
+			);
 			productRefGroup = B7A8568E2BB3848D00D571AA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -360,6 +367,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-protobuf.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.27.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B78613AF2C4EEAEA00F8A35B /* SwiftProtobuf */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = SwiftProtobuf;
+		};
+		B78613B12C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = SwiftProtobufPluginLibrary;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B7A856852BB3848D00D571AA /* Project object */;
 }
