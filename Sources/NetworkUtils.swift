@@ -2,6 +2,7 @@ import Foundation
 
 enum RealTimeFeedEndpoints: String {
   case l = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l"
+  case nqrw = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-nqrw"
 }
 
 struct NetworkUtils {
