@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7697CB72C5192AB001B880C /* FormatterUtils.swift */; };
 		B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613A82C4EE8EA00F8A35B /* Secrets.swift */; };
 		B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */; };
 		B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = B78613AF2C4EEAEA00F8A35B /* SwiftProtobuf */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B7697CB72C5192AB001B880C /* FormatterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterUtils.swift; sourceTree = "<group>"; };
 		B78613A82C4EE8EA00F8A35B /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
 		B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "nyct-subway.pb.swift"; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
 				B78613A82C4EE8EA00F8A35B /* Secrets.swift */,
 				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
+				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
 				B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */,
 				B7A856942BB3848E00D571AA /* Assets.xcassets */,
 				B7A856962BB3848E00D571AA /* Preview Content */,
@@ -189,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B78613C02C4EF75C00F8A35B /* MTAStation.swift in Sources */,
+				B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */,
 				B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */,
 				B7E3FA1B2C4F0A7B0036CCDF /* LocationFetcher.swift in Sources */,
 				B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */,
