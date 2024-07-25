@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */; };
 		B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7697CB72C5192AB001B880C /* FormatterUtils.swift */; };
 		B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613A82C4EE8EA00F8A35B /* Secrets.swift */; };
 		B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainArrivalEntry.swift; sourceTree = "<group>"; };
 		B7697CB72C5192AB001B880C /* FormatterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterUtils.swift; sourceTree = "<group>"; };
 		B78613A82C4EE8EA00F8A35B /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */,
 				B78613BF2C4EF75C00F8A35B /* MTAStation.swift */,
 				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
+				B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */,
 				B78613A82C4EE8EA00F8A35B /* Secrets.swift */,
 				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
 				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
@@ -198,6 +201,7 @@
 				B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */,
 				B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */,
 				B7A856932BB3848D00D571AA /* ContentView.swift in Sources */,
+				B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */,
 				B78613B82C4EF39B00F8A35B /* nyct-subway.pb.swift in Sources */,
 				B78613BA2C4EF3A000F8A35B /* gtfs-realtime.pb.swift in Sources */,
 				B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */,
