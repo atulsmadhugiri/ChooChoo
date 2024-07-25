@@ -22,14 +22,13 @@ struct ContentView: View {
           }
         }
 
-        List(trainArrivals) { arrival in
-          if arrival.arrivalTime.timeIntervalSinceNow > 0 {
-            HStack {
-              TrainBadge(train: arrival.train, badgeSize: .small).padding()
-              Text("\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))")
-                .font(.title3)
-                .monospaced()
-            }
+        let nextTwoArrivals = trainArrivals.filter { $0.arrivalTime.timeIntervalSinceNow > 0 }.prefix(2)
+        List(nextTwoArrivals) { arrival in
+          HStack {
+            TrainBadge(train: arrival.train, badgeSize: .small).padding()
+            Text("\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))")
+              .font(.title3)
+              .monospaced()
           }
         }.listStyle(.plain)
       }
