@@ -7,54 +7,74 @@ struct ContentView: View {
   var body: some View {
     VStack {
       if let nearestStation = locationFetcher.nearestStation {
-        HStack {
-          Image(systemName: "tram.fill")
-            .imageScale(.large)
-            .foregroundStyle(.black)
-          Text(nearestStation.stopName)
-            .font(.title2)
-        }
-        Text("GTFS Stop ID: \(nearestStation.gtfsStopID)")
+        StationSign(
+          stationName: nearestStation.stopName,
+          trains: nearestStation.daytimeRoutes
 
-        HStack {
-          ForEach(nearestStation.daytimeRoutes) { route in
-            TrainBadge(train: route, badgeSize: .small)
-          }
-        }
+        )
+        Divider()
 
-        let nextTwoArrivals = trainArrivals.filter { $0.arrivalTime.timeIntervalSinceNow > 0 }.prefix(2)
-        List(nextTwoArrivals) { arrival in
-          HStack {
-            TrainBadge(train: arrival.train, badgeSize: .small).padding()
-            Text("\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))")
-              .font(.title3)
-              .monospaced()
-          }
-        }.listStyle(.plain)
+        let nextTwoArrivals = trainArrivals.filter {
+          $0.arrivalTime.timeIntervalSinceNow > 0
+        }.prefix(2)
+
+        VStack {
+          ForEach(nextTwoArrivals) { arrival in
+            HStack {
+              TrainBadge(train: arrival.train, badgeSize: .small)
+              Spacer()
+              Text("Destination Station").font(.title3).fontDesign(.rounded)
+              Spacer()
+              Text(
+                "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
+              )
+              .font(.title3).fontDesign(.rounded)
+            }
+          }.listStyle(.plain)
+            .padding()
+            .background(Color.white)
+            .cornerRadius(4)
+            .clipped()
+
+        }
+        .padding().background(Color.black).cornerRadius(4)
+
+        Spacer()
+
       }
     }
     .padding()
-    .onAppear {
+    .onChange(of: locationFetcher.nearestStation) {
       Task {
-        let data = try await NetworkUtils.sendNetworkRequest(to: .l)
-        let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-        guard let nearestStation = locationFetcher.nearestStation else {
+        guard let nearestStation = locationFetcher.nearestStation,
+          let train = nearestStation.daytimeRoutes.first
+        else {
           return
         }
+
+        let data = try await NetworkUtils.sendNetworkRequest(
+          to: getLineForTrain(train: train).endpoint)
+        let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
 
         let trainArrivalsForCurrentStop: [TrainArrivalEntry] = feed.entity
           .compactMap { $0.hasTripUpdate ? $0.tripUpdate : nil }
           .flatMap { tripUpdate in
-            tripUpdate.stopTimeUpdate.compactMap { stopTimeUpdate -> TrainArrivalEntry? in
-              guard stopTimeUpdate.stopID.dropLast() == nearestStation.gtfsStopID else {
+            tripUpdate.stopTimeUpdate.compactMap {
+              stopTimeUpdate -> TrainArrivalEntry? in
+              guard
+                stopTimeUpdate.stopID.dropLast() == nearestStation.gtfsStopID
+              else {
                 return nil
               }
-              let arrivalTime = Date(timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
+              let arrivalTime = Date(
+                timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
               let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
               return TrainArrivalEntry(arrivalTime: arrivalTime, train: train)
             }
           }
-        trainArrivals = trainArrivalsForCurrentStop.sorted { $0.arrivalTime < $1.arrivalTime }
+        trainArrivals = trainArrivalsForCurrentStop.sorted {
+          $0.arrivalTime < $1.arrivalTime
+        }
       }
     }
   }
