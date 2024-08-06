@@ -12,6 +12,32 @@ enum MTALine {
   case l
   case nqrw
   case s
+
+  var endpoint: String {
+    switch self {
+    case .ace:
+      return
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace"
+    case .bdfm:
+      return
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm"
+    case .g:
+      return
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-g"
+    case .jz:
+      return
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-jz"
+    case .nqrw:
+      return
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-nqrw"
+    case .l:
+      return
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l"
+    default:
+      return
+        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs"
+    }
+  }
 }
 
 func getColorForLine(line: MTALine) -> Color {
@@ -63,7 +89,7 @@ enum MTATrain: String, CaseIterable, Identifiable {
   case r = "R"
   case w = "W"
   case s = "S"
-  
+
   var id: String { self.rawValue }
 }
 

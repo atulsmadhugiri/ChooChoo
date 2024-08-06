@@ -1,14 +1,8 @@
 import Foundation
 
-enum RealTimeFeedEndpoints: String {
-  case ace = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace"
-  case l = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l"
-  case nqrw = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-nqrw"
-}
-
 struct NetworkUtils {
-  static func sendNetworkRequest(to endpoint: RealTimeFeedEndpoints) async throws -> Data {
-    var request = URLRequest(url: URL(string: endpoint.rawValue)!)
+  static func sendNetworkRequest(to endpoint: String) async throws -> Data {
+    var request = URLRequest(url: URL(string: endpoint)!)
     request.httpMethod = "GET"
     request.addValue(Secrets.ACCESS_KEY, forHTTPHeaderField: "x-api-key")
 

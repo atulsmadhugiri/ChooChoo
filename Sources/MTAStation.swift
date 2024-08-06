@@ -2,7 +2,7 @@ import CoreLocation
 import Foundation
 import TabularData
 
-struct MTAStation {
+struct MTAStation: Equatable {
   let stationID: Int
   let complexID: Int
   let gtfsStopID: String
@@ -70,7 +70,12 @@ struct MTAStation {
 }
 
 func loadStationsFromCSV() -> [MTAStation] {
-  guard let stationsFile = Bundle.main.url(forResource: "Stations", withExtension: "csv") else {
+  guard
+    let stationsFile = Bundle.main.url(
+      forResource: "Stations",
+      withExtension: "csv"
+    )
+  else {
     print("Stations.csv not found.")
     return []
   }
