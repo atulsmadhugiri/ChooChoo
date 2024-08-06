@@ -56,25 +56,10 @@ struct ContentView: View {
           to: getLineForTrain(train: train).endpoint)
         let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
 
-        let trainArrivalsForCurrentStop: [TrainArrivalEntry] = feed.entity
-          .compactMap { $0.hasTripUpdate ? $0.tripUpdate : nil }
-          .flatMap { tripUpdate in
-            tripUpdate.stopTimeUpdate.compactMap {
-              stopTimeUpdate -> TrainArrivalEntry? in
-              guard
-                stopTimeUpdate.stopID.dropLast() == nearestStation.gtfsStopID
-              else {
-                return nil
-              }
-              let arrivalTime = Date(
-                timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
-              let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
-              return TrainArrivalEntry(arrivalTime: arrivalTime, train: train)
-            }
-          }
-        trainArrivals = trainArrivalsForCurrentStop.sorted {
-          $0.arrivalTime < $1.arrivalTime
-        }
+        trainArrivals = getTrainArrivalsForStop(
+          stop: nearestStation,
+          feed: feed.entity
+        )
       }
     }
   }

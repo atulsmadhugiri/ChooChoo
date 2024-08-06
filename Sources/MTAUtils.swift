@@ -122,3 +122,28 @@ func getColorForTrain(train: MTATrain) -> Color {
   let line = getLineForTrain(train: train)
   return getColorForLine(line: line)
 }
+
+func getTrainArrivalsForStop(
+  stop: MTAStation,
+  feed: [TransitRealtime_FeedEntity]
+) -> [TrainArrivalEntry] {
+
+  let arrivalsForStop =
+    feed
+    .compactMap { $0.hasTripUpdate ? $0.tripUpdate : nil }
+    .flatMap { tripUpdate in
+      tripUpdate.stopTimeUpdate.compactMap {
+        stopTimeUpdate -> TrainArrivalEntry? in
+        guard
+          stopTimeUpdate.stopID.dropLast() == stop.gtfsStopID
+        else {
+          return nil
+        }
+        let arrivalTime = Date(
+          timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
+        let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
+        return TrainArrivalEntry(arrivalTime: arrivalTime, train: train)
+      }
+    }
+  return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
+}
