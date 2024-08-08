@@ -14,12 +14,12 @@ struct ContentView: View {
         )
         Divider()
 
-        let nextTwoArrivals = trainArrivals.filter {
+        let futureArrivals = trainArrivals.filter {
           $0.arrivalTime.timeIntervalSinceNow > 0
-        }.prefix(6)
+        }
 
         VStack {
-          ForEach(nextTwoArrivals) { arrival in
+          List(futureArrivals) { arrival in
             HStack {
               TrainBadge(train: arrival.train, badgeSize: .small)
               Spacer()
@@ -31,10 +31,10 @@ struct ContentView: View {
               .font(.headline).fontDesign(.rounded)
             }
           }.listStyle(.plain)
-            .padding()
             .background(Color.white)
             .cornerRadius(4)
             .clipped()
+            .refreshable {}
 
         }
         .padding().background(Color.black).cornerRadius(4)
