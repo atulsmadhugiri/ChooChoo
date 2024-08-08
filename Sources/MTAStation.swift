@@ -88,3 +88,29 @@ func loadStationsFromCSV() -> [MTAStation] {
     return []
   }
 }
+
+func loadTripsFromCSV() -> [String: String] {
+  var shapeToHeadSign: [String: String] = [:]
+  guard
+    let tripsFile = Bundle.main.url(forResource: "Trips", withExtension: "csv")
+  else {
+    print("Trips.csv not found.")
+    return shapeToHeadSign
+  }
+
+  do {
+    let df = try DataFrame(contentsOfCSVFile: tripsFile)
+    let filtered = df.selecting(columnNames: ["shape_id", "trip_headsign"])
+    for row in filtered.rows {
+      if let shapeID = row["shape_id"] as? String,
+        let tripHeadSign = row["trip_headsign"] as? String
+      {
+        shapeToHeadSign[shapeID] = tripHeadSign
+      }
+    }
+    return shapeToHeadSign
+  } catch {
+    print("Error reading CSV file: \(error)")
+  }
+  return shapeToHeadSign
+}
