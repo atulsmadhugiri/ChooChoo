@@ -148,15 +148,41 @@ func getTrainArrivalsForStop(
           let terminalStation = shapeToTerminus[String(shapeID)]
         {
           if terminalStation == stop.stopName {
+            let modifiedTripID = swapTripShapeDirection(tripID: String(shapeID))
+            if let oppositeTerminal = shapeToTerminus[modifiedTripID] {
+              return TrainArrivalEntry(
+                arrivalTime: arrivalTime, train: train,
+                terminalStation: oppositeTerminal)
+            }
             return nil
           }
           return TrainArrivalEntry(
             arrivalTime: arrivalTime, train: train,
             terminalStation: terminalStation)
         }
-        return TrainArrivalEntry(
-          arrivalTime: arrivalTime, train: train, terminalStation: "")
+        return nil
       }
     }
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
+}
+
+func swapTripShapeDirection(tripID: String) -> String {
+  let components = tripID.components(separatedBy: "..")
+
+  guard components.count == 2 else {
+    return tripID
+  }
+
+  let prefix = components[0]
+  let suffix = components[1]
+
+  let modifiedSuffix: String
+  if suffix.hasPrefix("N") {
+    modifiedSuffix = "S" + suffix.dropFirst()
+  } else if suffix.hasPrefix("S") {
+    modifiedSuffix = "N" + suffix.dropFirst()
+  } else {
+    modifiedSuffix = suffix
+  }
+  return "\(prefix)..\(modifiedSuffix)"
 }

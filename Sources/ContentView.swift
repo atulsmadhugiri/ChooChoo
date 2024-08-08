@@ -16,7 +16,7 @@ struct ContentView: View {
 
         let nextTwoArrivals = trainArrivals.filter {
           $0.arrivalTime.timeIntervalSinceNow > 0
-        }.prefix(2)
+        }.prefix(6)
 
         VStack {
           ForEach(nextTwoArrivals) { arrival in
