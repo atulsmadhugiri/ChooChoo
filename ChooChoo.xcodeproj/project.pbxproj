@@ -23,6 +23,7 @@
 		B7A856932BB3848D00D571AA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856922BB3848D00D571AA /* ContentView.swift */; };
 		B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A856942BB3848E00D571AA /* Assets.xcassets */; };
 		B7A856982BB3848E00D571AA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A856972BB3848E00D571AA /* Preview Assets.xcassets */; };
+		B7D904352C655F26009B4D18 /* Trips.csv in Resources */ = {isa = PBXBuildFile; fileRef = B7D904342C655F26009B4D18 /* Trips.csv */; };
 		B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */; };
 		B7E3FA1B2C4F0A7B0036CCDF /* LocationFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */; };
 /* End PBXBuildFile section */
@@ -43,6 +44,7 @@
 		B7A856922BB3848D00D571AA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B7A856942BB3848E00D571AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B7A856972BB3848E00D571AA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		B7D904342C655F26009B4D18 /* Trips.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = Trips.csv; sourceTree = "<group>"; };
 		B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAUtils.swift; sourceTree = "<group>"; };
 		B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationFetcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				B78613C22C4EFD9D00F8A35B /* Stations.csv */,
+				B7D904342C655F26009B4D18 /* Trips.csv */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B78613C32C4EFD9D00F8A35B /* Stations.csv in Resources */,
+				B7D904352C655F26009B4D18 /* Trips.csv in Resources */,
 				B7A856982BB3848E00D571AA /* Preview Assets.xcassets in Resources */,
 				B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */,
 			);
