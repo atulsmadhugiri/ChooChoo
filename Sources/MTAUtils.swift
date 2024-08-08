@@ -123,6 +123,7 @@ func getColorForTrain(train: MTATrain) -> Color {
   return getColorForLine(line: line)
 }
 
+let shapeToTerminus: [String: String] = loadTripsFromCSV()
 func getTrainArrivalsForStop(
   stop: MTAStation,
   feed: [TransitRealtime_FeedEntity]
@@ -142,7 +143,19 @@ func getTrainArrivalsForStop(
         let arrivalTime = Date(
           timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
         let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
-        return TrainArrivalEntry(arrivalTime: arrivalTime, train: train)
+
+        if let shapeID = tripUpdate.trip.tripID.split(separator: "_").last,
+          let terminalStation = shapeToTerminus[String(shapeID)]
+        {
+          if terminalStation == stop.stopName {
+            return nil
+          }
+          return TrainArrivalEntry(
+            arrivalTime: arrivalTime, train: train,
+            terminalStation: terminalStation)
+        }
+        return TrainArrivalEntry(
+          arrivalTime: arrivalTime, train: train, terminalStation: "")
       }
     }
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }

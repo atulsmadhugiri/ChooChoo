@@ -23,12 +23,12 @@ struct ContentView: View {
             HStack {
               TrainBadge(train: arrival.train, badgeSize: .small)
               Spacer()
-              Text("Destination Station").font(.title3).fontDesign(.rounded)
+              Text(arrival.terminalStation).font(.headline).fontDesign(.rounded)
               Spacer()
               Text(
                 "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
               )
-              .font(.title3).fontDesign(.rounded)
+              .font(.headline).fontDesign(.rounded)
             }
           }.listStyle(.plain)
             .padding()
