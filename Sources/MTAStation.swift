@@ -2,7 +2,9 @@ import CoreLocation
 import Foundation
 import TabularData
 
-struct MTAStation: Equatable {
+struct MTAStation: Equatable, Identifiable {
+  var id: Int { gtfsStopID.hashValue }
+
   let stationID: Int
   let complexID: Int
   let gtfsStopID: String

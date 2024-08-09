@@ -4,14 +4,18 @@ struct ContentView: View {
   @StateObject private var locationFetcher = LocationFetcher()
   @State var trainArrivals: [TrainArrivalEntry] = []
 
+  @State var selectionSheetActive: Bool = false
+
   var body: some View {
     VStack {
       if let nearestStation = locationFetcher.nearestStation {
         StationSign(
           stationName: nearestStation.stopName,
           trains: nearestStation.daytimeRoutes
+        ).onTapGesture {
+          selectionSheetActive = true
+        }
 
-        )
         Divider()
 
         let futureArrivals = trainArrivals.filter {
@@ -61,6 +65,8 @@ struct ContentView: View {
           feed: feed.entity
         )
       }
+    }.sheet(isPresented: $selectionSheetActive) {
+      StationSelectionSheet()
     }
   }
 }
