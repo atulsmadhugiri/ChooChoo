@@ -3,17 +3,39 @@ import SwiftUI
 
 struct StationSelectionSheet: View {
   var location: CLLocation?
+  @State private var searchTerm = ""
+
+  var filteredStations: [MTAStation] {
+    guard !searchTerm.isEmpty else { return mtaStations }
+    return mtaStations.filter {
+      $0.stopName.localizedCaseInsensitiveContains(searchTerm)
+    }
+  }
 
   var body: some View {
     if let location {
-      let sorted = mtaStations.sorted(by: {
+      let sorted = filteredStations.sorted(by: {
         location.distance(from: $0.location)
           < location.distance(from: $1.location)
       })
-      List(sorted) { station in
-        StationSign(
-          stationName: station.stopName, trains: station.daytimeRoutes)
-      }.listStyle(.plain)
+      NavigationView {
+        List(sorted) { station in
+          StationSign(
+            stationName: station.stopName,
+            trains: station.daytimeRoutes
+          )
+        }.listStyle(.plain)
+          .searchable(
+            text: $searchTerm,
+            placement: .automatic,
+            prompt: "Search stations"
+          )
+          .navigationBarTitle(
+            "Nearby Stations",
+            displayMode: .inline
+          )
+      }
+
     }
   }
 }
