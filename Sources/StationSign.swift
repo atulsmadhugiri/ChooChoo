@@ -4,17 +4,35 @@ struct StationSign: View {
   var stationName: String
   var trains: [MTATrain]
   var body: some View {
-    HStack {
-      Text(stationName)
-        .font(.title)
-        .foregroundStyle(.white)
-        .bold().padding()
-      Spacer()
+    VStack(spacing: 0) {
+      HStack {
+        Text(stationName)
+          .font(.title)
+          .foregroundStyle(.white)
+          .bold()
+          .padding(
+            EdgeInsets(
+              top: 12,
+              leading: 12,
+              bottom: 6,
+              trailing: 12
+            )
+          )
+        Spacer()
+      }
       HStack {
         ForEach(trains) { route in
           TrainBadge(train: route, badgeSize: .small)
         }
-      }.padding()
+        Spacer()
+      }.padding(
+        EdgeInsets(
+          top: 0,
+          leading: 12,
+          bottom: 12,
+          trailing: 12
+        )
+      )
     }.background(Color.black)
       .cornerRadius(4)
       .overlay(

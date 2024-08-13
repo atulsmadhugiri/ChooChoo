@@ -13,7 +13,7 @@ struct StationSelectionSheet: View {
       List(sorted) { station in
         StationSign(
           stationName: station.stopName, trains: station.daytimeRoutes)
-      }
+      }.listStyle(.plain)
     }
   }
 }
