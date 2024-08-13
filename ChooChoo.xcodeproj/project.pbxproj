@@ -114,9 +114,9 @@
 				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
 				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
 				B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */,
+				B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */,
 				B7A856942BB3848E00D571AA /* Assets.xcassets */,
 				B7A856962BB3848E00D571AA /* Preview Content */,
-				B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";

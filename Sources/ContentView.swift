@@ -66,7 +66,9 @@ struct ContentView: View {
         )
       }
     }.sheet(isPresented: $selectionSheetActive) {
-      StationSelectionSheet()
+      StationSelectionSheet(
+        location:
+          locationFetcher.location)
     }
   }
 }
