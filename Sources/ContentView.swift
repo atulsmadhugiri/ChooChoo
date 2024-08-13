@@ -41,7 +41,9 @@ struct ContentView: View {
             .refreshable {}
 
         }
-        .padding().background(Color.black).cornerRadius(4)
+        .padding()
+        .background(.foreground)
+        .cornerRadius(4)
 
         Spacer()
 
