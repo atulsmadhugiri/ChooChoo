@@ -186,3 +186,7 @@ func swapTripShapeDirection(tripID: String) -> String {
   }
   return "\(prefix)..\(modifiedSuffix)"
 }
+
+func getStationsWith(id: Int) -> [MTAStation] {
+  return mtaStations.filter { $0.stationID == id }
+}
