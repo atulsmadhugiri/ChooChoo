@@ -64,6 +64,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B77807C12C6D707600216D68 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */,
+				B75860A12C52F4D00007404D /* StationSign.swift */,
+				B7A856922BB3848D00D571AA /* ContentView.swift */,
+				B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		B78613B42C4EF29900F8A35B /* Generated */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,10 +114,8 @@
 		B7A8568F2BB3848D00D571AA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				B77807C12C6D707600216D68 /* Views */,
 				B7A856902BB3848D00D571AA /* ChooChooApp.swift */,
-				B7A856922BB3848D00D571AA /* ContentView.swift */,
-				B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */,
-				B75860A12C52F4D00007404D /* StationSign.swift */,
 				B78613BF2C4EF75C00F8A35B /* MTAStation.swift */,
 				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
 				B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */,
@@ -114,7 +123,6 @@
 				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
 				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
 				B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */,
-				B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */,
 				B7A856942BB3848E00D571AA /* Assets.xcassets */,
 				B7A856962BB3848E00D571AA /* Preview Content */,
 			);
