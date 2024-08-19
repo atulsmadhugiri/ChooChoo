@@ -10,6 +10,7 @@
 		B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */; };
 		B75860A22C52F4D00007404D /* StationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75860A12C52F4D00007404D /* StationSign.swift */; };
 		B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7697CB72C5192AB001B880C /* FormatterUtils.swift */; };
+		B77807C32C6D740C00216D68 /* ArrivalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77807C22C6D740C00216D68 /* ArrivalCard.swift */; };
 		B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613A82C4EE8EA00F8A35B /* Secrets.swift */; };
 		B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */; };
 		B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = B78613AF2C4EEAEA00F8A35B /* SwiftProtobuf */; };
@@ -33,6 +34,7 @@
 		B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainArrivalEntry.swift; sourceTree = "<group>"; };
 		B75860A12C52F4D00007404D /* StationSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSign.swift; sourceTree = "<group>"; };
 		B7697CB72C5192AB001B880C /* FormatterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterUtils.swift; sourceTree = "<group>"; };
+		B77807C22C6D740C00216D68 /* ArrivalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrivalCard.swift; sourceTree = "<group>"; };
 		B78613A82C4EE8EA00F8A35B /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
 		B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "nyct-subway.pb.swift"; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				B75860A12C52F4D00007404D /* StationSign.swift */,
 				B7A856922BB3848D00D571AA /* ContentView.swift */,
 				B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */,
+				B77807C22C6D740C00216D68 /* ArrivalCard.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -219,6 +222,7 @@
 				B7E3FA1B2C4F0A7B0036CCDF /* LocationFetcher.swift in Sources */,
 				B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */,
 				B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */,
+				B77807C32C6D740C00216D68 /* ArrivalCard.swift in Sources */,
 				B7A856932BB3848D00D571AA /* ContentView.swift in Sources */,
 				B75860A22C52F4D00007404D /* StationSign.swift in Sources */,
 				B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */,

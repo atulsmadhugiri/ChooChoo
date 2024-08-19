@@ -24,22 +24,12 @@ struct ContentView: View {
 
         VStack {
           List(futureArrivals) { arrival in
-            HStack {
-              TrainBadge(train: arrival.train, badgeSize: .small)
-              Spacer()
-              Text(arrival.terminalStation).font(.headline).fontDesign(.rounded)
-              Spacer()
-              Text(
-                "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
-              )
-              .font(.headline).fontDesign(.rounded)
-            }
+            ArrivalCard(arrival: arrival)
           }.listStyle(.plain)
             .background(Color.white)
             .cornerRadius(4)
             .clipped()
             .refreshable {}
-
         }
         .padding()
         .background(.foreground)
