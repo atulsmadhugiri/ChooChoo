@@ -85,6 +85,9 @@ func loadStationsFromCSV() -> [MTAStation] {
   do {
     let df = try DataFrame(contentsOfCSVFile: stationsFile)
     return df.rows.compactMap { MTAStation(from: $0) }
+      .filter {
+        $0.division != "SIR"
+      }
   } catch {
     print("Error reading CSV file: \(error)")
     return []
