@@ -187,6 +187,27 @@ func swapTripShapeDirection(tripID: String) -> String {
   return "\(prefix)..\(modifiedSuffix)"
 }
 
+enum TripDirection {
+  case north
+  case south
+}
+
+func tripDirection(for tripID: String) -> TripDirection {
+  let components = tripID.components(separatedBy: "..")
+  guard components.count == 2 else {
+    return .north
+  }
+
+  let suffix = components[1]
+
+  switch suffix.prefix(1) {
+  case "N":
+    return .north
+  default:
+    return .south
+  }
+}
+
 func getStationsWith(id: Int) -> [MTAStation] {
   return mtaStations.filter { $0.stationID == id }
 }
