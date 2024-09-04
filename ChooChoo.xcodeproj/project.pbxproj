@@ -42,7 +42,7 @@
 		B78613BF2C4EF75C00F8A35B /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
 		B78613C22C4EFD9D00F8A35B /* Stations.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = Stations.csv; sourceTree = "<group>"; };
 		B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBadge.swift; sourceTree = "<group>"; };
-		B7A8568D2BB3848D00D571AA /* ChooChoo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChooChoo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7A8568D2BB3848D00D571AA /* ChooChoo NYC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ChooChoo NYC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7A856902BB3848D00D571AA /* ChooChooApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooChooApp.swift; sourceTree = "<group>"; };
 		B7A856922BB3848D00D571AA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B7A856942BB3848E00D571AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -109,7 +109,7 @@
 		B7A8568E2BB3848D00D571AA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B7A8568D2BB3848D00D571AA /* ChooChoo.app */,
+				B7A8568D2BB3848D00D571AA /* ChooChoo NYC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -143,9 +143,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B7A8568C2BB3848D00D571AA /* ChooChoo */ = {
+		B7A8568C2BB3848D00D571AA /* ChooChoo NYC */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B7A8569B2BB3848E00D571AA /* Build configuration list for PBXNativeTarget "ChooChoo" */;
+			buildConfigurationList = B7A8569B2BB3848E00D571AA /* Build configuration list for PBXNativeTarget "ChooChoo NYC" */;
 			buildPhases = (
 				B7A856892BB3848D00D571AA /* Sources */,
 				B7A8568A2BB3848D00D571AA /* Frameworks */,
@@ -155,9 +155,9 @@
 			);
 			dependencies = (
 			);
-			name = ChooChoo;
+			name = "ChooChoo NYC";
 			productName = ChooChoo;
-			productReference = B7A8568D2BB3848D00D571AA /* ChooChoo.app */;
+			productReference = B7A8568D2BB3848D00D571AA /* ChooChoo NYC.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -191,7 +191,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B7A8568C2BB3848D00D571AA /* ChooChoo */,
+				B7A8568C2BB3848D00D571AA /* ChooChoo NYC */,
 			);
 		};
 /* End PBXProject section */
@@ -366,6 +366,7 @@
 				DEVELOPMENT_TEAM = HM6Y2RQS2R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ChooChoo;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need current location to identify closest station.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -396,6 +397,7 @@
 				DEVELOPMENT_TEAM = HM6Y2RQS2R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ChooChoo;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need current location to identify closest station.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -427,7 +429,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B7A8569B2BB3848E00D571AA /* Build configuration list for PBXNativeTarget "ChooChoo" */ = {
+		B7A8569B2BB3848E00D571AA /* Build configuration list for PBXNativeTarget "ChooChoo NYC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B7A8569C2BB3848E00D571AA /* Debug */,
