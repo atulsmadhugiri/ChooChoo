@@ -22,7 +22,8 @@ struct ArrivalCard: View {
     arrival: TrainArrivalEntry(
       arrivalTime: Date(),
       train: .a,
-      terminalStation: "Terminal Station"
+      terminalStation: "Terminal Station",
+      direction: .south
     )
   )
 }

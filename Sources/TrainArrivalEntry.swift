@@ -5,4 +5,5 @@ struct TrainArrivalEntry: Identifiable {
   let arrivalTime: Date
   let train: MTATrain
   let terminalStation: String
+  let direction: TripDirection
 }

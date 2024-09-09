@@ -150,15 +150,18 @@ func getTrainArrivalsForStop(
           if terminalStation == stop.stopName {
             let modifiedTripID = swapTripShapeDirection(tripID: String(shapeID))
             if let oppositeTerminal = shapeToTerminus[modifiedTripID] {
+              let direction = tripDirection(for: modifiedTripID)
               return TrainArrivalEntry(
                 arrivalTime: arrivalTime, train: train,
-                terminalStation: oppositeTerminal)
+                terminalStation: oppositeTerminal,
+                direction: direction)
             }
             return nil
           }
           return TrainArrivalEntry(
             arrivalTime: arrivalTime, train: train,
-            terminalStation: terminalStation)
+            terminalStation: terminalStation,
+            direction: tripDirection(for: String(shapeID)))
         }
         return nil
       }
