@@ -7,14 +7,15 @@ struct ContentView: View {
   @State var selectionSheetActive: Bool = false
 
   var body: some View {
-    VStack {
+    VStack(spacing: 0) {
       if let nearestStation = locationFetcher.nearestStation {
         StationSign(
           stationName: nearestStation.stopName,
           trains: nearestStation.daytimeRoutes
         ).onTapGesture {
           selectionSheetActive = true
-        }
+        }.padding()
+          .shadow(radius: 8)
 
         Divider()
 
@@ -27,19 +28,15 @@ struct ContentView: View {
             ArrivalCard(arrival: arrival)
           }.listStyle(.plain)
             .background(Color.white)
-            .cornerRadius(4)
+            .cornerRadius(8)
             .clipped()
             .refreshable {}
+            .shadow(radius: 8)
         }
-        .padding()
-        .background(.foreground)
-        .cornerRadius(4)
-
-        Spacer()
+        .padding().background(.ultraThickMaterial)
 
       }
     }
-    .padding()
     .onChange(of: locationFetcher.nearestStation) {
       Task {
         guard let nearestStation = locationFetcher.nearestStation,

@@ -34,7 +34,7 @@ struct StationSign: View {
         )
       )
     }.background(.foreground)
-      .cornerRadius(4)
+      .cornerRadius(8)
       .overlay(
         Rectangle()
           .fill(.background)
