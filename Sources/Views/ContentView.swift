@@ -27,7 +27,7 @@ struct ContentView: View {
           List(futureArrivals) { arrival in
             ArrivalCard(arrival: arrival)
           }.listStyle(.plain)
-            .background(Color.white)
+            .background(.background)
             .cornerRadius(8)
             .clipped()
             .refreshable {}
