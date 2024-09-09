@@ -31,7 +31,7 @@ struct ContentView: View {
             .cornerRadius(8)
             .clipped()
             .refreshable {}
-            .shadow(radius: 8)
+            .shadow(radius: 6)
         }
         .padding().background(.ultraThickMaterial)
 
