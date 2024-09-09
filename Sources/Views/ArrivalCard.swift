@@ -6,8 +6,10 @@ struct ArrivalCard: View {
     HStack {
       TrainBadge(train: arrival.train, badgeSize: .small)
         .padding(.trailing, 4)
-      Text(arrival.terminalStation)
-        .font(.headline)
+      VStack(alignment: .leading) {
+        Text(arrival.terminalStation).font(.headline)
+        Text(arrival.direction.rawValue).font(.subheadline)
+      }
       Spacer()
       Text(
         "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
