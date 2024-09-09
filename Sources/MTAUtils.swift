@@ -190,9 +190,9 @@ func swapTripShapeDirection(tripID: String) -> String {
   return "\(prefix)..\(modifiedSuffix)"
 }
 
-enum TripDirection {
-  case north
-  case south
+enum TripDirection: String {
+  case north = "Uptown and Bronx"
+  case south = "Downtown and Brooklyn"
 }
 
 func tripDirection(for tripID: String) -> TripDirection {
