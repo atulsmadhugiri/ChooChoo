@@ -191,6 +191,7 @@ func swapTripShapeDirection(tripID: String) -> String {
 }
 
 enum TripDirection: String {
+  case all = "All"
   case north = "Uptown and Bronx"
   case south = "Downtown and Brooklyn"
 }
