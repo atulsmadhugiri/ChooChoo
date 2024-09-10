@@ -4,6 +4,8 @@ import SwiftUI
 struct StationSelectionSheet: View {
   var location: CLLocation?
   @State private var searchTerm = ""
+  @Binding var isPresented: Bool
+  @Binding var selectedStation: MTAStation?
 
   var filteredStations: [MTAStation] {
     guard !searchTerm.isEmpty else { return mtaStations }
@@ -23,7 +25,10 @@ struct StationSelectionSheet: View {
           StationSign(
             stationName: station.stopName,
             trains: station.daytimeRoutes
-          )
+          ).onTapGesture {
+            selectedStation = station
+            isPresented = false
+          }
         }.listStyle(.plain)
           .searchable(
             text: $searchTerm,
@@ -38,8 +43,4 @@ struct StationSelectionSheet: View {
 
     }
   }
-}
-
-#Preview {
-  StationSelectionSheet()
 }

@@ -7,6 +7,7 @@ struct ContentView: View {
   @State var selectionSheetActive: Bool = false
 
   @State private var selectedDirection: TripDirection = .south
+  @State private var selectedStation: MTAStation?
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
@@ -67,8 +68,9 @@ struct ContentView: View {
       }
     }.sheet(isPresented: $selectionSheetActive) {
       StationSelectionSheet(
-        location:
-          locationFetcher.location)
+        location: locationFetcher.location,
+        isPresented: $selectionSheetActive,
+        selectedStation: $selectedStation)
     }.onAppear {
       tapHaptic.prepare()
     }
