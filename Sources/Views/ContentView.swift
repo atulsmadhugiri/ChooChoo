@@ -13,16 +13,19 @@ struct ContentView: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      if let nearestStation = locationFetcher.nearestStation {
+      let visibleStation = selectedStation ?? locationFetcher.nearestStation
+      if let visibleStation {
         StationSign(
-          stationName: nearestStation.stopName,
-          trains: nearestStation.daytimeRoutes
+          stationName: visibleStation.stopName,
+          trains: visibleStation.daytimeRoutes
         ).onTapGesture {
           tapHaptic.impactOccurred()
           selectionSheetActive = true
         }.padding()
           .shadow(radius: 2)
+      }
 
+      if let nearestStation = locationFetcher.nearestStation {
         Divider()
 
         let futureArrivals = trainArrivals.filter {
