@@ -7,6 +7,8 @@ struct StationSelectionSheet: View {
   @Binding var isPresented: Bool
   @Binding var selectedStation: MTAStation?
 
+  let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
+
   var filteredStations: [MTAStation] {
     guard !searchTerm.isEmpty else { return mtaStations }
     return mtaStations.filter {
@@ -26,6 +28,7 @@ struct StationSelectionSheet: View {
             stationName: station.stopName,
             trains: station.daytimeRoutes
           ).onTapGesture {
+            tapHaptic.impactOccurred()
             selectedStation = station
             isPresented = false
           }
@@ -39,6 +42,8 @@ struct StationSelectionSheet: View {
             "Nearby Stations",
             displayMode: .inline
           )
+      }.onAppear {
+        tapHaptic.prepare()
       }
 
     }
