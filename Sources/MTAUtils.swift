@@ -211,6 +211,14 @@ func tripDirection(for tripID: String) -> TripDirection {
   }
 }
 
+func flip(direction: TripDirection) -> TripDirection {
+  if direction == .north {
+    return .south
+  } else {
+    return .north
+  }
+}
+
 func getStationsWith(id: Int) -> [MTAStation] {
   return mtaStations.filter { $0.stationID == id }
 }

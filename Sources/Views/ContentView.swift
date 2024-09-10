@@ -58,6 +58,12 @@ struct ContentView: View {
           return
         }
         trainArrivals = await getArrivalsFor(station: nearestStation)
+        let sameDirection = trainArrivals.filter {
+          $0.direction == selectedDirection
+        }
+        if sameDirection.isEmpty {
+          selectedDirection = flip(direction: selectedDirection)
+        }
       }
     }.onChange(of: selectedStation) {
       Task {
@@ -67,11 +73,7 @@ struct ContentView: View {
           $0.direction == selectedDirection
         }
         if sameDirection.isEmpty {
-          if selectedDirection == .south {
-            selectedDirection = .north
-          } else {
-            selectedDirection = .south
-          }
+          selectedDirection = flip(direction: selectedDirection)
         }
       }
     }.sheet(isPresented: $selectionSheetActive) {
