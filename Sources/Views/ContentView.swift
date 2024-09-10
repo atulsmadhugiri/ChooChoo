@@ -25,34 +25,35 @@ struct ContentView: View {
           .shadow(radius: 2)
       }
 
-      if let nearestStation = locationFetcher.nearestStation {
-        Divider()
+      Divider()
 
-        let futureArrivals = trainArrivals.filter {
-          $0.arrivalTime.timeIntervalSinceNow > 0
-            && $0.direction == selectedDirection
-        }
-
-        VStack {
-          Picker("", selection: $selectedDirection) {
-            Text(TripDirection.south.rawValue).tag(TripDirection.south)
-            Text(TripDirection.north.rawValue).tag(TripDirection.north)
-          }.pickerStyle(.segmented).labelsHidden().padding(.bottom, 8)
-
-          List(futureArrivals) { arrival in
-            ArrivalCard(arrival: arrival)
-          }.listStyle(.plain)
-            .background(.background)
-            .cornerRadius(8)
-            .clipped()
-            .refreshable {}
-            .shadow(radius: 2)
-        }
-        .padding().background(.ultraThickMaterial)
-
+      let futureArrivals = trainArrivals.filter {
+        $0.arrivalTime.timeIntervalSinceNow > 0
+          && $0.direction == selectedDirection
       }
+
+      VStack {
+        Picker("", selection: $selectedDirection) {
+          Text(TripDirection.south.rawValue).tag(TripDirection.south)
+          Text(TripDirection.north.rawValue).tag(TripDirection.north)
+        }.pickerStyle(.segmented).labelsHidden().padding(.bottom, 8)
+
+        List(futureArrivals) { arrival in
+          ArrivalCard(arrival: arrival)
+        }.listStyle(.plain)
+          .background(.background)
+          .cornerRadius(8)
+          .clipped()
+          .refreshable {}
+          .shadow(radius: 2)
+      }
+      .padding().background(.ultraThickMaterial)
+
     }
     .onChange(of: locationFetcher.nearestStation) {
+      if selectedStation != nil {
+        return
+      }
       Task {
         guard let nearestStation = locationFetcher.nearestStation,
           let train = nearestStation.daytimeRoutes.first
@@ -66,6 +67,26 @@ struct ContentView: View {
 
         trainArrivals = getTrainArrivalsForStop(
           stop: nearestStation,
+          feed: feed.entity
+        )
+      }
+    }.onChange(of: selectedStation) {
+      if selectedStation == nil {
+        return
+      }
+      Task {
+        guard let visibleStation = selectedStation,
+          let train = visibleStation.daytimeRoutes.first
+        else {
+          return
+        }
+
+        let data = try await NetworkUtils.sendNetworkRequest(
+          to: getLineForTrain(train: train).endpoint)
+        let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
+
+        trainArrivals = getTrainArrivalsForStop(
+          stop: visibleStation,
           feed: feed.entity
         )
       }
