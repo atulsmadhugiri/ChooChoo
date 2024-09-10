@@ -2,7 +2,11 @@ import CoreLocation
 import Foundation
 import TabularData
 
-struct MTAStation: Equatable, Identifiable {
+final class MTAStation: Equatable, Identifiable, Sendable {
+  static func == (lhs: MTAStation, rhs: MTAStation) -> Bool {
+    lhs.gtfsStopID == rhs.gtfsStopID
+  }
+
   var id: Int { gtfsStopID.hashValue }
 
   let stationID: Int
