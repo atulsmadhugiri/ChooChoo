@@ -55,40 +55,15 @@ struct ContentView: View {
         return
       }
       Task {
-        guard let nearestStation = locationFetcher.nearestStation,
-          let train = nearestStation.daytimeRoutes.first
-        else {
+        guard let nearestStation = locationFetcher.nearestStation else {
           return
         }
-
-        let data = try await NetworkUtils.sendNetworkRequest(
-          to: getLineForTrain(train: train).endpoint)
-        let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-
-        trainArrivals = getTrainArrivalsForStop(
-          stop: nearestStation,
-          feed: feed.entity
-        )
+        trainArrivals = await getArrivalsFor(station: nearestStation)
       }
     }.onChange(of: selectedStation) {
-      if selectedStation == nil {
-        return
-      }
       Task {
-        guard let visibleStation = selectedStation,
-          let train = visibleStation.daytimeRoutes.first
-        else {
-          return
-        }
-
-        let data = try await NetworkUtils.sendNetworkRequest(
-          to: getLineForTrain(train: train).endpoint)
-        let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-
-        trainArrivals = getTrainArrivalsForStop(
-          stop: visibleStation,
-          feed: feed.entity
-        )
+        guard let selectedStation else { return }
+        trainArrivals = await getArrivalsFor(station: selectedStation)
       }
     }.sheet(isPresented: $selectionSheetActive) {
       StationSelectionSheet(

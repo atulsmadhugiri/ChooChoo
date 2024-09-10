@@ -214,3 +214,20 @@ func tripDirection(for tripID: String) -> TripDirection {
 func getStationsWith(id: Int) -> [MTAStation] {
   return mtaStations.filter { $0.stationID == id }
 }
+
+func getArrivalsFor(station: MTAStation) async -> [TrainArrivalEntry] {
+  guard let train = station.daytimeRoutes.first else { return [] }
+  do {
+    let data = try await NetworkUtils.sendNetworkRequest(
+      to: getLineForTrain(train: train).endpoint)
+    let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
+    let trainArrivals = getTrainArrivalsForStop(
+      stop: station,
+      feed: feed.entity
+    )
+    return trainArrivals
+  } catch {
+    print("Error fetching realtime data.")
+    return []
+  }
+}
