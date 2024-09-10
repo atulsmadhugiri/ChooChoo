@@ -23,6 +23,7 @@ struct ContentView: View {
 
         let futureArrivals = trainArrivals.filter {
           $0.arrivalTime.timeIntervalSinceNow > 0
+            && $0.direction == selectedDirection
         }
 
         VStack {
