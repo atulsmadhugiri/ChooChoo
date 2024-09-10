@@ -6,9 +6,11 @@ struct ArrivalCard: View {
     HStack {
       TrainBadge(train: arrival.train, badgeSize: .small)
         .padding(.trailing, 4)
-      VStack(alignment: .leading) {
+      VStack(alignment: .leading, spacing: -2) {
         Text(arrival.terminalStation).font(.headline)
-        Text(arrival.direction.rawValue).font(.subheadline)
+        Text(arrival.direction.rawValue)
+          .font(.subheadline)
+          .foregroundStyle(.secondary)
       }
       Spacer()
       Text(
