@@ -63,6 +63,16 @@ struct ContentView: View {
       Task {
         guard let selectedStation else { return }
         trainArrivals = await getArrivalsFor(station: selectedStation)
+        let sameDirection = trainArrivals.filter {
+          $0.direction == selectedDirection
+        }
+        if sameDirection.isEmpty {
+          if selectedDirection == .south {
+            selectedDirection = .north
+          } else {
+            selectedDirection = .south
+          }
+        }
       }
     }.sheet(isPresented: $selectionSheetActive) {
       StationSelectionSheet(
