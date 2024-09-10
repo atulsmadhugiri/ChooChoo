@@ -27,9 +27,8 @@ struct ContentView: View {
 
       Divider()
 
-      let futureArrivals = trainArrivals.filter {
-        $0.arrivalTime.timeIntervalSinceNow > 0
-          && $0.direction == selectedDirection
+      let visibleArrivals = trainArrivals.filter {
+        $0.direction == selectedDirection
       }
 
       VStack {
@@ -38,7 +37,7 @@ struct ContentView: View {
           Text(TripDirection.north.rawValue).tag(TripDirection.north)
         }.pickerStyle(.segmented).labelsHidden().padding(.bottom, 8)
 
-        List(futureArrivals) { arrival in
+        List(visibleArrivals) { arrival in
           ArrivalCard(arrival: arrival)
         }.listStyle(.plain)
           .background(.background)

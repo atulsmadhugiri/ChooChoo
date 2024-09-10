@@ -224,7 +224,7 @@ func getArrivalsFor(station: MTAStation) async -> [TrainArrivalEntry] {
     let trainArrivals = getTrainArrivalsForStop(
       stop: station,
       feed: feed.entity
-    )
+    ).filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
     return trainArrivals
   } catch {
     print("Error fetching realtime data.")
