@@ -8,6 +8,8 @@ struct ContentView: View {
 
   @State private var selectedDirection: TripDirection = .south
 
+  let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
+
   var body: some View {
     VStack(spacing: 0) {
       if let nearestStation = locationFetcher.nearestStation {
@@ -15,6 +17,7 @@ struct ContentView: View {
           stationName: nearestStation.stopName,
           trains: nearestStation.daytimeRoutes
         ).onTapGesture {
+          tapHaptic.impactOccurred()
           selectionSheetActive = true
         }.padding()
           .shadow(radius: 2)
@@ -66,6 +69,8 @@ struct ContentView: View {
       StationSelectionSheet(
         location:
           locationFetcher.location)
+    }.onAppear {
+      tapHaptic.prepare()
     }
   }
 }
