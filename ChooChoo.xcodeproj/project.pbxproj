@@ -51,6 +51,7 @@
 		B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSelectionSheet.swift; sourceTree = "<group>"; };
 		B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAUtils.swift; sourceTree = "<group>"; };
 		B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationFetcher.swift; sourceTree = "<group>"; };
+		B7F3283B2C9104F2005E4EA9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +100,7 @@
 		B7A856842BB3848D00D571AA = {
 			isa = PBXGroup;
 			children = (
+				B7F3283B2C9104F2005E4EA9 /* Info.plist */,
 				B78613C12C4EFD8600F8A35B /* Resources */,
 				B7A8568F2BB3848D00D571AA /* Sources */,
 				B78613B42C4EF29900F8A35B /* Generated */,
@@ -366,6 +368,7 @@
 				DEVELOPMENT_TEAM = HM6Y2RQS2R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ChooChoo;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need current location to identify closest station.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -397,6 +400,7 @@
 				DEVELOPMENT_TEAM = HM6Y2RQS2R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ChooChoo;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need current location to identify closest station.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
