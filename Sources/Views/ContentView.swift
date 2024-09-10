@@ -6,6 +6,8 @@ struct ContentView: View {
 
   @State var selectionSheetActive: Bool = false
 
+  @State private var selectedDirection: TripDirection = .south
+
   var body: some View {
     VStack(spacing: 0) {
       if let nearestStation = locationFetcher.nearestStation {
@@ -15,7 +17,7 @@ struct ContentView: View {
         ).onTapGesture {
           selectionSheetActive = true
         }.padding()
-          .shadow(radius: 8)
+          .shadow(radius: 2)
 
         Divider()
 
@@ -24,6 +26,11 @@ struct ContentView: View {
         }
 
         VStack {
+          Picker("", selection: $selectedDirection) {
+            Text(TripDirection.south.rawValue).tag(TripDirection.south)
+            Text(TripDirection.north.rawValue).tag(TripDirection.north)
+          }.pickerStyle(.segmented).labelsHidden().padding(.bottom, 8)
+
           List(futureArrivals) { arrival in
             ArrivalCard(arrival: arrival)
           }.listStyle(.plain)
@@ -31,7 +38,7 @@ struct ContentView: View {
             .cornerRadius(8)
             .clipped()
             .refreshable {}
-            .shadow(radius: 6)
+            .shadow(radius: 2)
         }
         .padding().background(.ultraThickMaterial)
 
