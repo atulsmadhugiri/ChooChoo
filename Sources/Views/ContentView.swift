@@ -7,7 +7,7 @@ struct ContentView: View {
   @State var selectionSheetActive: Bool = false
 
   @State private var selectedDirection: TripDirection = .south
-  @State private var selectedStation: MTAStop?
+  @State private var selectedStation: MTAStation?
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
@@ -16,7 +16,7 @@ struct ContentView: View {
       let visibleStation = selectedStation ?? locationFetcher.nearestStation
       if let visibleStation {
         StationSign(
-          stationName: visibleStation.stopName,
+          stationName: visibleStation.name,
           trains: visibleStation.daytimeRoutes
         ).onTapGesture {
           tapHaptic.impactOccurred()
@@ -57,7 +57,8 @@ struct ContentView: View {
         guard let nearestStation = locationFetcher.nearestStation else {
           return
         }
-        trainArrivals = await getArrivalsFor(station: nearestStation)
+        trainArrivals = await getArrivalsFor(
+          station: nearestStation.stops.first!)
         let sameDirection = trainArrivals.filter {
           $0.direction == selectedDirection
         }
@@ -68,7 +69,8 @@ struct ContentView: View {
     }.onChange(of: selectedStation) {
       Task {
         guard let selectedStation else { return }
-        trainArrivals = await getArrivalsFor(station: selectedStation)
+        trainArrivals = await getArrivalsFor(
+          station: selectedStation.stops.first!)
         let sameDirection = trainArrivals.filter {
           $0.direction == selectedDirection
         }
