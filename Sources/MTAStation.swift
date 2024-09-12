@@ -1,3 +1,4 @@
+import CoreLocation
 import Foundation
 
 struct MTAStation: Identifiable {
@@ -9,6 +10,16 @@ struct MTAStation: Identifiable {
     self.id = id
     self.name = name
     self.stops = stops
+  }
+
+  var location: CLLocation {
+    CLLocation(
+      latitude: self.stops.first!.gtfsLatitude,
+      longitude: self.stops.first!.gtfsLongitude)
+  }
+
+  var daytimeRoutes: [MTATrain] {
+    self.stops.flatMap { $0.daytimeRoutes }
   }
 }
 
