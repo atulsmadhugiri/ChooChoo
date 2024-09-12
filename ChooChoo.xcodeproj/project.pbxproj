@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74A5BFA2C93965900040212 /* MTAStation.swift */; };
 		B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */; };
 		B75860A22C52F4D00007404D /* StationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75860A12C52F4D00007404D /* StationSign.swift */; };
 		B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7697CB72C5192AB001B880C /* FormatterUtils.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B74A5BFA2C93965900040212 /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
 		B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainArrivalEntry.swift; sourceTree = "<group>"; };
 		B75860A12C52F4D00007404D /* StationSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSign.swift; sourceTree = "<group>"; };
 		B7697CB72C5192AB001B880C /* FormatterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterUtils.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				B77807C12C6D707600216D68 /* Views */,
 				B7A856902BB3848D00D571AA /* ChooChooApp.swift */,
 				B78613BF2C4EF75C00F8A35B /* MTAStop.swift */,
+				B74A5BFA2C93965900040212 /* MTAStation.swift */,
 				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
 				B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */,
 				B78613A82C4EE8EA00F8A35B /* Secrets.swift */,
@@ -232,6 +235,7 @@
 				B78613BA2C4EF3A000F8A35B /* gtfs-realtime.pb.swift in Sources */,
 				B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */,
 				B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */,
+				B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
