@@ -20,11 +20,13 @@ struct StationSign: View {
           )
         Spacer()
       }
-      HStack {
-        ForEach(trains) { route in
-          TrainBadge(train: route, badgeSize: .small)
+      ScrollView(.horizontal) {
+        HStack {
+          ForEach(trains) { route in
+            TrainBadge(train: route, badgeSize: .small)
+          }
+          Spacer()
         }
-        Spacer()
       }.padding(
         EdgeInsets(
           top: 0,
@@ -32,7 +34,7 @@ struct StationSign: View {
           bottom: 12,
           trailing: 12
         )
-      )
+      ).scrollIndicators(.hidden)
     }.background(.foreground)
       .cornerRadius(8)
       .overlay(
