@@ -7,7 +7,7 @@ struct ContentView: View {
   @State var selectionSheetActive: Bool = false
 
   @State private var selectedDirection: TripDirection = .south
-  @State private var selectedStation: MTAStation?
+  @State private var selectedStation: MTAStop?
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 

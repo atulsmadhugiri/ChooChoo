@@ -17,7 +17,7 @@
 		B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B78613B12C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary */; };
 		B78613B82C4EF39B00F8A35B /* nyct-subway.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */; };
 		B78613BA2C4EF3A000F8A35B /* gtfs-realtime.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613B92C4EF3A000F8A35B /* gtfs-realtime.pb.swift */; };
-		B78613C02C4EF75C00F8A35B /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613BF2C4EF75C00F8A35B /* MTAStation.swift */; };
+		B78613C02C4EF75C00F8A35B /* MTAStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613BF2C4EF75C00F8A35B /* MTAStop.swift */; };
 		B78613C32C4EFD9D00F8A35B /* Stations.csv in Resources */ = {isa = PBXBuildFile; fileRef = B78613C22C4EFD9D00F8A35B /* Stations.csv */; };
 		B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */; };
 		B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856902BB3848D00D571AA /* ChooChooApp.swift */; };
@@ -39,7 +39,7 @@
 		B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
 		B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "nyct-subway.pb.swift"; sourceTree = "<group>"; };
 		B78613B92C4EF3A000F8A35B /* gtfs-realtime.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "gtfs-realtime.pb.swift"; sourceTree = "<group>"; };
-		B78613BF2C4EF75C00F8A35B /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
+		B78613BF2C4EF75C00F8A35B /* MTAStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStop.swift; sourceTree = "<group>"; };
 		B78613C22C4EFD9D00F8A35B /* Stations.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = Stations.csv; sourceTree = "<group>"; };
 		B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBadge.swift; sourceTree = "<group>"; };
 		B7A8568D2BB3848D00D571AA /* ChooChoo NYC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ChooChoo NYC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,7 +121,7 @@
 			children = (
 				B77807C12C6D707600216D68 /* Views */,
 				B7A856902BB3848D00D571AA /* ChooChooApp.swift */,
-				B78613BF2C4EF75C00F8A35B /* MTAStation.swift */,
+				B78613BF2C4EF75C00F8A35B /* MTAStop.swift */,
 				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
 				B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */,
 				B78613A82C4EE8EA00F8A35B /* Secrets.swift */,
@@ -217,7 +217,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B78613C02C4EF75C00F8A35B /* MTAStation.swift in Sources */,
+				B78613C02C4EF75C00F8A35B /* MTAStop.swift in Sources */,
 				B7D904372C65A745009B4D18 /* StationSelectionSheet.swift in Sources */,
 				B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */,
 				B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */,

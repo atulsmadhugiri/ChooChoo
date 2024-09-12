@@ -2,8 +2,8 @@ import CoreLocation
 import Foundation
 import TabularData
 
-final class MTAStation: Equatable, Identifiable, Sendable {
-  static func == (lhs: MTAStation, rhs: MTAStation) -> Bool {
+final class MTAStop: Equatable, Identifiable, Sendable {
+  static func == (lhs: MTAStop, rhs: MTAStop) -> Bool {
     lhs.gtfsStopID == rhs.gtfsStopID
   }
 
@@ -75,7 +75,7 @@ final class MTAStation: Equatable, Identifiable, Sendable {
   }
 }
 
-func loadStationsFromCSV() -> [MTAStation] {
+func loadStationsFromCSV() -> [MTAStop] {
   guard
     let stationsFile = Bundle.main.url(
       forResource: "Stations",
@@ -88,7 +88,7 @@ func loadStationsFromCSV() -> [MTAStation] {
 
   do {
     let df = try DataFrame(contentsOfCSVFile: stationsFile)
-    return df.rows.compactMap { MTAStation(from: $0) }
+    return df.rows.compactMap { MTAStop(from: $0) }
       .filter {
         $0.division != "SIR"
       }

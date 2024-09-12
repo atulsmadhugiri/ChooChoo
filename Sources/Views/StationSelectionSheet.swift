@@ -5,11 +5,11 @@ struct StationSelectionSheet: View {
   var location: CLLocation?
   @State private var searchTerm = ""
   @Binding var isPresented: Bool
-  @Binding var selectedStation: MTAStation?
+  @Binding var selectedStation: MTAStop?
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
-  var filteredStations: [MTAStation] {
+  var filteredStations: [MTAStop] {
     guard !searchTerm.isEmpty else { return mtaStations }
     return mtaStations.filter {
       $0.stopName.localizedCaseInsensitiveContains(searchTerm)

@@ -1,12 +1,12 @@
 import CoreLocation
 
-let mtaStations: [MTAStation] = loadStationsFromCSV()
+let mtaStations: [MTAStop] = loadStationsFromCSV()
 
 class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
   let locationManager = CLLocationManager()
 
   @Published var location: CLLocation?
-  @Published var nearestStation: MTAStation?
+  @Published var nearestStation: MTAStop?
 
   override init() {
     super.init()
@@ -23,7 +23,7 @@ class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
     nearestStation = getNearestStation(from: locations.last)
   }
 
-  func getNearestStation(from currentLocation: CLLocation?) -> MTAStation? {
+  func getNearestStation(from currentLocation: CLLocation?) -> MTAStop? {
     guard let currentLocation = currentLocation else { return nil }
     return mtaStations.min(by: {
       currentLocation.distance(from: $0.location) < currentLocation.distance(from: $1.location)
