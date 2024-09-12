@@ -10,8 +10,8 @@ struct StationSelectionSheet: View {
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
   var filteredStations: [MTAStop] {
-    guard !searchTerm.isEmpty else { return mtaStations }
-    return mtaStations.filter {
+    guard !searchTerm.isEmpty else { return mtaStops }
+    return mtaStops.filter {
       $0.stopName.localizedCaseInsensitiveContains(searchTerm)
     }
   }

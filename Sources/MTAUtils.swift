@@ -220,7 +220,7 @@ func flip(direction: TripDirection) -> TripDirection {
 }
 
 func getStationsWith(id: Int) -> [MTAStop] {
-  return mtaStations.filter { $0.stationID == id }
+  return mtaStops.filter { $0.stationID == id }
 }
 
 func getArrivalsFor(station: MTAStop) async -> [TrainArrivalEntry] {

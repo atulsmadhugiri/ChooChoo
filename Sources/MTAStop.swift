@@ -75,7 +75,7 @@ struct MTAStop: Equatable, Identifiable, Sendable {
   }
 }
 
-func loadStationsFromCSV() -> [MTAStop] {
+func loadStopsFromCSV() -> [MTAStop] {
   guard
     let stationsFile = Bundle.main.url(
       forResource: "Stations",
