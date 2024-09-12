@@ -9,10 +9,11 @@ struct StationSelectionSheet: View {
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
-  var filteredStations: [MTAStop] {
-    guard !searchTerm.isEmpty else { return mtaStops }
-    return mtaStops.filter {
-      $0.stopName.localizedCaseInsensitiveContains(searchTerm)
+  let mergedStations = mergeStops(mtaStops)
+  var filteredStations: [MTAStation] {
+    guard !searchTerm.isEmpty else { return mergedStations }
+    return mergedStations.filter {
+      $0.name.localizedCaseInsensitiveContains(searchTerm)
     }
   }
 
@@ -25,11 +26,11 @@ struct StationSelectionSheet: View {
       NavigationView {
         List(sorted) { station in
           StationSign(
-            stationName: station.stopName,
+            stationName: station.name,
             trains: station.daytimeRoutes
           ).onTapGesture {
             tapHaptic.impactOccurred()
-            selectedStation = station
+            selectedStation = station.stops.first!
             isPresented = false
           }
         }.listStyle(.plain)
