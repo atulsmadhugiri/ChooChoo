@@ -19,7 +19,12 @@ struct MTAStation: Identifiable {
   }
 
   var daytimeRoutes: [MTATrain] {
-    self.stops.flatMap { $0.daytimeRoutes }
+    let sortedRoutes = self.stops.sorted { (stopA, stopB) -> Bool in
+      return stopA.daytimeRoutes.first!.rawValue
+        < stopB.daytimeRoutes.first!.rawValue
+    }
+
+    return sortedRoutes.flatMap { $0.daytimeRoutes }
   }
 }
 
