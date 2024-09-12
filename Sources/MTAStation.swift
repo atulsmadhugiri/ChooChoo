@@ -1,7 +1,7 @@
 import CoreLocation
 import Foundation
 
-struct MTAStation: Identifiable {
+struct MTAStation: Identifiable, Equatable {
   let id: Int
   let name: String
   let stops: [MTAStop]
