@@ -1,6 +1,6 @@
 import Foundation
 
-struct MTAStation {
+struct MTAStation: Identifiable {
   let id: Int
   let name: String
   let stops: [MTAStop]
@@ -13,11 +13,11 @@ struct MTAStation {
 }
 
 func mergeStops(_ stops: [MTAStop]) -> [MTAStation] {
-  let stationToStops = Dictionary(grouping: stops, by: { $0.stationID })
+  let stationToStops = Dictionary(grouping: stops, by: { $0.complexID })
 
-  let stations = stationToStops.map { (stationID, stationStops) in
+  let stations = stationToStops.map { (complexID, stationStops) in
     let stationName = stationStops.first?.stopName ?? "Unknown"
-    return MTAStation(id: stationID, name: stationName, stops: stationStops)
+    return MTAStation(id: complexID, name: stationName, stops: stationStops)
   }
 
   return stations
