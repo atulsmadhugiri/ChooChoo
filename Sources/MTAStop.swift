@@ -2,7 +2,7 @@ import CoreLocation
 import Foundation
 import TabularData
 
-final class MTAStop: Equatable, Identifiable, Sendable {
+struct MTAStop: Equatable, Identifiable, Sendable {
   static func == (lhs: MTAStop, rhs: MTAStop) -> Bool {
     lhs.gtfsStopID == rhs.gtfsStopID
   }
