@@ -56,7 +56,8 @@ extension MTATrain {
   }
 }
 
-func getColorForTrain(train: MTATrain) -> Color {
-  let line = train.line
-  return line.color
+extension MTATrain {
+  var color: Color {
+    return self.line.color
+  }
 }

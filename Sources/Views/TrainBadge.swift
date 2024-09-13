@@ -13,8 +13,7 @@ struct TrainBadge: View {
     ZStack {
       Circle()
         .frame(width: badgeSize == .small ? 45 : 60)
-        .foregroundStyle(
-          getColorForTrain(train: train))
+        .foregroundStyle(train.color)
 
       Text(train.rawValue)
         .font(badgeSize == .small ? .title : .largeTitle)
