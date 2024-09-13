@@ -5,6 +5,12 @@ enum TripDirection: String {
   case south = "Downtown & Brooklyn"
 }
 
+extension TripDirection {
+  var flipped: TripDirection {
+    return self == .north ? .south : .north
+  }
+}
+
 func tripDirection(for tripID: String) -> TripDirection {
   let components = tripID.components(separatedBy: "..")
   guard components.count == 2 else {
@@ -40,12 +46,4 @@ func swapTripShapeDirection(tripID: String) -> String {
     modifiedSuffix = suffix
   }
   return "\(prefix)..\(modifiedSuffix)"
-}
-
-func flip(direction: TripDirection) -> TripDirection {
-  if direction == .north {
-    return .south
-  } else {
-    return .north
-  }
 }

@@ -62,7 +62,7 @@ struct ContentView: View {
           $0.direction == selectedDirection
         }
         if sameDirection.isEmpty {
-          selectedDirection = flip(direction: selectedDirection)
+          selectedDirection = selectedDirection.flipped
         }
       }
     }.onChange(of: selectedStation) {
@@ -73,7 +73,7 @@ struct ContentView: View {
           $0.direction == selectedDirection
         }
         if sameDirection.isEmpty {
-          selectedDirection = flip(direction: selectedDirection)
+          selectedDirection = selectedDirection.flipped
         }
       }
     }.sheet(isPresented: $selectionSheetActive) {
