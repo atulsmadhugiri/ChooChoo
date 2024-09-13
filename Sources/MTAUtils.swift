@@ -223,23 +223,6 @@ func getStationsWith(id: Int) -> [MTAStop] {
   return mtaStops.filter { $0.stationID == id }
 }
 
-func getArrivalsFor(station: MTAStop) async -> [TrainArrivalEntry] {
-  guard let train = station.daytimeRoutes.first else { return [] }
-  do {
-    let data = try await NetworkUtils.sendNetworkRequest(
-      to: getLineForTrain(train: train).endpoint)
-    let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-    let trainArrivals = getTrainArrivalsForStop(
-      stop: station,
-      feed: feed.entity
-    ).filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
-    return trainArrivals
-  } catch {
-    print("Error fetching realtime data.")
-    return []
-  }
-}
-
 func getLinesFor(station: MTAStation) -> [MTALine] {
   let routes = station.daytimeRoutes
   let lines = routes.map(getLineForTrain)
