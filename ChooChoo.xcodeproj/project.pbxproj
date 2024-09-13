@@ -30,6 +30,7 @@
 		B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */; };
 		B7D9D6B82C94C75500BD13F3 /* MTALine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6B72C94C75500BD13F3 /* MTALine.swift */; };
 		B7D9D6BA2C94C9FE00BD13F3 /* MTATrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6B92C94C9FE00BD13F3 /* MTATrain.swift */; };
+		B7D9D6BD2C94CFF300BD13F3 /* EncodingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */; };
 		B7E3FA1B2C4F0A7B0036CCDF /* LocationFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +57,7 @@
 		B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAUtils.swift; sourceTree = "<group>"; };
 		B7D9D6B72C94C75500BD13F3 /* MTALine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTALine.swift; sourceTree = "<group>"; };
 		B7D9D6B92C94C9FE00BD13F3 /* MTATrain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTATrain.swift; sourceTree = "<group>"; };
+		B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingUtils.swift; sourceTree = "<group>"; };
 		B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationFetcher.swift; sourceTree = "<group>"; };
 		B7F3283B2C9104F2005E4EA9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -132,6 +134,7 @@
 				B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */,
 				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
 				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
+				B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */,
 				B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */,
 				B7A856902BB3848D00D571AA /* ChooChooApp.swift */,
 				B7A856942BB3848E00D571AA /* Assets.xcassets */,
@@ -244,6 +247,7 @@
 				B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */,
 				B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */,
 				B77807C32C6D740C00216D68 /* ArrivalCard.swift in Sources */,
+				B7D9D6BD2C94CFF300BD13F3 /* EncodingUtils.swift in Sources */,
 				B7A856932BB3848D00D571AA /* ContentView.swift in Sources */,
 				B75860A22C52F4D00007404D /* StationSign.swift in Sources */,
 				B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */,
