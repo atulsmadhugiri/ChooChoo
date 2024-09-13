@@ -57,8 +57,7 @@ struct ContentView: View {
         guard let nearestStation = locationFetcher.nearestStation else {
           return
         }
-        trainArrivals = await getArrivalsFor(
-          station: nearestStation.stops.first!)
+        trainArrivals = await getArrivalsFor(station: nearestStation)
         let sameDirection = trainArrivals.filter {
           $0.direction == selectedDirection
         }
@@ -69,8 +68,7 @@ struct ContentView: View {
     }.onChange(of: selectedStation) {
       Task {
         guard let selectedStation else { return }
-        trainArrivals = await getArrivalsFor(
-          station: selectedStation.stops.first!)
+        trainArrivals = await getArrivalsFor(station: selectedStation)
         let sameDirection = trainArrivals.filter {
           $0.direction == selectedDirection
         }

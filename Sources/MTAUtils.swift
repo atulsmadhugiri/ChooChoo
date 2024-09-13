@@ -280,3 +280,25 @@ func getFeedDataFor(station: MTAStation)
   }
   return results
 }
+
+func getArrivalsFor(station: MTAStation) async -> [TrainArrivalEntry] {
+  let feedData = await getFeedDataFor(station: station)
+
+  var arrivalEntries: [TrainArrivalEntry] = []
+  for line in feedData.keys {
+    let feed = feedData[line]!
+    for stop in station.stops {
+      arrivalEntries.append(
+        contentsOf: getTrainArrivalsForStop(
+          stop: stop,
+          feed: feed.entity
+        )
+      )
+    }
+  }
+
+  return
+    arrivalEntries
+    .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
+    .sorted { $0.arrivalTime < $1.arrivalTime }
+}
