@@ -46,17 +46,10 @@ func getTrainArrivalsForStop(
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
 }
 
-func getLinesFor(station: MTAStation) -> [MTALine] {
-  let routes = station.daytimeRoutes
-  let lines = routes.map { $0.line }
-  let uniqueLines = Set(lines)
-  return Array(uniqueLines)
-}
-
 func getFeedDataFor(station: MTAStation)
   async -> [MTALine: TransitRealtime_FeedMessage]
 {
-  let lines = getLinesFor(station: station)
+  let lines = station.lines
   var results = [MTALine: TransitRealtime_FeedMessage]()
 
   await withTaskGroup(of: (MTALine, TransitRealtime_FeedMessage)?.self) {

@@ -26,6 +26,13 @@ struct MTAStation: Identifiable, Equatable {
 
     return sortedRoutes.flatMap { $0.daytimeRoutes }
   }
+
+  var lines: [MTALine] {
+    let routes = self.daytimeRoutes
+    let lines = routes.map { $0.line }
+    let uniqueLines = Set(lines)
+    return Array(uniqueLines)
+  }
 }
 
 extension MTAStation {
