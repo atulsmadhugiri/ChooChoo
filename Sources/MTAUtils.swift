@@ -102,7 +102,7 @@ func getStationsWith(id: Int) -> [MTAStop] {
 
 func getLinesFor(station: MTAStation) -> [MTALine] {
   let routes = station.daytimeRoutes
-  let lines = routes.map(getLineForTrain)
+  let lines = routes.map { $0.getLine() }
   let uniqueLines = Set(lines)
   return Array(uniqueLines)
 }
