@@ -28,6 +28,23 @@ struct MTAStation: Identifiable, Equatable {
   }
 }
 
+extension MTAStation {
+  func getArrivals() async -> [TrainArrivalEntry] {
+    let feedData = await getFeedDataFor(station: self)
+
+    let arrivalEntries = feedData.values.flatMap { feed in
+      self.stops.flatMap { stop in
+        getTrainArrivalsForStop(stop: stop, feed: feed.entity)
+      }
+    }
+
+    return
+      arrivalEntries
+      .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
+      .sorted { $0.arrivalTime < $1.arrivalTime }
+  }
+}
+
 func mergeStops(_ stops: [MTAStop]) -> [MTAStation] {
   let stationToStops = Dictionary(grouping: stops, by: { $0.complexID })
 

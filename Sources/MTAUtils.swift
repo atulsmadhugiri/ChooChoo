@@ -86,18 +86,3 @@ func getFeedDataFor(station: MTAStation)
   }
   return results
 }
-
-func getArrivalsFor(station: MTAStation) async -> [TrainArrivalEntry] {
-  let feedData = await getFeedDataFor(station: station)
-
-  let arrivalEntries = feedData.values.flatMap { feed in
-    station.stops.flatMap { stop in
-      getTrainArrivalsForStop(stop: stop, feed: feed.entity)
-    }
-  }
-
-  return
-    arrivalEntries
-    .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
-    .sorted { $0.arrivalTime < $1.arrivalTime }
-}
