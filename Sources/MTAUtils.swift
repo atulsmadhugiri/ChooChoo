@@ -239,3 +239,10 @@ func getArrivalsFor(station: MTAStop) async -> [TrainArrivalEntry] {
     return []
   }
 }
+
+func getLinesFor(station: MTAStation) -> [MTALine] {
+  let routes = station.daytimeRoutes
+  let lines = routes.map(getLineForTrain)
+  let uniqueLines = Set(lines)
+  return Array(uniqueLines)
+}
