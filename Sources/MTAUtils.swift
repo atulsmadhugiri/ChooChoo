@@ -56,7 +56,7 @@ func getLineForTrain(train: MTATrain) -> MTALine {
 
 func getColorForTrain(train: MTATrain) -> Color {
   let line = getLineForTrain(train: train)
-  return getColorForLine(line: line)
+  return line.color
 }
 
 let shapeToTerminus: [String: String] = loadTripsFromCSV()

@@ -40,27 +40,34 @@ enum MTALine {
   }
 }
 
-func getColorForLine(line: MTALine) -> Color {
-  switch line {
-  case .oneTwoThree:
-    return Color(UIColor(named: "MTAColors/123")!)
-  case .fourFiveSix:
-    return Color(UIColor(named: "MTAColors/456")!)
-  case .seven:
-    return Color(UIColor(named: "MTAColors/7")!)
-  case .ace:
-    return Color(UIColor(named: "MTAColors/ACE")!)
-  case .bdfm:
-    return Color(UIColor(named: "MTAColors/BDFM")!)
-  case .g:
-    return Color(UIColor(named: "MTAColors/G")!)
-  case .jz:
-    return Color(UIColor(named: "MTAColors/JZ")!)
-  case .l:
-    return Color(UIColor(named: "MTAColors/L")!)
-  case .nqrw:
-    return Color(UIColor(named: "MTAColors/NQRW")!)
-  case .s:
-    return Color(UIColor(named: "MTAColors/S")!)
+extension MTALine {
+  private var colorSuffix: String {
+    switch self {
+    case .oneTwoThree:
+      return "123"
+    case .fourFiveSix:
+      return "456"
+    case .seven:
+      return "7"
+    case .ace:
+      return "ACE"
+    case .bdfm:
+      return "BDFM"
+    case .g:
+      return "G"
+    case .jz:
+      return "JZ"
+    case .l:
+      return "L"
+    case .nqrw:
+      return "NQRW"
+    case .s:
+      return "S"
+    }
+  }
+
+  var color: Color {
+    let colorName = "MTAColors/\(self.colorSuffix)"
+    return Color(UIColor(named: colorName)!)
   }
 }
