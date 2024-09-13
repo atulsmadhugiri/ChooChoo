@@ -46,10 +46,6 @@ func getTrainArrivalsForStop(
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
 }
 
-func getStationsWith(id: Int) -> [MTAStop] {
-  return mtaStops.filter { $0.stationID == id }
-}
-
 func getLinesFor(station: MTAStation) -> [MTALine] {
   let routes = station.daytimeRoutes
   let lines = routes.map { $0.line }
