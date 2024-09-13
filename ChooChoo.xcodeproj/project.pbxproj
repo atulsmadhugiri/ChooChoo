@@ -126,17 +126,14 @@
 			isa = PBXGroup;
 			children = (
 				B77807C12C6D707600216D68 /* Views */,
-				B7A856902BB3848D00D571AA /* ChooChooApp.swift */,
-				B78613BF2C4EF75C00F8A35B /* MTAStop.swift */,
-				B74A5BFA2C93965900040212 /* MTAStation.swift */,
-				B7D9D6B72C94C75500BD13F3 /* MTALine.swift */,
-				B7D9D6B92C94C9FE00BD13F3 /* MTATrain.swift */,
+				B7D9D6BB2C94CEB300BD13F3 /* Entities */,
 				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
-				B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */,
 				B78613A82C4EE8EA00F8A35B /* Secrets.swift */,
+				B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */,
 				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
 				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
 				B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */,
+				B7A856902BB3848D00D571AA /* ChooChooApp.swift */,
 				B7A856942BB3848E00D571AA /* Assets.xcassets */,
 				B7A856962BB3848E00D571AA /* Preview Content */,
 			);
@@ -149,6 +146,17 @@
 				B7A856972BB3848E00D571AA /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		B7D9D6BB2C94CEB300BD13F3 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				B78613BF2C4EF75C00F8A35B /* MTAStop.swift */,
+				B74A5BFA2C93965900040212 /* MTAStation.swift */,
+				B7D9D6B72C94C75500BD13F3 /* MTALine.swift */,
+				B7D9D6B92C94C9FE00BD13F3 /* MTATrain.swift */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
