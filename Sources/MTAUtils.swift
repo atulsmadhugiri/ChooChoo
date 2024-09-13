@@ -267,16 +267,9 @@ func getFeedDataFor(station: MTAStation)
 func getArrivalsFor(station: MTAStation) async -> [TrainArrivalEntry] {
   let feedData = await getFeedDataFor(station: station)
 
-  var arrivalEntries: [TrainArrivalEntry] = []
-  for line in feedData.keys {
-    let feed = feedData[line]!
-    for stop in station.stops {
-      arrivalEntries.append(
-        contentsOf: getTrainArrivalsForStop(
-          stop: stop,
-          feed: feed.entity
-        )
-      )
+  let arrivalEntries = feedData.values.flatMap { feed in
+    station.stops.flatMap { stop in
+      getTrainArrivalsForStop(stop: stop, feed: feed.entity)
     }
   }
 
