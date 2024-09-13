@@ -28,6 +28,7 @@
 		B7D904352C655F26009B4D18 /* Trips.csv in Resources */ = {isa = PBXBuildFile; fileRef = B7D904342C655F26009B4D18 /* Trips.csv */; };
 		B7D904372C65A745009B4D18 /* StationSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */; };
 		B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */; };
+		B7D9D6B82C94C75500BD13F3 /* MTALine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6B72C94C75500BD13F3 /* MTALine.swift */; };
 		B7E3FA1B2C4F0A7B0036CCDF /* LocationFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */; };
 /* End PBXBuildFile section */
 
@@ -52,6 +53,7 @@
 		B7D904342C655F26009B4D18 /* Trips.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = Trips.csv; sourceTree = "<group>"; };
 		B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSelectionSheet.swift; sourceTree = "<group>"; };
 		B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAUtils.swift; sourceTree = "<group>"; };
+		B7D9D6B72C94C75500BD13F3 /* MTALine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTALine.swift; sourceTree = "<group>"; };
 		B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationFetcher.swift; sourceTree = "<group>"; };
 		B7F3283B2C9104F2005E4EA9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -125,6 +127,7 @@
 				B7A856902BB3848D00D571AA /* ChooChooApp.swift */,
 				B78613BF2C4EF75C00F8A35B /* MTAStop.swift */,
 				B74A5BFA2C93965900040212 /* MTAStation.swift */,
+				B7D9D6B72C94C75500BD13F3 /* MTALine.swift */,
 				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
 				B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */,
 				B78613A82C4EE8EA00F8A35B /* Secrets.swift */,
@@ -224,6 +227,7 @@
 				B7D904372C65A745009B4D18 /* StationSelectionSheet.swift in Sources */,
 				B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */,
 				B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */,
+				B7D9D6B82C94C75500BD13F3 /* MTALine.swift in Sources */,
 				B7E3FA1B2C4F0A7B0036CCDF /* LocationFetcher.swift in Sources */,
 				B78613A92C4EE8EA00F8A35B /* Secrets.swift in Sources */,
 				B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */,
