@@ -30,7 +30,7 @@ enum MTATrain: String, CaseIterable, Identifiable {
 }
 
 extension MTATrain {
-  func getLine() -> MTALine {
+  var line: MTALine {
     switch self {
     case .a, .c, .e:
       return .ace
@@ -57,6 +57,6 @@ extension MTATrain {
 }
 
 func getColorForTrain(train: MTATrain) -> Color {
-  let line = train.getLine()
+  let line = train.line
   return line.color
 }
