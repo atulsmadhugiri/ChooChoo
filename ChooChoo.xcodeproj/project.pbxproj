@@ -70,6 +70,7 @@
 		B7C20C272C97B2FB0037860E /* stops.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = stops.txt; sourceTree = "<group>"; };
 		B7C20C282C97B2FB0037860E /* transfers.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = transfers.txt; sourceTree = "<group>"; };
 		B7C20C292C97B2FB0037860E /* trips.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = trips.txt; sourceTree = "<group>"; };
+		B7C20C372C97BDA50037860E /* PatchTripsCSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatchTripsCSV.swift; sourceTree = "<group>"; };
 		B7D904342C655F26009B4D18 /* Trips.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = Trips.csv; sourceTree = "<group>"; };
 		B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSelectionSheet.swift; sourceTree = "<group>"; };
 		B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAUtils.swift; sourceTree = "<group>"; };
@@ -131,6 +132,7 @@
 				B78613C12C4EFD8600F8A35B /* Resources */,
 				B7A8568F2BB3848D00D571AA /* Sources */,
 				B78613B42C4EF29900F8A35B /* Generated */,
+				B7C20C352C97BD850037860E /* Scripts */,
 				B7A8568E2BB3848D00D571AA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -184,6 +186,14 @@
 				B7C20C292C97B2FB0037860E /* trips.txt */,
 			);
 			path = "Static GTFS";
+			sourceTree = "<group>";
+		};
+		B7C20C352C97BD850037860E /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				B7C20C372C97BDA50037860E /* PatchTripsCSV.swift */,
+			);
+			path = Scripts;
 			sourceTree = "<group>";
 		};
 		B7D9D6BB2C94CEB300BD13F3 /* Entities */ = {
