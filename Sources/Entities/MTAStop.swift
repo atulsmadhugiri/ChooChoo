@@ -75,6 +75,16 @@ struct MTAStop: Equatable, Identifiable, Sendable {
   }
 }
 
+extension MTAStop {
+  func getLabelFor(direction: TripDirection) -> String {
+    if direction == .north {
+      return self.northDirectionLabel
+    } else {
+      return self.southDirectionLabel
+    }
+  }
+}
+
 func loadStopsFromCSV() -> [MTAStop] {
   guard
     let stationsFile = Bundle.main.url(
