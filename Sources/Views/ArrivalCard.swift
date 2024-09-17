@@ -8,7 +8,7 @@ struct ArrivalCard: View {
         .padding(.trailing, 4)
       VStack(alignment: .leading, spacing: -2) {
         Text(arrival.terminalStation).font(.headline)
-        Text(arrival.direction.rawValue)
+        Text(arrival.directionLabel)
           .font(.subheadline)
           .foregroundStyle(.secondary)
       }
