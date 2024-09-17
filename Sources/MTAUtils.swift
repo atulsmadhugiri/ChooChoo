@@ -45,37 +45,3 @@ func getTrainArrivalsForStop(
     }
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
 }
-
-func getFeedDataFor(station: MTAStation)
-  async -> [MTALine: TransitRealtime_FeedMessage]
-{
-  let lines = station.lines
-  var results = [MTALine: TransitRealtime_FeedMessage]()
-
-  await withTaskGroup(of: (MTALine, TransitRealtime_FeedMessage)?.self) {
-    group in
-
-    for line in lines {
-      group.addTask {
-        do {
-          let data = try await NetworkUtils.sendNetworkRequest(
-            to: line.endpoint
-          )
-          let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-          return (line, feed)
-        } catch {
-          print("Failed to fetch feed for line \(line): \(error)")
-          return nil
-        }
-      }
-    }
-
-    for await taskResult in group {
-      if let (line, feed) = taskResult {
-        results[line] = feed
-      }
-    }
-
-  }
-  return results
-}
