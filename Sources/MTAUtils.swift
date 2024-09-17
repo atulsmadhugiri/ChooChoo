@@ -29,16 +29,22 @@ func getTrainArrivalsForStop(
             if let oppositeTerminal = shapeToTerminus[modifiedTripID] {
               let direction = tripDirection(for: modifiedTripID)
               return TrainArrivalEntry(
-                arrivalTime: arrivalTime, train: train,
+                arrivalTime: arrivalTime,
+                train: train,
                 terminalStation: oppositeTerminal,
-                direction: direction)
+                direction: direction,
+                directionLabel: stop.getLabelFor(direction: direction)
+              )
             }
             return nil
           }
           return TrainArrivalEntry(
             arrivalTime: arrivalTime, train: train,
             terminalStation: terminalStation,
-            direction: tripDirection(for: String(shapeID)))
+            direction: tripDirection(for: String(shapeID)),
+            directionLabel: stop.getLabelFor(
+              direction: tripDirection(for: String(shapeID)))
+          )
         }
         return nil
       }
