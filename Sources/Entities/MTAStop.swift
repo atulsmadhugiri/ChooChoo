@@ -32,7 +32,9 @@ struct MTAStop: Equatable, Identifiable, Sendable {
   var location: CLLocation {
     CLLocation(latitude: self.gtfsLatitude, longitude: self.gtfsLongitude)
   }
+}
 
+extension MTAStop {
   init?(from row: DataFrame.Row) {
     guard
       let stationID = row["Station ID"] as? Int,
