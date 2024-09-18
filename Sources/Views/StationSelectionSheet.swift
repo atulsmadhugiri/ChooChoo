@@ -39,6 +39,11 @@ struct StationSelectionSheet: View {
             placement: .automatic,
             prompt: "Search stations"
           )
+          .overlay {
+            if sorted.isEmpty, !searchTerm.isEmpty {
+              ContentUnavailableView.search(text: searchTerm)
+            }
+          }
           .navigationBarTitle(
             "Nearby Stations",
             displayMode: .inline
