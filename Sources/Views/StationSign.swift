@@ -8,7 +8,7 @@ struct StationSign: View {
       HStack {
         Text(stationName)
           .font(.title)
-          .foregroundStyle(.background)
+          .foregroundStyle(.white)
           .bold()
           .padding(
             EdgeInsets(
@@ -35,11 +35,11 @@ struct StationSign: View {
           trailing: 12
         )
       ).scrollIndicators(.hidden)
-    }.background(.foreground)
+    }.background(.black)
       .cornerRadius(8)
       .overlay(
         Rectangle()
-          .fill(.background)
+          .fill(.white)
           .frame(height: 2)
           .padding(.top, 12),
         alignment: .top

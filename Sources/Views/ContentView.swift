@@ -57,9 +57,9 @@ struct ContentView: View {
             }
           }
       }
-      .padding().background(.ultraThickMaterial)
-
+      .padding()
     }
+    .background(.ultraThickMaterial)
     .onChange(of: locationFetcher.nearestStation) {
       if selectedStation != nil {
         return
