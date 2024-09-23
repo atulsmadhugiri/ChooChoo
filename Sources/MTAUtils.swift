@@ -20,38 +20,38 @@ func getTrainArrivalsForStop(
         let arrivalTime = Date(
           timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
         let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
+        let tripID = tripUpdate.trip.tripID
 
-        if let shapeID = tripUpdate.trip.tripID.split(separator: "_").last {
-          let partialMatch = shapeToTerminus.keys.first(where: {
-            $0.hasPrefix(String(shapeID))
-          })
-          if let terminalStation = shapeToTerminus[String(shapeID)]
-            ?? shapeToTerminus[partialMatch ?? ""]
-          {
-            if terminalStation == stop.stopName {
-              let modifiedTripID = swapTripShapeDirection(
-                tripID: String(shapeID))
-              if let oppositeTerminal = shapeToTerminus[modifiedTripID] {
-                let direction = tripDirection(for: modifiedTripID)
-                return TrainArrivalEntry(
-                  arrivalTime: arrivalTime,
-                  train: train,
-                  terminalStation: oppositeTerminal,
-                  direction: direction,
-                  directionLabel: stop.getLabelFor(direction: direction)
-                )
-              }
-              return nil
+        let partialMatch = shapeToTerminus.keys.first(where: {
+          $0.hasPrefix(String(tripID))
+        })
+        if let terminalStation = shapeToTerminus[String(tripID)]
+          ?? shapeToTerminus[partialMatch ?? ""]
+        {
+          if terminalStation == stop.stopName {
+            let modifiedTripID = swapTripShapeDirection(
+              tripID: String(tripID))
+            if let oppositeTerminal = shapeToTerminus[modifiedTripID] {
+              let direction = tripDirection(for: modifiedTripID)
+              return TrainArrivalEntry(
+                arrivalTime: arrivalTime,
+                train: train,
+                terminalStation: oppositeTerminal,
+                direction: direction,
+                directionLabel: stop.getLabelFor(direction: direction)
+              )
             }
-            return TrainArrivalEntry(
-              arrivalTime: arrivalTime, train: train,
-              terminalStation: terminalStation,
-              direction: tripDirection(for: String(shapeID)),
-              directionLabel: stop.getLabelFor(
-                direction: tripDirection(for: String(shapeID)))
-            )
+            return nil
           }
+          return TrainArrivalEntry(
+            arrivalTime: arrivalTime, train: train,
+            terminalStation: terminalStation,
+            direction: tripDirection(for: String(tripID)),
+            directionLabel: stop.getLabelFor(
+              direction: tripDirection(for: String(tripID)))
+          )
         }
+
         return nil
       }
     }

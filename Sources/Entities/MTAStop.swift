@@ -121,21 +121,15 @@ func loadTripsFromCSV() -> [String: String] {
 
   do {
     let df = try DataFrame(contentsOfCSVFile: tripsFile)
-    let filtered = df.selecting(columnNames: ["shape_id", "trip_headsign"])
+    let filtered = df.selecting(columnNames: ["trip_id", "trip_headsign"])
     for row in filtered.rows {
-      if let shapeID = row["shape_id"] as? String,
+      if let shapeID = row["trip_id"] as? String,
         let tripHeadSign = row["trip_headsign"] as? String
       {
-
-        // HACK: We had a mismatch between `shape_id` in static GTFS data and `shape_id`
-        // in realtime GTFS data for the L train. The static data had eg `L..N02R` whereas
-        // the realtime data had just `L..N`.
-        if shapeID.hasPrefix("L..") {
-          shapeToHeadSign[String(shapeID.prefix(4))] = tripHeadSign
-          continue
+        if let underscoreIndex = shapeID.firstIndex(of: "_") {
+          let substring = shapeID[shapeID.index(after: underscoreIndex)...]
+          shapeToHeadSign[String(substring)] = tripHeadSign
         }
-
-        shapeToHeadSign[shapeID] = tripHeadSign
       }
     }
     return shapeToHeadSign
