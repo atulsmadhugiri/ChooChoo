@@ -1,3 +1,4 @@
+import PostHog
 import SwiftUI
 
 struct ContentView: View {
@@ -23,6 +24,9 @@ struct ContentView: View {
         ).onTapGesture {
           tapHaptic.impactOccurred()
           selectionSheetActive = true
+          PostHogSDK.shared.capture(
+            "user_tapped_station_sign",
+            properties: ["currentStation": visibleStation.name])
         }.padding()
           .shadow(radius: 2)
       }
