@@ -1,4 +1,5 @@
 import Foundation
+import PostHog
 
 let shapeToTerminus: [String: String] = loadTripsFromCSV()
 func getTrainArrivalsForStop(
@@ -52,6 +53,9 @@ func getTrainArrivalsForStop(
           )
         } else {
           print("tripID without match: \(String(tripID))")
+          PostHogSDK.shared.capture(
+            "terminal_station_mismatch",
+            properties: ["tripID": String(tripID)])
         }
 
         return nil
