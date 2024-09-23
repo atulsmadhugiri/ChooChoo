@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74A5BFA2C93965900040212 /* MTAStation.swift */; };
+		B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B752EDAF2CA1FB5E00525072 /* PostHog */; };
 		B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */; };
 		B75860A22C52F4D00007404D /* StationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75860A12C52F4D00007404D /* StationSign.swift */; };
 		B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7697CB72C5192AB001B880C /* FormatterUtils.swift */; };
@@ -86,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */,
 				B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */,
 				B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */,
 			);
@@ -253,6 +255,7 @@
 			mainGroup = B7A856842BB3848D00D571AA;
 			packageReferences = (
 				B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */,
+				B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 			);
 			productRefGroup = B7A8568E2BB3848D00D571AA /* Products */;
 			projectDirPath = "";
@@ -523,6 +526,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PostHog/posthog-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.12.4;
+			};
+		};
 		B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-protobuf.git";
@@ -534,6 +545,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B752EDAF2CA1FB5E00525072 /* PostHog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */;
+			productName = PostHog;
+		};
 		B78613AF2C4EEAEA00F8A35B /* SwiftProtobuf */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */;
