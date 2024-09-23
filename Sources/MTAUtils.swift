@@ -1,7 +1,7 @@
 import Foundation
 import PostHog
 
-let shapeToTerminus: [String: String] = loadTripsFromCSV()
+let tripIDToTerminus: [String: String] = tripToTerminusFromCSV()
 func getTrainArrivalsForStop(
   stop: MTAStop,
   feed: [TransitRealtime_FeedEntity]
@@ -23,16 +23,16 @@ func getTrainArrivalsForStop(
         let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
         let tripID = tripUpdate.trip.tripID
 
-        let partialMatch = shapeToTerminus.keys.first(where: {
+        let partialMatch = tripIDToTerminus.keys.first(where: {
           $0.hasPrefix(String(tripID))
         })
-        if let terminalStation = shapeToTerminus[String(tripID)]
-          ?? shapeToTerminus[partialMatch ?? ""]
+        if let terminalStation = tripIDToTerminus[String(tripID)]
+          ?? tripIDToTerminus[partialMatch ?? ""]
         {
           if terminalStation == stop.stopName {
             let modifiedTripID = swapTripShapeDirection(
               tripID: String(tripID))
-            if let oppositeTerminal = shapeToTerminus[modifiedTripID] {
+            if let oppositeTerminal = tripIDToTerminus[modifiedTripID] {
               let direction = tripDirection(for: modifiedTripID)
               return TrainArrivalEntry(
                 arrivalTime: arrivalTime,

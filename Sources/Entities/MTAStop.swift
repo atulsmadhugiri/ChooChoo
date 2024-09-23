@@ -110,13 +110,13 @@ func loadStopsFromCSV() -> [MTAStop] {
   }
 }
 
-func loadTripsFromCSV() -> [String: String] {
-  var shapeToHeadSign: [String: String] = [:]
+func tripToTerminusFromCSV() -> [String: String] {
+  var tripToTerminus: [String: String] = [:]
   guard
     let tripsFile = Bundle.main.url(forResource: "Trips", withExtension: "csv")
   else {
     print("Trips.csv not found.")
-    return shapeToHeadSign
+    return tripToTerminus
   }
 
   do {
@@ -128,13 +128,13 @@ func loadTripsFromCSV() -> [String: String] {
       {
         if let underscoreIndex = shapeID.firstIndex(of: "_") {
           let substring = shapeID[shapeID.index(after: underscoreIndex)...]
-          shapeToHeadSign[String(substring)] = tripHeadSign
+          tripToTerminus[String(substring)] = tripHeadSign
         }
       }
     }
-    return shapeToHeadSign
+    return tripToTerminus
   } catch {
     print("Error reading CSV file: \(error)")
   }
-  return shapeToHeadSign
+  return tripToTerminus
 }
