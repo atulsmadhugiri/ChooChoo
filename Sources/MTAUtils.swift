@@ -24,14 +24,14 @@ func getTrainArrivalsForStop(
         let tripID = tripUpdate.trip.tripID
 
         let partialMatch = tripIDToTerminus.keys.first(where: {
-          $0.hasPrefix(String(tripID))
+          $0.hasPrefix(tripID)
         })
-        if let terminalStation = tripIDToTerminus[String(tripID)]
+        if let terminalStation = tripIDToTerminus[tripID]
           ?? tripIDToTerminus[partialMatch ?? ""]
         {
           if terminalStation == stop.stopName {
             let modifiedTripID = swapTripShapeDirection(
-              tripID: String(tripID))
+              tripID: tripID)
             if let oppositeTerminal = tripIDToTerminus[modifiedTripID] {
               let direction = tripDirection(for: modifiedTripID)
               return TrainArrivalEntry(
@@ -47,15 +47,15 @@ func getTrainArrivalsForStop(
           return TrainArrivalEntry(
             arrivalTime: arrivalTime, train: train,
             terminalStation: terminalStation,
-            direction: tripDirection(for: String(tripID)),
+            direction: tripDirection(for: tripID),
             directionLabel: stop.getLabelFor(
-              direction: tripDirection(for: String(tripID)))
+              direction: tripDirection(for: tripID))
           )
         } else {
-          print("tripID without match: \(String(tripID))")
+          print("tripID without match: \(tripID)")
           PostHogSDK.shared.capture(
             "terminal_station_mismatch",
-            properties: ["tripID": String(tripID)])
+            properties: ["tripID": tripID])
         }
 
         return nil
