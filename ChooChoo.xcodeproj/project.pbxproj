@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74A5BFA2C93965900040212 /* MTAStation.swift */; };
 		B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B752EDAF2CA1FB5E00525072 /* PostHog */; };
+		B752EDB32CA2059900525072 /* PrivacyPolicy.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */; };
 		B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */; };
 		B75860A22C52F4D00007404D /* StationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75860A12C52F4D00007404D /* StationSign.swift */; };
 		B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7697CB72C5192AB001B880C /* FormatterUtils.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		B74A5BFA2C93965900040212 /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
+		B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = PrivacyPolicy.rtf; sourceTree = "<group>"; };
 		B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainArrivalEntry.swift; sourceTree = "<group>"; };
 		B75860A12C52F4D00007404D /* StationSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSign.swift; sourceTree = "<group>"; };
 		B7697CB72C5192AB001B880C /* FormatterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterUtils.swift; sourceTree = "<group>"; };
@@ -96,6 +98,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B752EDB12CA2058100525072 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */,
+			);
+			path = Misc;
+			sourceTree = "<group>";
+		};
 		B77807C12C6D707600216D68 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -135,6 +145,7 @@
 				B7A8568F2BB3848D00D571AA /* Sources */,
 				B78613B42C4EF29900F8A35B /* Generated */,
 				B7C20C352C97BD850037860E /* Scripts */,
+				B752EDB12CA2058100525072 /* Misc */,
 				B7A8568E2BB3848D00D571AA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -272,6 +283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B78613C32C4EFD9D00F8A35B /* Stations.csv in Resources */,
+				B752EDB32CA2059900525072 /* PrivacyPolicy.rtf in Resources */,
 				B7D904352C655F26009B4D18 /* Trips.csv in Resources */,
 				B7A856982BB3848E00D571AA /* Preview Assets.xcassets in Resources */,
 				B7C20C2B2C97B2FB0037860E /* agency.txt in Resources */,
