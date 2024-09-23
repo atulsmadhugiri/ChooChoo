@@ -50,6 +50,8 @@ func getTrainArrivalsForStop(
             directionLabel: stop.getLabelFor(
               direction: tripDirection(for: String(tripID)))
           )
+        } else {
+          print("tripID without match: \(String(tripID))")
         }
 
         return nil
