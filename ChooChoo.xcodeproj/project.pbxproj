@@ -28,15 +28,6 @@
 		B7A856932BB3848D00D571AA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856922BB3848D00D571AA /* ContentView.swift */; };
 		B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A856942BB3848E00D571AA /* Assets.xcassets */; };
 		B7A856982BB3848E00D571AA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A856972BB3848E00D571AA /* Preview Assets.xcassets */; };
-		B7C20C2B2C97B2FB0037860E /* agency.txt in Resources */ = {isa = PBXBuildFile; fileRef = B7C20C212C97B2FB0037860E /* agency.txt */; };
-		B7C20C2C2C97B2FB0037860E /* shapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = B7C20C252C97B2FB0037860E /* shapes.txt */; };
-		B7C20C2D2C97B2FB0037860E /* routes.txt in Resources */ = {isa = PBXBuildFile; fileRef = B7C20C242C97B2FB0037860E /* routes.txt */; };
-		B7C20C2E2C97B2FB0037860E /* stops.txt in Resources */ = {isa = PBXBuildFile; fileRef = B7C20C272C97B2FB0037860E /* stops.txt */; };
-		B7C20C2F2C97B2FB0037860E /* stop_times.txt in Resources */ = {isa = PBXBuildFile; fileRef = B7C20C262C97B2FB0037860E /* stop_times.txt */; };
-		B7C20C302C97B2FB0037860E /* calendar_dates.txt in Resources */ = {isa = PBXBuildFile; fileRef = B7C20C232C97B2FB0037860E /* calendar_dates.txt */; };
-		B7C20C312C97B2FB0037860E /* calendar.txt in Resources */ = {isa = PBXBuildFile; fileRef = B7C20C222C97B2FB0037860E /* calendar.txt */; };
-		B7C20C322C97B2FB0037860E /* transfers.txt in Resources */ = {isa = PBXBuildFile; fileRef = B7C20C282C97B2FB0037860E /* transfers.txt */; };
-		B7C20C332C97B2FB0037860E /* trips.txt in Resources */ = {isa = PBXBuildFile; fileRef = B7C20C292C97B2FB0037860E /* trips.txt */; };
 		B7D904352C655F26009B4D18 /* Trips.csv in Resources */ = {isa = PBXBuildFile; fileRef = B7D904342C655F26009B4D18 /* Trips.csv */; };
 		B7D904372C65A745009B4D18 /* StationSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */; };
 		B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */; };
@@ -290,15 +281,6 @@
 				B7D904352C655F26009B4D18 /* Trips.csv in Resources */,
 				B7A856982BB3848E00D571AA /* Preview Assets.xcassets in Resources */,
 				B752EDB72CA2097400525072 /* Support.html in Resources */,
-				B7C20C2B2C97B2FB0037860E /* agency.txt in Resources */,
-				B7C20C2C2C97B2FB0037860E /* shapes.txt in Resources */,
-				B7C20C2D2C97B2FB0037860E /* routes.txt in Resources */,
-				B7C20C2E2C97B2FB0037860E /* stops.txt in Resources */,
-				B7C20C2F2C97B2FB0037860E /* stop_times.txt in Resources */,
-				B7C20C302C97B2FB0037860E /* calendar_dates.txt in Resources */,
-				B7C20C312C97B2FB0037860E /* calendar.txt in Resources */,
-				B7C20C322C97B2FB0037860E /* transfers.txt in Resources */,
-				B7C20C332C97B2FB0037860E /* trips.txt in Resources */,
 				B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
