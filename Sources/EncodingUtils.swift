@@ -47,3 +47,9 @@ func swapTripShapeDirection(tripID: String) -> String {
   }
   return "\(prefix)..\(modifiedSuffix)"
 }
+
+func shapeIDFromTripID(_ tripID: String) -> String {
+  guard let underscoreIndex = tripID.firstIndex(of: "_") else { return "" }
+  let startIndex = tripID.index(after: underscoreIndex)
+  return String(tripID[startIndex...])
+}
