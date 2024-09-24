@@ -24,9 +24,7 @@ struct ContentView: View {
         ).onTapGesture {
           tapHaptic.impactOccurred()
           selectionSheetActive = true
-          PostHogSDK.shared.capture(
-            "user_tapped_station_sign",
-            properties: ["currentStation": visibleStation.name])
+          logStationSignTapped(for: visibleStation)
         }.padding()
           .shadow(radius: 2)
       }
