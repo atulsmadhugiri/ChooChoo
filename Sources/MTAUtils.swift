@@ -13,39 +13,11 @@ func getTrainArrivalsForStop(
     .flatMap { tripUpdate in
       filterStopTimeUpdates(for: stop, from: tripUpdate).compactMap {
         stopTimeUpdate -> TrainArrivalEntry? in
-        let arrivalTime = Date(
-          timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
-        let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
-        let tripID = tripUpdate.trip.tripID
-
-        if let terminalStation = determineTerminalStation(for: tripID) {
-          if terminalStation == stop.stopName {
-            let modifiedTripID = swapTripShapeDirection(
-              tripID: tripID)
-            if let oppositeTerminal = tripIDToTerminus[modifiedTripID] {
-              let direction = tripDirection(for: modifiedTripID)
-              return TrainArrivalEntry(
-                arrivalTime: arrivalTime,
-                train: train,
-                terminalStation: oppositeTerminal,
-                direction: direction,
-                directionLabel: stop.getLabelFor(direction: direction)
-              )
-            }
-            return nil
-          }
-          return TrainArrivalEntry(
-            arrivalTime: arrivalTime, train: train,
-            terminalStation: terminalStation,
-            direction: tripDirection(for: tripID),
-            directionLabel: stop.getLabelFor(
-              direction: tripDirection(for: tripID))
-          )
-        } else {
-          logTerminalStationMismatch(for: tripID)
-        }
-
-        return nil
+        createTrainArrivalEntry(
+          from: stopTimeUpdate,
+          tripUpdate: tripUpdate,
+          stop: stop
+        )
       }
     }
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
@@ -80,4 +52,49 @@ private func determineTerminalStation(for tripID: String) -> String? {
   }
   let partialMatch = tripIDToTerminus.keys.first { $0.hasPrefix(tripID) }
   return partialMatch.flatMap { tripIDToTerminus[$0] }
+}
+
+private func createTrainArrivalEntry(
+  from stopTimeUpdate: TransitRealtime_TripUpdate.StopTimeUpdate,
+  tripUpdate: TransitRealtime_TripUpdate,
+  stop: MTAStop
+) -> TrainArrivalEntry? {
+
+  let tripID = tripUpdate.trip.tripID
+  guard let terminalStation = determineTerminalStation(for: tripID) else {
+    logTerminalStationMismatch(for: tripID)
+    return nil
+  }
+
+  let arrivalTime = Date(
+    timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
+  let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
+
+  if terminalStation == stop.stopName {
+    let modifiedTripID = swapTripShapeDirection(tripID: tripID)
+    guard let oppositeTerminal = tripIDToTerminus[modifiedTripID] else {
+      return nil
+    }
+    let direction = tripDirection(for: modifiedTripID)
+    let directionLabel = stop.getLabelFor(direction: direction)
+
+    return TrainArrivalEntry(
+      arrivalTime: arrivalTime,
+      train: train,
+      terminalStation: oppositeTerminal,
+      direction: direction,
+      directionLabel: directionLabel
+    )
+  } else {
+    let direction = tripDirection(for: tripID)
+    let directionLabel = stop.getLabelFor(direction: direction)
+
+    return TrainArrivalEntry(
+      arrivalTime: arrivalTime,
+      train: train,
+      terminalStation: terminalStation,
+      direction: direction,
+      directionLabel: directionLabel
+    )
+  }
 }
