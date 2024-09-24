@@ -79,10 +79,6 @@ private func createTrainArrivalEntry(
   }
 
   guard let train = MTATrain(rawValue: trip.routeID) else { return nil }
-
-  let arrivalTime = Date(
-    timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
-
   var finalTerminalStation = terminalStation
   var direction = tripDirection(for: tripID)
 
@@ -98,7 +94,7 @@ private func createTrainArrivalEntry(
   let directionLabel = stop.getLabelFor(direction: direction)
 
   return TrainArrivalEntry(
-    arrivalTime: arrivalTime,
+    arrivalTimestamp: stopTimeUpdate.arrival.time,
     train: train,
     terminalStation: finalTerminalStation,
     direction: direction,

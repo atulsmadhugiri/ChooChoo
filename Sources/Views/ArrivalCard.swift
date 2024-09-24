@@ -24,7 +24,7 @@ struct ArrivalCard: View {
 #Preview {
   ArrivalCard(
     arrival: TrainArrivalEntry(
-      arrivalTime: Date(),
+      arrivalTimestamp: Int64(),
       train: .a,
       terminalStation: "Terminal Station",
       direction: .south,
