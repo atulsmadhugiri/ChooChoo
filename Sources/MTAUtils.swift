@@ -77,27 +77,23 @@ private func createTrainArrivalEntry(
     logTerminalStationMismatch(for: tripID)
     return nil
   }
-
   guard let train = MTATrain(rawValue: trip.routeID) else { return nil }
+
   var finalTerminalStation = terminalStation
   var direction = tripDirection(for: tripID)
-
   if terminalStation == stop.stopName {
-    if let adjusted = adjustTerminalAndDirection(for: tripID, currentStop: stop)
-    {
-      finalTerminalStation = adjusted.terminalStation
-      direction = adjusted.direction
-    } else {
-      return nil
-    }
+    guard
+      let adjusted = adjustTerminalAndDirection(for: tripID, currentStop: stop)
+    else { return nil }
+    finalTerminalStation = adjusted.terminalStation
+    direction = adjusted.direction
   }
-  let directionLabel = stop.getLabelFor(direction: direction)
 
   return TrainArrivalEntry(
     arrivalTimestamp: stopTimeUpdate.arrival.time,
     train: train,
     terminalStation: finalTerminalStation,
     direction: direction,
-    directionLabel: directionLabel
+    directionLabel: stop.getLabelFor(direction: direction)
   )
 }
