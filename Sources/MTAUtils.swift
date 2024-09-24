@@ -15,7 +15,7 @@ func getTrainArrivalsForStop(
         stopTimeUpdate -> TrainArrivalEntry? in
         createTrainArrivalEntry(
           from: stopTimeUpdate,
-          tripUpdate: tripUpdate,
+          trip: tripUpdate.trip,
           stop: stop
         )
       }
@@ -68,19 +68,17 @@ private func adjustTerminalAndDirection(
 
 private func createTrainArrivalEntry(
   from stopTimeUpdate: TransitRealtime_TripUpdate.StopTimeUpdate,
-  tripUpdate: TransitRealtime_TripUpdate,
+  trip: TransitRealtime_TripDescriptor,
   stop: MTAStop
 ) -> TrainArrivalEntry? {
 
-  let tripID = tripUpdate.trip.tripID
+  let tripID = trip.tripID
   guard let terminalStation = determineTerminalStation(for: tripID) else {
     logTerminalStationMismatch(for: tripID)
     return nil
   }
 
-  guard let train = MTATrain(rawValue: tripUpdate.trip.routeID) else {
-    return nil
-  }
+  guard let train = MTATrain(rawValue: trip.routeID) else { return nil }
 
   let arrivalTime = Date(
     timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
