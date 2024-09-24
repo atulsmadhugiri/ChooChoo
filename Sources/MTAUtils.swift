@@ -18,12 +18,7 @@ func getTrainArrivalsForStop(
         let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
         let tripID = tripUpdate.trip.tripID
 
-        let partialMatch = tripIDToTerminus.keys.first(where: {
-          $0.hasPrefix(tripID)
-        })
-        if let terminalStation = tripIDToTerminus[tripID]
-          ?? tripIDToTerminus[partialMatch ?? ""]
-        {
+        if let terminalStation = determineTerminalStation(for: tripID) {
           if terminalStation == stop.stopName {
             let modifiedTripID = swapTripShapeDirection(
               tripID: tripID)
@@ -77,4 +72,12 @@ private func logTerminalStationMismatch(for tripID: String) {
     properties: ["tripID": tripID]
   )
   print("tripID without match: \(tripID)")
+}
+
+private func determineTerminalStation(for tripID: String) -> String? {
+  if let exactMatch = tripIDToTerminus[tripID] {
+    return exactMatch
+  }
+  let partialMatch = tripIDToTerminus.keys.first { $0.hasPrefix(tripID) }
+  return partialMatch.flatMap { tripIDToTerminus[$0] }
 }
