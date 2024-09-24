@@ -91,6 +91,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B72B37572CA37F5400FAC872 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
+				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
+				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
+				B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		B752EDB12CA2058100525072 /* Misc */ = {
 			isa = PBXGroup;
 			children = (
@@ -157,12 +168,9 @@
 			children = (
 				B77807C12C6D707600216D68 /* Views */,
 				B7D9D6BB2C94CEB300BD13F3 /* Entities */,
-				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
+				B72B37572CA37F5400FAC872 /* Utilities */,
 				B78613A82C4EE8EA00F8A35B /* Secrets.swift */,
 				B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */,
-				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
-				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
-				B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */,
 				B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */,
 				B7A856902BB3848D00D571AA /* ChooChooApp.swift */,
 				B7A856942BB3848E00D571AA /* Assets.xcassets */,
