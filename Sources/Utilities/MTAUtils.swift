@@ -53,7 +53,11 @@ private func determineTerminalStation(for tripID: String) -> String? {
 
   // 3. See if there is a partial `shapeID` match.
   let partialMatch = shapeIDToTerminus.keys.first { $0.hasPrefix(shapeID) }
-  return partialMatch.flatMap { shapeIDToTerminus[$0] }
+  if let terminalStation = partialMatch.flatMap({ shapeIDToTerminus[$0] }) {
+    logTerminalStationPartialMatch(for: tripID)
+    return terminalStation
+  }
+  return nil
 }
 
 private func adjustTerminalAndDirection(

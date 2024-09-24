@@ -8,3 +8,11 @@ func logTerminalStationMismatch(for tripID: String) {
   )
   print("tripID without match: \(tripID)")
 }
+
+func logTerminalStationPartialMatch(for tripID: String) {
+  PostHogSDK.shared.capture(
+    "terminal_station_partial_match",
+    properties: ["tripID": tripID]
+  )
+  print("tripID with partial match: \(tripID)")
+}
