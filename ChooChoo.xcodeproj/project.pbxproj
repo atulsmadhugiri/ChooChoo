@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B37582CA37FC100FAC872 /* LoggingUtils.swift */; };
 		B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74A5BFA2C93965900040212 /* MTAStation.swift */; };
 		B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B752EDAF2CA1FB5E00525072 /* PostHog */; };
 		B752EDB32CA2059900525072 /* PrivacyPolicy.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */; };
@@ -38,6 +39,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B72B37582CA37FC100FAC872 /* LoggingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingUtils.swift; sourceTree = "<group>"; };
 		B74A5BFA2C93965900040212 /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
 		B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = PrivacyPolicy.rtf; sourceTree = "<group>"; };
 		B752EDB62CA2097400525072 /* Support.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Support.html; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 		B72B37572CA37F5400FAC872 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				B72B37582CA37FC100FAC872 /* LoggingUtils.swift */,
 				B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */,
 				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
 				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
@@ -317,6 +320,7 @@
 				B78613B82C4EF39B00F8A35B /* nyct-subway.pb.swift in Sources */,
 				B78613BA2C4EF3A000F8A35B /* gtfs-realtime.pb.swift in Sources */,
 				B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */,
+				B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */,
 				B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */,
 				B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */,
 			);

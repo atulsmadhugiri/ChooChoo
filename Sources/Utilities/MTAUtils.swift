@@ -1,5 +1,4 @@
 import Foundation
-import PostHog
 
 let tripIDToTerminus: [String: String] = tripToTerminusFromCSV()
 let shapeIDToTerminus: [String: String] = shapeToTerminusFromCSV()
@@ -38,14 +37,6 @@ private func filterStopTimeUpdates(
   return tripUpdate.stopTimeUpdate.filter { stopTimeUpdate in
     stopTimeUpdate.stopID.dropLast() == stop.gtfsStopID
   }
-}
-
-private func logTerminalStationMismatch(for tripID: String) {
-  PostHogSDK.shared.capture(
-    "terminal_station_mismatch",
-    properties: ["tripID": tripID]
-  )
-  print("tripID without match: \(tripID)")
 }
 
 private func determineTerminalStation(for tripID: String) -> String? {
