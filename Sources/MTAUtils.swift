@@ -54,6 +54,18 @@ private func determineTerminalStation(for tripID: String) -> String? {
   return partialMatch.flatMap { tripIDToTerminus[$0] }
 }
 
+private func adjustTerminalAndDirection(
+  for tripID: String,
+  currentStop: MTAStop
+) -> (terminalStation: String, direction: TripDirection)? {
+  let modifiedTripID = swapTripShapeDirection(tripID: tripID)
+  guard let oppositeTerminal = tripIDToTerminus[modifiedTripID] else {
+    return nil
+  }
+  let direction = tripDirection(for: modifiedTripID)
+  return (oppositeTerminal, direction)
+}
+
 private func createTrainArrivalEntry(
   from stopTimeUpdate: TransitRealtime_TripUpdate.StopTimeUpdate,
   tripUpdate: TransitRealtime_TripUpdate,
@@ -66,38 +78,32 @@ private func createTrainArrivalEntry(
     return nil
   }
 
-  let arrivalTime = Date(
-    timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
-
   guard let train = MTATrain(rawValue: tripUpdate.trip.routeID) else {
     return nil
   }
 
+  let arrivalTime = Date(
+    timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
+
+  var finalTerminalStation = terminalStation
+  var direction = tripDirection(for: tripID)
+
   if terminalStation == stop.stopName {
-    let modifiedTripID = swapTripShapeDirection(tripID: tripID)
-    guard let oppositeTerminal = tripIDToTerminus[modifiedTripID] else {
+    if let adjusted = adjustTerminalAndDirection(for: tripID, currentStop: stop)
+    {
+      finalTerminalStation = adjusted.terminalStation
+      direction = adjusted.direction
+    } else {
       return nil
     }
-    let direction = tripDirection(for: modifiedTripID)
-    let directionLabel = stop.getLabelFor(direction: direction)
-
-    return TrainArrivalEntry(
-      arrivalTime: arrivalTime,
-      train: train,
-      terminalStation: oppositeTerminal,
-      direction: direction,
-      directionLabel: directionLabel
-    )
-  } else {
-    let direction = tripDirection(for: tripID)
-    let directionLabel = stop.getLabelFor(direction: direction)
-
-    return TrainArrivalEntry(
-      arrivalTime: arrivalTime,
-      train: train,
-      terminalStation: terminalStation,
-      direction: direction,
-      directionLabel: directionLabel
-    )
   }
+  let directionLabel = stop.getLabelFor(direction: direction)
+
+  return TrainArrivalEntry(
+    arrivalTime: arrivalTime,
+    train: train,
+    terminalStation: finalTerminalStation,
+    direction: direction,
+    directionLabel: directionLabel
+  )
 }
