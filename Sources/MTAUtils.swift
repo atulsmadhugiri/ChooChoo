@@ -68,7 +68,10 @@ private func createTrainArrivalEntry(
 
   let arrivalTime = Date(
     timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
-  let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
+
+  guard let train = MTATrain(rawValue: tripUpdate.trip.routeID) else {
+    return nil
+  }
 
   if terminalStation == stop.stopName {
     let modifiedTripID = swapTripShapeDirection(tripID: tripID)
