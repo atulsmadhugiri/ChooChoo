@@ -11,13 +11,8 @@ func getTrainArrivalsForStop(
   let arrivalsForStop =
     tripUpdates
     .flatMap { tripUpdate in
-      tripUpdate.stopTimeUpdate.compactMap {
+      filterStopTimeUpdates(for: stop, from: tripUpdate).compactMap {
         stopTimeUpdate -> TrainArrivalEntry? in
-        guard
-          stopTimeUpdate.stopID.dropLast() == stop.gtfsStopID
-        else {
-          return nil
-        }
         let arrivalTime = Date(
           timeIntervalSince1970: Double(stopTimeUpdate.arrival.time))
         let train = MTATrain(rawValue: tripUpdate.trip.routeID) ?? .a
@@ -68,4 +63,13 @@ private func extractTripUpdates(
   from feed: [TransitRealtime_FeedEntity]
 ) -> [TransitRealtime_TripUpdate] {
   return feed.compactMap { $0.hasTripUpdate ? $0.tripUpdate : nil }
+}
+
+private func filterStopTimeUpdates(
+  for stop: MTAStop,
+  from tripUpdate: TransitRealtime_TripUpdate
+) -> [TransitRealtime_TripUpdate.StopTimeUpdate] {
+  return tripUpdate.stopTimeUpdate.filter { stopTimeUpdate in
+    stopTimeUpdate.stopID.dropLast() == stop.gtfsStopID
+  }
 }
