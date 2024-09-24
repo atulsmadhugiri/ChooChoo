@@ -2,6 +2,8 @@ import Foundation
 import PostHog
 
 let tripIDToTerminus: [String: String] = tripToTerminusFromCSV()
+let shapeIDToTerminus: [String: String] = shapeToTerminusFromCSV()
+
 func getTrainArrivalsForStop(
   stop: MTAStop,
   feed: [TransitRealtime_FeedEntity]
@@ -47,11 +49,20 @@ private func logTerminalStationMismatch(for tripID: String) {
 }
 
 private func determineTerminalStation(for tripID: String) -> String? {
-  if let exactMatch = tripIDToTerminus[tripID] {
-    return exactMatch
+  // 1. See if there is an exact `tripID` match.
+  if let exactTripMatch = tripIDToTerminus[tripID] {
+    return exactTripMatch
   }
-  let partialMatch = tripIDToTerminus.keys.first { $0.hasPrefix(tripID) }
-  return partialMatch.flatMap { tripIDToTerminus[$0] }
+
+  // 2. See if there is an exact `shapeID` match.
+  let shapeID = shapeIDFromTripID(tripID)
+  if let exactShapeMatch = shapeIDToTerminus[shapeID] {
+    return exactShapeMatch
+  }
+
+  // 3. See if there is a partial `shapeID` match.
+  let partialMatch = shapeIDToTerminus.keys.first { $0.hasPrefix(shapeID) }
+  return partialMatch.flatMap { shapeIDToTerminus[$0] }
 }
 
 private func adjustTerminalAndDirection(
