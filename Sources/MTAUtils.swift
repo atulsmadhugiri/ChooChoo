@@ -47,10 +47,7 @@ func getTrainArrivalsForStop(
               direction: tripDirection(for: tripID))
           )
         } else {
-          print("tripID without match: \(tripID)")
-          PostHogSDK.shared.capture(
-            "terminal_station_mismatch",
-            properties: ["tripID": tripID])
+          logTerminalStationMismatch(for: tripID)
         }
 
         return nil
@@ -72,4 +69,12 @@ private func filterStopTimeUpdates(
   return tripUpdate.stopTimeUpdate.filter { stopTimeUpdate in
     stopTimeUpdate.stopID.dropLast() == stop.gtfsStopID
   }
+}
+
+private func logTerminalStationMismatch(for tripID: String) {
+  PostHogSDK.shared.capture(
+    "terminal_station_mismatch",
+    properties: ["tripID": tripID]
+  )
+  print("tripID without match: \(tripID)")
 }
