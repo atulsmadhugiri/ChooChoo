@@ -7,9 +7,9 @@ func getTrainArrivalsForStop(
   feed: [TransitRealtime_FeedEntity]
 ) -> [TrainArrivalEntry] {
 
+  let tripUpdates = extractTripUpdates(from: feed)
   let arrivalsForStop =
-    feed
-    .compactMap { $0.hasTripUpdate ? $0.tripUpdate : nil }
+    tripUpdates
     .flatMap { tripUpdate in
       tripUpdate.stopTimeUpdate.compactMap {
         stopTimeUpdate -> TrainArrivalEntry? in
@@ -62,4 +62,10 @@ func getTrainArrivalsForStop(
       }
     }
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
+}
+
+private func extractTripUpdates(
+  from feed: [TransitRealtime_FeedEntity]
+) -> [TransitRealtime_TripUpdate] {
+  return feed.compactMap { $0.hasTripUpdate ? $0.tripUpdate : nil }
 }
