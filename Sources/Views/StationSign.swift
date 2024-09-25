@@ -15,7 +15,7 @@ struct StationSign: View {
               top: 12,
               leading: 16,
               bottom: 6,
-              trailing: 12
+              trailing: 4
             )
           )
         Spacer()
