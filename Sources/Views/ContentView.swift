@@ -25,8 +25,7 @@ struct ContentView: View {
           tapHaptic.impactOccurred()
           selectionSheetActive = true
           logStationSignTapped(for: visibleStation)
-        }.padding()
-          .shadow(radius: 2)
+        }.padding(12).shadow(radius: 2)
       }
 
       Divider()
@@ -59,7 +58,7 @@ struct ContentView: View {
             }
           }
       }
-      .padding()
+      .padding(12)
     }
     .background(.ultraThickMaterial)
     .onChange(of: locationFetcher.nearestStation) {
