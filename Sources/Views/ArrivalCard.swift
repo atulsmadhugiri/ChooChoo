@@ -5,7 +5,6 @@ struct ArrivalCard: View {
   var body: some View {
     HStack {
       TrainBadge(train: arrival.train, badgeSize: .small)
-        .padding(.trailing, 4)
       VStack(alignment: .leading, spacing: -2) {
         Text(arrival.terminalStation).font(.headline)
         Text(arrival.directionLabel)
@@ -13,10 +12,19 @@ struct ArrivalCard: View {
           .foregroundStyle(.secondary)
       }
       Spacer()
-      Text(
-        "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
-      )
-      .font(.headline)
+      VStack(alignment: .trailing, spacing: -2) {
+        Text(
+          "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
+        )
+        .font(.headline)
+        Text(
+          Date(
+            timeIntervalSinceNow: arrival.arrivalTime.timeIntervalSinceNow
+          ).formatted(date: .omitted, time: .shortened)
+        )
+        .font(.subheadline)
+        .foregroundStyle(.tertiary)
+      }
     }
   }
 }
