@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B37582CA37FC100FAC872 /* LoggingUtils.swift */; };
+		B72B375B2CA4B97200FAC872 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B72B375A2CA4B97200FAC872 /* README.md */; };
 		B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74A5BFA2C93965900040212 /* MTAStation.swift */; };
 		B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B752EDAF2CA1FB5E00525072 /* PostHog */; };
 		B752EDB32CA2059900525072 /* PrivacyPolicy.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */; };
@@ -40,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		B72B37582CA37FC100FAC872 /* LoggingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingUtils.swift; sourceTree = "<group>"; };
+		B72B375A2CA4B97200FAC872 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 		B74A5BFA2C93965900040212 /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
 		B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = PrivacyPolicy.rtf; sourceTree = "<group>"; };
 		B752EDB62CA2097400525072 /* Support.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Support.html; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				B7C20C2A2C97B2FB0037860E /* Static GTFS */,
 				B78613C22C4EFD9D00F8A35B /* Stations.csv */,
 				B7D904342C655F26009B4D18 /* Trips.csv */,
+				B72B375A2CA4B97200FAC872 /* README.md */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 				B78613C32C4EFD9D00F8A35B /* Stations.csv in Resources */,
 				B752EDB32CA2059900525072 /* PrivacyPolicy.rtf in Resources */,
 				B7D904352C655F26009B4D18 /* Trips.csv in Resources */,
+				B72B375B2CA4B97200FAC872 /* README.md in Resources */,
 				B7A856982BB3848E00D571AA /* Preview Assets.xcassets in Resources */,
 				B752EDB72CA2097400525072 /* Support.html in Resources */,
 				B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */,
