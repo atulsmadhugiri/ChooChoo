@@ -46,7 +46,7 @@ struct ContentView: View {
           .background(.background)
           .cornerRadius(8)
           .clipped()
-          .refreshable {}
+          .refreshable { await refreshData() }
           .shadow(radius: 2)
           .overlay {
             if visibleArrivals.isEmpty, !loading {
@@ -62,40 +62,10 @@ struct ContentView: View {
     }
     .background(.ultraThickMaterial)
     .onChange(of: locationFetcher.nearestStation) {
-      if selectedStation != nil {
-        return
-      }
-      Task {
-        loading = true
-        defer {
-          loading = false
-        }
-        guard let nearestStation = locationFetcher.nearestStation else {
-          return
-        }
-        trainArrivals = await nearestStation.getArrivals()
-        let sameDirection = trainArrivals.filter {
-          $0.direction == selectedDirection
-        }
-        if sameDirection.isEmpty {
-          selectedDirection = selectedDirection.flipped
-        }
-      }
+      if selectedStation != nil { return }
+      Task { await refreshData() }
     }.onChange(of: selectedStation) {
-      Task {
-        loading = true
-        defer {
-          loading = false
-        }
-        guard let selectedStation else { return }
-        trainArrivals = await selectedStation.getArrivals()
-        let sameDirection = trainArrivals.filter {
-          $0.direction == selectedDirection
-        }
-        if sameDirection.isEmpty {
-          selectedDirection = selectedDirection.flipped
-        }
-      }
+      Task { await refreshData() }
     }.sheet(isPresented: $selectionSheetActive) {
       StationSelectionSheet(
         location: locationFetcher.location,
@@ -103,6 +73,23 @@ struct ContentView: View {
         selectedStation: $selectedStation)
     }.onAppear {
       tapHaptic.prepare()
+    }
+  }
+
+  func refreshData() async {
+    loading = true
+    defer { loading = false }
+
+    guard let station = selectedStation ?? locationFetcher.nearestStation else {
+      return
+    }
+
+    trainArrivals = await station.getArrivals()
+    let sameDirection = trainArrivals.filter {
+      $0.direction == selectedDirection
+    }
+    if sameDirection.isEmpty {
+      selectedDirection = selectedDirection.flipped
     }
   }
 }
