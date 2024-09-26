@@ -2,6 +2,9 @@ import SwiftUI
 
 struct ArrivalCard: View {
   let arrival: TrainArrivalEntry
+
+  @State private var arrivingGlow: Bool = false
+
   var body: some View {
     HStack {
       TrainBadge(train: arrival.train, badgeSize: .small)
@@ -20,6 +23,20 @@ struct ArrivalCard: View {
             .font(.headline)
             .fontDesign(.rounded)
             .foregroundStyle(.green)
+            .shadow(
+              color: .green.opacity(arrivingGlow ? 1.0 : 0.25),
+              radius: 10,
+              x: 0,
+              y: 0
+            )
+            .onAppear {
+              withAnimation(
+                Animation.easeInOut(duration: 1)
+                  .repeatForever(autoreverses: true)
+              ) {
+                arrivingGlow.toggle()
+              }
+            }
         } else {
           Text(
             "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
