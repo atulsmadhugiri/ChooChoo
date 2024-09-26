@@ -14,10 +14,19 @@ struct ArrivalCard: View {
       }
       Spacer()
       VStack(alignment: .trailing, spacing: -2) {
-        Text(
-          "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
-        )
-        .font(.headline)
+
+        if arrival.arrivalTime.timeIntervalSinceNow < 60 {
+          Text("Arriving")
+            .font(.headline)
+            .fontDesign(.rounded)
+            .foregroundStyle(.green)
+        } else {
+          Text(
+            "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
+          )
+          .font(.headline)
+        }
+
         Text(
           Date(
             timeIntervalSinceNow: arrival.arrivalTime.timeIntervalSinceNow
