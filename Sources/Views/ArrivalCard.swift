@@ -42,6 +42,7 @@ struct ArrivalCard: View {
             "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
           )
           .font(.headline)
+          .fontDesign(.rounded)
         }
 
         Text(
