@@ -1,7 +1,31 @@
 {
   "images" : [
     {
-      "filename" : "ChooChooBlack@2x.png",
+      "filename" : "ChooChooWhite.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "ChooChooBlack.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "tinted"
+        }
+      ],
+      "filename" : "ChooChooBlack 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
