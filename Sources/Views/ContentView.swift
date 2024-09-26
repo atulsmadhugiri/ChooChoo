@@ -13,6 +13,7 @@ struct ContentView: View {
   @State private var loading: Bool = true
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
+  let timer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
 
   var body: some View {
     VStack(spacing: 0) {
@@ -73,6 +74,10 @@ struct ContentView: View {
         selectedStation: $selectedStation)
     }.onAppear {
       tapHaptic.prepare()
+    }.onReceive(timer) { _ in
+      Task { await refreshData() }
+    }.onDisappear {
+      timer.upstream.connect().cancel()
     }
   }
 
