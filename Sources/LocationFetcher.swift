@@ -9,10 +9,13 @@ class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
   @Published var location: CLLocation?
   @Published var nearestStation: MTAStation?
 
+  private let distanceThreshold: CLLocationDistance = 15
+
   override init() {
     super.init()
     locationManager.delegate = self
     locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+    locationManager.distanceFilter = distanceThreshold
     locationManager.pausesLocationUpdatesAutomatically = true
     locationManager.requestWhenInUseAuthorization()
     locationManager.startUpdatingLocation()
