@@ -60,6 +60,7 @@ struct ArrivalCard: View {
 #Preview {
   ArrivalCard(
     arrival: TrainArrivalEntry(
+      id: "123",
       arrivalTimestamp: Int64(),
       train: .a,
       terminalStation: "Terminal Station",

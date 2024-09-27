@@ -96,6 +96,7 @@ private func createTrainArrivalEntry(
   }
 
   return TrainArrivalEntry(
+    id: tripID,
     arrivalTimestamp: stopTimeUpdate.arrival.time,
     train: train,
     terminalStation: finalTerminalStation,
