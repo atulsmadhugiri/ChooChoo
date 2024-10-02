@@ -28,6 +28,7 @@ func unzipFile(at zipURL: URL, to destinationURL: URL) throws {
 func processTripsFile(inputURL: URL, outputURL: URL) throws {
   var dataFrame = try DataFrame(contentsOfCSVFile: inputURL)
   dataFrame.removeColumn("service_id")
+  dataFrame.removeColumn("shape_id")
 
   // Going to cut the extraneous bit at the start that
   // looks something like `ASP24GEN-1038-Sunday-00_`.
