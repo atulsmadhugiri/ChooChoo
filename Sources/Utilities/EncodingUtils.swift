@@ -53,3 +53,7 @@ func shapeIDFromTripID(_ tripID: String) -> String {
   let startIndex = tripID.index(after: underscoreIndex)
   return String(tripID[startIndex...])
 }
+
+func standardizeTripIDForSevenTrain(_ tripID: String) -> String {
+  return tripID.replacingOccurrences(of: "_7X..", with: "_7..")
+}
