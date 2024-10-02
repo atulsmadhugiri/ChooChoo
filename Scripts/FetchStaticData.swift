@@ -6,7 +6,11 @@ func downloadZIP(from url: URL, to destination: URL) async throws {
   try data.write(to: destination)
 }
 
+// Glad we can do this easily on macOS host via `unzip`
+// instead of having to download/unzip files on iOS.
 func unzipFile(at zipURL: URL, to destinationURL: URL) throws {
+  // Inspired by:
+  // https://github.com/atulsmadhugiri/Blob/blob/main/macos/plop/Utils.swift#L17
   let process = Process()
   process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
   process.arguments = [zipURL.path, "-d", destinationURL.path]
@@ -19,6 +23,27 @@ func unzipFile(at zipURL: URL, to destinationURL: URL) throws {
       userInfo: [NSLocalizedDescriptionKey: "Failed to unzip file."]
     )
   }
+}
+
+func processTripsFile(inputURL: URL, outputURL: URL) throws {
+  var dataFrame = try DataFrame(contentsOfCSVFile: inputURL)
+  dataFrame.removeColumn("service_id")
+
+  // Going to cut the extraneous bit at the start that
+  // looks something like `ASP24GEN-1038-Sunday-00_`.
+  dataFrame.transformColumn("trip_id") { (value: String?) in
+    guard let stringValue = value else {
+      return value
+    }
+    let components = stringValue.split(separator: "_", maxSplits: 1)
+    if components.count > 1 {
+      return String(components[1])
+    } else {
+      return stringValue
+    }
+  }
+
+  try dataFrame.writeCSV(to: outputURL)
 }
 
 func main() async {
@@ -50,6 +75,10 @@ func main() async {
       print("Error: 'trips.txt' not found.")
       return
     }
+
+    print("Processing 'trips.txt'...")
+    try processTripsFile(inputURL: tripsFileURL, outputURL: outputFileURL)
+    print("Processed file saved to \(outputFileURL.lastPathComponent)")
 
   } catch {
     print("Error: \(error.localizedDescription)")
