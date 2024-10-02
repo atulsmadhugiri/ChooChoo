@@ -4,7 +4,6 @@ struct NetworkUtils {
   static func sendNetworkRequest(to endpoint: String) async throws -> Data {
     var request = URLRequest(url: URL(string: endpoint)!)
     request.httpMethod = "GET"
-    request.addValue(Secrets.ACCESS_KEY, forHTTPHeaderField: "x-api-key")
 
     let (data, response) = try await URLSession.shared.data(for: request)
     guard let httpResponse = response as? HTTPURLResponse,
