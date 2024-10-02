@@ -119,13 +119,13 @@ func tripToTerminusFromCSV() -> [String: String] {
     let df = try DataFrame(contentsOfCSVFile: tripsFile)
     let filtered = df.selecting(columnNames: ["trip_id", "trip_headsign"])
     for row in filtered.rows {
-      if let shapeID = row["trip_id"] as? String,
+      if let tripID = row["trip_id"] as? String,
         let tripHeadSign = row["trip_headsign"] as? String
       {
-        if let underscoreIndex = shapeID.firstIndex(of: "_") {
-          let substring = shapeID[shapeID.index(after: underscoreIndex)...]
-          tripToTerminus[String(substring)] = tripHeadSign
-        }
+        // TODO: We'll create some higher level function if we end up
+        //       needing to do further processing for specific lines.
+        let processedTripID = standardizeTripIDForSevenTrain(tripID)
+        tripToTerminus[processedTripID] = tripHeadSign
       }
     }
     return tripToTerminus
@@ -146,11 +146,13 @@ func shapeToTerminusFromCSV() -> [String: String] {
 
   do {
     let df = try DataFrame(contentsOfCSVFile: tripsFile)
-    let filtered = df.selecting(columnNames: ["shape_id", "trip_headsign"])
+    let filtered = df.selecting(columnNames: ["trip_id", "trip_headsign"])
     for row in filtered.rows {
-      if let shapeID = row["shape_id"] as? String,
+      if let tripID = row["trip_id"] as? String,
         let tripHeadSign = row["trip_headsign"] as? String
       {
+        let processedTripID = standardizeTripIDForSevenTrain(tripID)
+        let shapeID = shapeIDFromTripID(processedTripID)
         // HACK: We had a mismatch between `shape_id` in static GTFS data and `shape_id`
         // in realtime GTFS data for the L train. The static data had eg `L..N02R` whereas
         // the realtime data had just `L..N`.
