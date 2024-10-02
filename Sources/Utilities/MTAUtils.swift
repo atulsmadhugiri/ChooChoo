@@ -71,7 +71,7 @@ private func adjustTerminalAndDirection(
   guard let oppositeTerminal = tripIDToTerminus[modifiedTripID] else {
     return nil
   }
-  let direction = tripDirection(for: modifiedTripID)
+  let direction = tripDirection(for: tripID).flipped
   return (oppositeTerminal, direction)
 }
 
@@ -81,12 +81,15 @@ private func createTrainArrivalEntry(
   stop: MTAStop
 ) -> TrainArrivalEntry? {
 
-  let tripID = trip.tripID
+  let tripID = standardizeTripIDForSevenTrain(trip.tripID)
   guard let terminalStation = determineTerminalStation(for: tripID) else {
-    logTerminalStationMismatch(for: tripID)
+    logTerminalStationMismatch(for: trip.tripID)
     return nil
   }
-  guard let train = MTATrain(rawValue: trip.routeID) else { return nil }
+
+  guard let firstChar = trip.routeID.first,
+    let train = MTATrain(rawValue: String(firstChar))
+  else { return nil }
 
   var finalTerminalStation = terminalStation
   var direction = tripDirection(for: tripID)
@@ -100,7 +103,8 @@ private func createTrainArrivalEntry(
 
   return TrainArrivalEntry(
     id: tripID,
-    arrivalTimestamp: stopTimeUpdate.arrival.time,
+    arrivalTimestamp: stopTimeUpdate.arrival.time != 0
+      ? stopTimeUpdate.arrival.time : stopTimeUpdate.departure.time,
     train: train,
     terminalStation: finalTerminalStation,
     direction: direction,
