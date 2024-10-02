@@ -63,18 +63,6 @@ private func determineTerminalStation(for tripID: String) -> String? {
   return nil
 }
 
-private func adjustTerminalAndDirection(
-  for tripID: String,
-  currentStop: MTAStop
-) -> (terminalStation: String, direction: TripDirection)? {
-  let modifiedTripID = swapTripShapeDirection(tripID: tripID)
-  guard let oppositeTerminal = tripIDToTerminus[modifiedTripID] else {
-    return nil
-  }
-  let direction = tripDirection(for: tripID).flipped
-  return (oppositeTerminal, direction)
-}
-
 private func createTrainArrivalEntry(
   from stopTimeUpdate: TransitRealtime_TripUpdate.StopTimeUpdate,
   trip: TransitRealtime_TripDescriptor,
@@ -91,22 +79,15 @@ private func createTrainArrivalEntry(
     let train = MTATrain(rawValue: String(firstChar))
   else { return nil }
 
-  var finalTerminalStation = terminalStation
-  var direction = tripDirection(for: tripID)
-  if terminalStation == stop.stopName {
-    guard
-      let adjusted = adjustTerminalAndDirection(for: tripID, currentStop: stop)
-    else { return nil }
-    finalTerminalStation = adjusted.terminalStation
-    direction = adjusted.direction
-  }
+  guard terminalStation != stop.stopName else { return nil }
 
+  let direction = tripDirection(for: tripID)
   return TrainArrivalEntry(
     id: tripID,
     arrivalTimestamp: stopTimeUpdate.arrival.time != 0
       ? stopTimeUpdate.arrival.time : stopTimeUpdate.departure.time,
     train: train,
-    terminalStation: finalTerminalStation,
+    terminalStation: terminalStation,
     direction: direction,
     directionLabel: stop.getLabelFor(direction: direction)
   )
