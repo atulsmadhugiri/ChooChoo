@@ -43,6 +43,24 @@ func processTripsFile(inputURL: URL, outputURL: URL) throws {
     }
   }
 
+  var seenTripIDs = Set<String>()
+  let rowsToKeep = Set(
+    dataFrame.rows.enumerated().compactMap {
+      (index, row) -> Int? in
+      guard let tripId = row["trip_id"] as? String else { return nil }
+      if seenTripIDs.contains(tripId) {
+        return nil
+      } else {
+        seenTripIDs.insert(tripId)
+        return index
+      }
+    })
+
+  dataFrame = DataFrame(
+    dataFrame.filter {
+      rowsToKeep.contains($0.index)
+    })
+
   try dataFrame.writeCSV(to: outputURL)
 }
 
