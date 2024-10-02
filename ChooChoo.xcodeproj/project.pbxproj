@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B71E2ADA2CADE447004E63DD /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = B71E2AD92CADE447004E63DD /* Algorithms */; };
 		B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B37582CA37FC100FAC872 /* LoggingUtils.swift */; };
 		B72B375B2CA4B97200FAC872 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B72B375A2CA4B97200FAC872 /* README.md */; };
 		B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74A5BFA2C93965900040212 /* MTAStation.swift */; };
@@ -85,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B71E2ADA2CADE447004E63DD /* Algorithms in Frameworks */,
 				B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */,
 				B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */,
 				B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */,
@@ -274,6 +276,7 @@
 			packageReferences = (
 				B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */,
 				B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */,
+				B71E2AD82CADE447004E63DD /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = B7A8568E2BB3848D00D571AA /* Products */;
 			projectDirPath = "";
@@ -538,6 +541,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B71E2AD82CADE447004E63DD /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
 		B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/PostHog/posthog-ios.git";
@@ -557,6 +568,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B71E2AD92CADE447004E63DD /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B71E2AD82CADE447004E63DD /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
 		B752EDAF2CA1FB5E00525072 /* PostHog */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */;
