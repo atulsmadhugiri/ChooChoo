@@ -1,3 +1,4 @@
+import Algorithms
 import CoreLocation
 import Foundation
 
@@ -45,8 +46,7 @@ extension MTAStation {
       }
     }
 
-    return
-      arrivalEntries
+    return arrivalEntries.uniqued(on: \.id)
       .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
       .sorted { $0.arrivalTime < $1.arrivalTime }
   }
