@@ -40,6 +40,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B71E2AD72CADA667004E63DD /* FetchStaticData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchStaticData.swift; sourceTree = "<group>"; };
 		B72B37582CA37FC100FAC872 /* LoggingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingUtils.swift; sourceTree = "<group>"; };
 		B72B375A2CA4B97200FAC872 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 		B74A5BFA2C93965900040212 /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
@@ -213,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				B7C20C372C97BDA50037860E /* PatchTripsCSV.swift */,
+				B71E2AD72CADA667004E63DD /* FetchStaticData.swift */,
 			);
 			path = Scripts;
 			sourceTree = "<group>";
