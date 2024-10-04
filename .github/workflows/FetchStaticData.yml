@@ -13,5 +13,7 @@ jobs:
     - name: Build
       working-directory: ./Scripts
       run: swift FetchStaticData.swift
+
     - name: Print output
+      working-directory: ./Scripts
       run: more trips_processed.txt
