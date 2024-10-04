@@ -1,0 +1,17 @@
+name: Fetch Static GTFS Data
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      working-directory: ./Scripts
+      run: swift FetchStaticData.swift
+    - name: Print output
+      run: more trips_processed.txt
