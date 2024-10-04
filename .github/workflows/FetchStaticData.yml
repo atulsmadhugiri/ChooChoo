@@ -16,4 +16,4 @@ jobs:
 
     - name: Print output
       working-directory: ./Scripts
-      run: more trips_processed.txt
+      run: more Trips.csv
