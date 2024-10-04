@@ -70,7 +70,7 @@ func main() async {
     "google_transit_supplemented.zip")
 
   let tripsFileURL = currentDir.appendingPathComponent("trips.txt")
-  let outputFileURL = currentDir.appendingPathComponent("trips_processed.txt")
+  let outputFileURL = currentDir.appendingPathComponent("Trips.csv")
 
   do {
     print("Downloading ZIP file...")
