@@ -1,7 +1,7 @@
 name: Fetch Static GTFS Data
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/5 * * * *"
 
 jobs:
   build:
