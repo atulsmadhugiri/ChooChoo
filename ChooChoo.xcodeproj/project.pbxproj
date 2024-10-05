@@ -61,15 +61,6 @@
 		B7A856922BB3848D00D571AA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B7A856942BB3848E00D571AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B7A856972BB3848E00D571AA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		B7C20C212C97B2FB0037860E /* agency.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = agency.txt; sourceTree = "<group>"; };
-		B7C20C222C97B2FB0037860E /* calendar.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = calendar.txt; sourceTree = "<group>"; };
-		B7C20C232C97B2FB0037860E /* calendar_dates.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = calendar_dates.txt; sourceTree = "<group>"; };
-		B7C20C242C97B2FB0037860E /* routes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = routes.txt; sourceTree = "<group>"; };
-		B7C20C252C97B2FB0037860E /* shapes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = shapes.txt; sourceTree = "<group>"; };
-		B7C20C262C97B2FB0037860E /* stop_times.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = stop_times.txt; sourceTree = "<group>"; };
-		B7C20C272C97B2FB0037860E /* stops.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = stops.txt; sourceTree = "<group>"; };
-		B7C20C282C97B2FB0037860E /* transfers.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = transfers.txt; sourceTree = "<group>"; };
-		B7C20C292C97B2FB0037860E /* trips.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = trips.txt; sourceTree = "<group>"; };
 		B7D904342C655F26009B4D18 /* Trips.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = Trips.csv; sourceTree = "<group>"; };
 		B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSelectionSheet.swift; sourceTree = "<group>"; };
 		B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAUtils.swift; sourceTree = "<group>"; };
@@ -140,7 +131,6 @@
 		B78613C12C4EFD8600F8A35B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B7C20C2A2C97B2FB0037860E /* Static GTFS */,
 				B78613C22C4EFD9D00F8A35B /* Stations.csv */,
 				B7D904342C655F26009B4D18 /* Trips.csv */,
 				B72B375A2CA4B97200FAC872 /* README.md */,
@@ -190,22 +180,6 @@
 				B7A856972BB3848E00D571AA /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		B7C20C2A2C97B2FB0037860E /* Static GTFS */ = {
-			isa = PBXGroup;
-			children = (
-				B7C20C212C97B2FB0037860E /* agency.txt */,
-				B7C20C222C97B2FB0037860E /* calendar.txt */,
-				B7C20C232C97B2FB0037860E /* calendar_dates.txt */,
-				B7C20C242C97B2FB0037860E /* routes.txt */,
-				B7C20C252C97B2FB0037860E /* shapes.txt */,
-				B7C20C262C97B2FB0037860E /* stop_times.txt */,
-				B7C20C272C97B2FB0037860E /* stops.txt */,
-				B7C20C282C97B2FB0037860E /* transfers.txt */,
-				B7C20C292C97B2FB0037860E /* trips.txt */,
-			);
-			path = "Static GTFS";
 			sourceTree = "<group>";
 		};
 		B7C20C352C97BD850037860E /* Scripts */ = {
