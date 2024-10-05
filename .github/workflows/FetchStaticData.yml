@@ -17,3 +17,10 @@ jobs:
     - name: Print output
       working-directory: ./Scripts
       run: more Trips.csv
+
+    - name: Upload to R2
+      working-directory: ./Scripts
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        command: r2 object put choochoo/Trips.csv --file=Trips.csv
