@@ -1,4 +1,5 @@
 import PostHog
+import SwiftData
 import SwiftUI
 
 @main
@@ -13,9 +14,17 @@ struct ChooChooApp: App {
     PostHogSDK.shared.setup(configuration)
   }
 
+  var modelContainer = {
+    do {
+      return try ModelContainer(for: TripEntry.self)
+    } catch {
+      fatalError("Could not create ModelContainer: \(error)")
+    }
+  }()
+
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView().modelContainer(modelContainer)
     }
   }
 }
