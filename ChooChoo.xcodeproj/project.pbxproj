@@ -12,6 +12,7 @@
 		B72B375B2CA4B97200FAC872 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B72B375A2CA4B97200FAC872 /* README.md */; };
 		B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74A5BFA2C93965900040212 /* MTAStation.swift */; };
 		B74E6C5B2CB0C79A00B59677 /* TripEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74E6C5A2CB0C79A00B59677 /* TripEntry.swift */; };
+		B74E6C5D2CB0CBE300B59677 /* CSVUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74E6C5C2CB0CBE300B59677 /* CSVUtils.swift */; };
 		B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B752EDAF2CA1FB5E00525072 /* PostHog */; };
 		B752EDB32CA2059900525072 /* PrivacyPolicy.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */; };
 		B752EDB72CA2097400525072 /* Support.html in Resources */ = {isa = PBXBuildFile; fileRef = B752EDB62CA2097400525072 /* Support.html */; };
@@ -46,6 +47,7 @@
 		B72B375A2CA4B97200FAC872 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 		B74A5BFA2C93965900040212 /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
 		B74E6C5A2CB0C79A00B59677 /* TripEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripEntry.swift; sourceTree = "<group>"; };
+		B74E6C5C2CB0CBE300B59677 /* CSVUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVUtils.swift; sourceTree = "<group>"; };
 		B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = PrivacyPolicy.rtf; sourceTree = "<group>"; };
 		B752EDB62CA2097400525072 /* Support.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Support.html; sourceTree = "<group>"; };
 		B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainArrivalEntry.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */,
 				B7697CB72C5192AB001B880C /* FormatterUtils.swift */,
 				B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */,
+				B74E6C5C2CB0CBE300B59677 /* CSVUtils.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -294,6 +297,7 @@
 			files = (
 				B78613C02C4EF75C00F8A35B /* MTAStop.swift in Sources */,
 				B7D9D6BA2C94C9FE00BD13F3 /* MTATrain.swift in Sources */,
+				B74E6C5D2CB0CBE300B59677 /* CSVUtils.swift in Sources */,
 				B7D904372C65A745009B4D18 /* StationSelectionSheet.swift in Sources */,
 				B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */,
 				B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */,
