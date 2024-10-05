@@ -1,8 +1,7 @@
 name: Fetch Static GTFS Data
-
 on:
-  push:
-    branches: [ "main" ]
+  schedule:
+    - cron: "*/30 * * * *"
 
 jobs:
   build:
