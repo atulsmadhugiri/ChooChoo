@@ -14,11 +14,18 @@ func getTrainArrivalsForStop(
     .flatMap { tripUpdate in
       filterStopTimeUpdates(for: stop, from: tripUpdate).compactMap {
         stopTimeUpdate -> TrainArrivalEntry? in
-        createTrainArrivalEntry(
-          from: stopTimeUpdate,
-          trip: tripUpdate.trip,
-          stop: stop
-        )
+        let lastStation = tripUpdate.stopTimeUpdate.last
+        if let lastStation {
+          let terminalStation = String(lastStation.stopID.dropLast())
+          return createTrainArrivalEntry(
+            from: stopTimeUpdate,
+            trip: tripUpdate.trip,
+            stop: stop,
+            terminalStation: mtaStopsByGTFSID[terminalStation]?.stopName
+              ?? "Unknown Destination."
+          )
+        }
+        return nil
       }
     }
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
@@ -66,20 +73,15 @@ private func determineTerminalStation(for tripID: String) -> String? {
 private func createTrainArrivalEntry(
   from stopTimeUpdate: TransitRealtime_TripUpdate.StopTimeUpdate,
   trip: TransitRealtime_TripDescriptor,
-  stop: MTAStop
+  stop: MTAStop,
+  terminalStation: String
 ) -> TrainArrivalEntry? {
 
   let tripID = standardizeTripIDForSevenTrain(trip.tripID)
-  guard let terminalStation = determineTerminalStation(for: tripID) else {
-    logTerminalStationMismatch(for: trip.tripID)
-    return nil
-  }
 
   guard let firstChar = trip.routeID.first,
     let train = MTATrain(rawValue: String(firstChar))
   else { return nil }
-
-  guard terminalStation != stop.stopName else { return nil }
 
   let direction = tripDirection(for: tripID)
   return TrainArrivalEntry(
