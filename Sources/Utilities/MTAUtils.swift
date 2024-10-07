@@ -46,30 +46,6 @@ private func filterStopTimeUpdates(
   }
 }
 
-private func determineTerminalStation(for tripID: String) -> String? {
-  // 1. Process `tripID` to account for mismatches.
-  let processedTripID = standardizeTripIDForSevenTrain(tripID)
-
-  // 2. See if there is an exact `tripID` match.
-  if let exactTripMatch = tripIDToTerminus[processedTripID] {
-    return exactTripMatch
-  }
-
-  // 3. See if there is an exact `shapeID` match.
-  let shapeID = shapeIDFromTripID(processedTripID)
-  if let exactShapeMatch = shapeIDToTerminus[shapeID] {
-    return exactShapeMatch
-  }
-
-  // 4. See if there is a partial `shapeID` match.
-  let partialMatch = shapeIDToTerminus.keys.first { $0.hasPrefix(shapeID) }
-  if let terminalStation = partialMatch.flatMap({ shapeIDToTerminus[$0] }) {
-    logTerminalStationPartialMatch(for: tripID)
-    return terminalStation
-  }
-  return nil
-}
-
 private func createTrainArrivalEntry(
   from stopTimeUpdate: TransitRealtime_TripUpdate.StopTimeUpdate,
   trip: TransitRealtime_TripDescriptor,
