@@ -42,7 +42,14 @@ struct ContentView: View {
         }.pickerStyle(.segmented).labelsHidden().padding(.bottom, 8)
 
         List(visibleArrivals) { arrival in
-          ArrivalCard(arrival: arrival)
+          ArrivalCard(arrival: arrival).listRowInsets(
+            EdgeInsets(
+              top: 12,
+              leading: 12,
+              bottom: 12,
+              trailing: 12
+            )
+          )
         }.listStyle(.plain)
           .background(.background)
           .cornerRadius(8)

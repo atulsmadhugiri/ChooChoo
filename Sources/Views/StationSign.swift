@@ -13,7 +13,7 @@ struct StationSign: View {
           .padding(
             EdgeInsets(
               top: 12,
-              leading: 16,
+              leading: 12,
               bottom: 6,
               trailing: 4
             )
@@ -30,7 +30,7 @@ struct StationSign: View {
       }.padding(
         EdgeInsets(
           top: 0,
-          leading: 16,
+          leading: 12,
           bottom: 12,
           trailing: 12
         )
