@@ -21,10 +21,6 @@ struct MTAStop: Equatable, Identifiable, Sendable {
   let gtfsLongitude: Double
   let northDirectionLabel: String
   let southDirectionLabel: String
-  let ada: String
-  let adaNotes: String
-  let adaNB: String
-  let adaSB: String
 
   var location: CLLocation {
     CLLocation(latitude: self.gtfsLatitude, longitude: self.gtfsLongitude)
@@ -64,10 +60,6 @@ extension MTAStop {
 
     self.northDirectionLabel = row["North Direction Label"] as? String ?? ""
     self.southDirectionLabel = row["South Direction Label"] as? String ?? ""
-    self.ada = row["ADA"] as? String ?? ""
-    self.adaNotes = row["ADA Notes"] as? String ?? ""
-    self.adaNB = row["ADA Northbound"] as? String ?? ""
-    self.adaSB = row["ADA Northbound"] as? String ?? ""
   }
 }
 
