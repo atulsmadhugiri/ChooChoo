@@ -6,6 +6,7 @@ import TabularData
 
 @Model
 class StopEntry {
+  @Attribute(.unique)
   var gtfsStopID: String
   var complexID: Int
   var division: String
