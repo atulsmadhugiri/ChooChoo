@@ -9,7 +9,9 @@ struct ArrivalCard: View {
     HStack {
       TrainBadge(train: arrival.train, badgeSize: .small)
       VStack(alignment: .leading, spacing: -2) {
-        Text(arrival.terminalStation).font(.headline)
+        Text(arrival.terminalStation)
+          .font(.headline)
+          .lineLimit(1)
         Text(arrival.directionLabel)
           .font(.subheadline)
           .foregroundStyle(.secondary)
