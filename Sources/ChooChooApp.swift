@@ -20,24 +20,6 @@ struct ChooChooApp: App {
       host: POSTHOG_HOST
     )
     PostHogSDK.shared.setup(configuration)
-
-    let beforeLoadingFromCSV = Date()
-    let tripEntries = tripEntriesFromCSV()
-    let afterLoadingFromCSV = Date()
-    let loadingCSVDuration = afterLoadingFromCSV.timeIntervalSince(
-      beforeLoadingFromCSV)
-    print("Time to load Trips.CSV: \(loadingCSVDuration)")
-
-    let beforeInsertingEntries = Date()
-    for tripEntry in tripEntries {
-      modelContainer.mainContext.insert(tripEntry)
-    }
-    let afterInsertingEntries = Date()
-    let insertingEntriesDuration = afterInsertingEntries.timeIntervalSince(
-      beforeInsertingEntries)
-    print(
-      "Time to insert Trips into SwiftData: \(insertingEntriesDuration)"
-    )
   }
 
   var body: some Scene {
