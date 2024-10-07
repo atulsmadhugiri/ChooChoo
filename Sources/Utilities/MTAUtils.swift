@@ -1,7 +1,5 @@
 import Foundation
 
-let shapeIDToTerminus: [String: String] = shapeToTerminusFromCSV()
-
 func getTrainArrivalsForStop(
   stop: MTAStop,
   feed: [TransitRealtime_FeedEntity]

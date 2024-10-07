@@ -24,41 +24,6 @@ func loadStopsFromCSV() -> [MTAStop] {
   }
 }
 
-func shapeToTerminusFromCSV() -> [String: String] {
-  var shapeToTerminus: [String: String] = [:]
-  guard
-    let tripsFile = Bundle.main.url(forResource: "Trips", withExtension: "csv")
-  else {
-    print("Trips.csv not found.")
-    return shapeToTerminus
-  }
-
-  do {
-    let df = try DataFrame(contentsOfCSVFile: tripsFile)
-    let filtered = df.selecting(columnNames: ["trip_id", "trip_headsign"])
-    for row in filtered.rows {
-      if let tripID = row["trip_id"] as? String,
-        let tripHeadSign = row["trip_headsign"] as? String
-      {
-        let processedTripID = standardizeTripIDForSevenTrain(tripID)
-        let shapeID = shapeIDFromTripID(processedTripID)
-        // HACK: We had a mismatch between `shape_id` in static GTFS data and `shape_id`
-        // in realtime GTFS data for the L train. The static data had eg `L..N02R` whereas
-        // the realtime data had just `L..N`.
-        if shapeID.hasPrefix("L..") {
-          shapeToTerminus[String(shapeID.prefix(4))] = tripHeadSign
-          continue
-        }
-        shapeToTerminus[shapeID] = tripHeadSign
-      }
-    }
-    return shapeToTerminus
-  } catch {
-    print("Error reading CSV file: \(error)")
-  }
-  return shapeToTerminus
-}
-
 func tripEntriesFromCSV() -> [TripEntry] {
   var tripEntries: [TripEntry] = []
   guard
