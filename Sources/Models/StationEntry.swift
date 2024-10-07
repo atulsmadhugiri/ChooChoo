@@ -36,3 +36,19 @@ class StationEntry {
     return Array(uniqueLines)
   }
 }
+
+extension StationEntry {
+  func mergeStops(_ stops: [StopEntry]) -> [StationEntry] {
+    let stationsToStops = Dictionary(grouping: stops, by: { $0.complexID })
+
+    let stations = stationsToStops.map { (complexID, stationStops) in
+      let stationName = stationStops.first?.stopName ?? "Unknown"
+      return StationEntry(
+        id: complexID,
+        name: stationName,
+        stops: stationStops
+      )
+    }
+    return stations
+  }
+}
