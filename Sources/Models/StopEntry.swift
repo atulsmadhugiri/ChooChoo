@@ -1,3 +1,4 @@
+import Foundation
 import SwiftData
 import TabularData
 
@@ -68,5 +69,30 @@ extension StopEntry {
       northDirectionLabel: row["North Direction Label"] as? String ?? "",
       southDirectionLabel: row["South Direction Label"] as? String ?? ""
     )
+  }
+}
+
+extension StopEntry {
+  static func loadStopsFromCSV() -> [StopEntry] {
+    guard
+      let stationsFile = Bundle.main.url(
+        forResource: "Stations",
+        withExtension: "csv"
+      )
+    else {
+      print("Stations.csv not found.")
+      return []
+    }
+
+    do {
+      let df = try DataFrame(contentsOfCSVFile: stationsFile)
+      return df.rows.compactMap { StopEntry(from: $0) }
+        .filter {
+          $0.division != "SIR"
+        }
+    } catch {
+      print("Error reading CSV file: \(error)")
+      return []
+    }
   }
 }
