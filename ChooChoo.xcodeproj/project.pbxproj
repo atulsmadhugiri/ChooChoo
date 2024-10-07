@@ -9,12 +9,9 @@
 /* Begin PBXBuildFile section */
 		B71E2ADA2CADE447004E63DD /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = B71E2AD92CADE447004E63DD /* Algorithms */; };
 		B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B37582CA37FC100FAC872 /* LoggingUtils.swift */; };
-		B72B375B2CA4B97200FAC872 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B72B375A2CA4B97200FAC872 /* README.md */; };
 		B74A5BFB2C93965900040212 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74A5BFA2C93965900040212 /* MTAStation.swift */; };
 		B74E6C5D2CB0CBE300B59677 /* CSVUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74E6C5C2CB0CBE300B59677 /* CSVUtils.swift */; };
 		B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B752EDAF2CA1FB5E00525072 /* PostHog */; };
-		B752EDB32CA2059900525072 /* PrivacyPolicy.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */; };
-		B752EDB72CA2097400525072 /* Support.html in Resources */ = {isa = PBXBuildFile; fileRef = B752EDB62CA2097400525072 /* Support.html */; };
 		B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */; };
 		B75860A22C52F4D00007404D /* StationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75860A12C52F4D00007404D /* StationSign.swift */; };
 		B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7697CB72C5192AB001B880C /* FormatterUtils.swift */; };
@@ -265,10 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B78613C32C4EFD9D00F8A35B /* Stations.csv in Resources */,
-				B752EDB32CA2059900525072 /* PrivacyPolicy.rtf in Resources */,
-				B72B375B2CA4B97200FAC872 /* README.md in Resources */,
 				B7A856982BB3848E00D571AA /* Preview Assets.xcassets in Resources */,
-				B752EDB72CA2097400525072 /* Support.html in Resources */,
 				B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
