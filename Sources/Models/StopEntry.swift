@@ -18,6 +18,12 @@ class StopEntry {
   var northDirectionLabel: String
   var southDirectionLabel: String
 
+  var daytimeRoutes: [MTATrain] {
+    return daytimeRoutesString.split(separator: " ").compactMap {
+      MTATrain(rawValue: String($0))
+    }
+  }
+
   init(
     gtfsStopID: String,
     complexID: Int,
