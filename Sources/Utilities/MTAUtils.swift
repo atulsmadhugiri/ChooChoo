@@ -1,6 +1,5 @@
 import Foundation
 
-let tripIDToTerminus: [String: String] = tripToTerminusFromCSV()
 let shapeIDToTerminus: [String: String] = shapeToTerminusFromCSV()
 
 func getTrainArrivalsForStop(

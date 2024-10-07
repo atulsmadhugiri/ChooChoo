@@ -24,35 +24,6 @@ func loadStopsFromCSV() -> [MTAStop] {
   }
 }
 
-func tripToTerminusFromCSV() -> [String: String] {
-  var tripToTerminus: [String: String] = [:]
-  guard
-    let tripsFile = Bundle.main.url(forResource: "Trips", withExtension: "csv")
-  else {
-    print("Trips.csv not found.")
-    return tripToTerminus
-  }
-
-  do {
-    let df = try DataFrame(contentsOfCSVFile: tripsFile)
-    let filtered = df.selecting(columnNames: ["trip_id", "trip_headsign"])
-    for row in filtered.rows {
-      if let tripID = row["trip_id"] as? String,
-        let tripHeadSign = row["trip_headsign"] as? String
-      {
-        // TODO: We'll create some higher level function if we end up
-        //       needing to do further processing for specific lines.
-        let processedTripID = standardizeTripIDForSevenTrain(tripID)
-        tripToTerminus[processedTripID] = tripHeadSign
-      }
-    }
-    return tripToTerminus
-  } catch {
-    print("Error reading CSV file: \(error)")
-  }
-  return tripToTerminus
-}
-
 func shapeToTerminusFromCSV() -> [String: String] {
   var shapeToTerminus: [String: String] = [:]
   guard
