@@ -9,7 +9,6 @@ struct MTAStop: Equatable, Identifiable, Sendable {
 
   var id: Int { gtfsStopID.hashValue }
 
-  let stationID: Int
   let complexID: Int
   let gtfsStopID: String
   let division: String
@@ -35,7 +34,7 @@ struct MTAStop: Equatable, Identifiable, Sendable {
 extension MTAStop {
   init?(from row: DataFrame.Row) {
     guard
-      let stationID = row["Station ID"] as? Int,
+
       let complexID = row["Complex ID"] as? Int,
       let gtfsStopID = row["GTFS Stop ID"] as? String,
       let division = row["Division"] as? String,
@@ -50,7 +49,6 @@ extension MTAStop {
       return nil
     }
 
-    self.stationID = stationID
     self.complexID = complexID
     self.gtfsStopID = gtfsStopID
     self.division = division
