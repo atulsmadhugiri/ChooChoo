@@ -14,9 +14,7 @@ struct MTAStop: Equatable, Identifiable, Sendable {
   let division: String
   let line: String
   let stopName: String
-  let borough: String
   let daytimeRoutes: [MTATrain]
-  let structure: String
   let gtfsLatitude: Double
   let gtfsLongitude: Double
   let northDirectionLabel: String
@@ -36,9 +34,7 @@ extension MTAStop {
       let division = row["Division"] as? String,
       let line = row["Line"] as? String,
       let stopName = row["Stop Name"] as? String,
-      let borough = row["Borough"] as? String,
       let daytimeRoutesString = row["Daytime Routes"] as? String,
-      let structure = row["Structure"] as? String,
       let gtfsLatitude = row["GTFS Latitude"] as? Double,
       let gtfsLongitude = row["GTFS Longitude"] as? Double
     else {
@@ -50,11 +46,9 @@ extension MTAStop {
     self.division = division
     self.line = line
     self.stopName = stopName
-    self.borough = borough
     self.daytimeRoutes = daytimeRoutesString.split(separator: " ").compactMap {
       MTATrain(rawValue: String($0))
     }
-    self.structure = structure
     self.gtfsLatitude = gtfsLatitude
     self.gtfsLongitude = gtfsLongitude
 
