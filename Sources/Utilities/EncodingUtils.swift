@@ -27,12 +27,6 @@ func tripDirection(for tripID: String) -> TripDirection {
   }
 }
 
-func shapeIDFromTripID(_ tripID: String) -> String {
-  guard let underscoreIndex = tripID.firstIndex(of: "_") else { return "" }
-  let startIndex = tripID.index(after: underscoreIndex)
-  return String(tripID[startIndex...])
-}
-
 func standardizeTripIDForSevenTrain(_ tripID: String) -> String {
   return tripID.replacingOccurrences(of: "_7X..", with: "_7..")
 }
