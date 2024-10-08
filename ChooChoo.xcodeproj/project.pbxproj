@@ -39,7 +39,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B71E2AD72CADA667004E63DD /* FetchStaticData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchStaticData.swift; sourceTree = "<group>"; };
 		B72B37582CA37FC100FAC872 /* LoggingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingUtils.swift; sourceTree = "<group>"; };
 		B72B375A2CA4B97200FAC872 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 		B74A5BFA2C93965900040212 /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
@@ -155,7 +154,6 @@
 				B78613C12C4EFD8600F8A35B /* Resources */,
 				B7A8568F2BB3848D00D571AA /* Sources */,
 				B78613B42C4EF29900F8A35B /* Generated */,
-				B7C20C352C97BD850037860E /* Scripts */,
 				B752EDB12CA2058100525072 /* Misc */,
 				B7A8568E2BB3848D00D571AA /* Products */,
 			);
@@ -191,14 +189,6 @@
 				B7A856972BB3848E00D571AA /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		B7C20C352C97BD850037860E /* Scripts */ = {
-			isa = PBXGroup;
-			children = (
-				B71E2AD72CADA667004E63DD /* FetchStaticData.swift */,
-			);
-			path = Scripts;
 			sourceTree = "<group>";
 		};
 		B7D9D6BB2C94CEB300BD13F3 /* Entities */ = {
