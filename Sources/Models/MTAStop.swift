@@ -5,7 +5,7 @@ import TabularData
 // Each `MTAStopEntry` corresponds to a GTFS stop in `Stations.csv`
 
 @Model
-class StopEntry {
+class MTAStop {
   @Attribute(.unique)
   var gtfsStopID: String
   var complexID: Int
@@ -18,7 +18,7 @@ class StopEntry {
   var northDirectionLabel: String
   var southDirectionLabel: String
 
-  var station: StationEntry?
+  var station: MTAStation?
 
   var daytimeRoutes: [MTATrain] {
     return daytimeRoutesString.split(separator: " ").compactMap {
@@ -51,7 +51,7 @@ class StopEntry {
   }
 }
 
-extension StopEntry {
+extension MTAStop {
   convenience init?(from row: DataFrame.Row) {
     guard
       let complexID = row["Complex ID"] as? Int,
@@ -81,8 +81,8 @@ extension StopEntry {
   }
 }
 
-extension StopEntry {
-  static func loadStopsFromCSV() -> [StopEntry] {
+extension MTAStop {
+  static func loadStopsFromCSV() -> [MTAStop] {
     guard
       let stationsFile = Bundle.main.url(
         forResource: "Stations",
@@ -95,7 +95,7 @@ extension StopEntry {
 
     do {
       let df = try DataFrame(contentsOfCSVFile: stationsFile)
-      return df.rows.compactMap { StopEntry(from: $0) }
+      return df.rows.compactMap { MTAStop(from: $0) }
         .filter {
           $0.division != "SIR"
         }
@@ -106,7 +106,7 @@ extension StopEntry {
   }
 }
 
-extension StopEntry {
+extension MTAStop {
   func getLabelFor(direction: TripDirection) -> String {
     // HACK: Accounting for weird direction labels for 34 St-Hudson Yards.
     //       As with all the other hacks, there's definitely a better way.

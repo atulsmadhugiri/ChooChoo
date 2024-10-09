@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		B71E2ADA2CADE447004E63DD /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = B71E2AD92CADE447004E63DD /* Algorithms */; };
 		B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B37582CA37FC100FAC872 /* LoggingUtils.swift */; };
-		B74C73282CB488FC00B8E2E1 /* StopEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73272CB488FC00B8E2E1 /* StopEntry.swift */; };
-		B74C732A2CB49D4400B8E2E1 /* StationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73292CB49D4400B8E2E1 /* StationEntry.swift */; };
+		B74C73282CB488FC00B8E2E1 /* MTAStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73272CB488FC00B8E2E1 /* MTAStop.swift */; };
+		B74C732A2CB49D4400B8E2E1 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73292CB49D4400B8E2E1 /* MTAStation.swift */; };
 		B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B752EDAF2CA1FB5E00525072 /* PostHog */; };
 		B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */; };
 		B75860A22C52F4D00007404D /* StationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75860A12C52F4D00007404D /* StationSign.swift */; };
@@ -38,8 +38,8 @@
 /* Begin PBXFileReference section */
 		B72B37582CA37FC100FAC872 /* LoggingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingUtils.swift; sourceTree = "<group>"; };
 		B72B375A2CA4B97200FAC872 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
-		B74C73272CB488FC00B8E2E1 /* StopEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopEntry.swift; sourceTree = "<group>"; };
-		B74C73292CB49D4400B8E2E1 /* StationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationEntry.swift; sourceTree = "<group>"; };
+		B74C73272CB488FC00B8E2E1 /* MTAStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStop.swift; sourceTree = "<group>"; };
+		B74C73292CB49D4400B8E2E1 /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
 		B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = PrivacyPolicy.rtf; sourceTree = "<group>"; };
 		B752EDB62CA2097400525072 /* Support.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Support.html; sourceTree = "<group>"; };
 		B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainArrivalEntry.swift; sourceTree = "<group>"; };
@@ -95,8 +95,8 @@
 		B74C73252CB4883A00B8E2E1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				B74C73272CB488FC00B8E2E1 /* StopEntry.swift */,
-				B74C73292CB49D4400B8E2E1 /* StationEntry.swift */,
+				B74C73272CB488FC00B8E2E1 /* MTAStop.swift */,
+				B74C73292CB49D4400B8E2E1 /* MTAStation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -269,14 +269,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B74C73282CB488FC00B8E2E1 /* StopEntry.swift in Sources */,
+				B74C73282CB488FC00B8E2E1 /* MTAStop.swift in Sources */,
 				B7D9D6BA2C94C9FE00BD13F3 /* MTATrain.swift in Sources */,
 				B7D904372C65A745009B4D18 /* StationSelectionSheet.swift in Sources */,
 				B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */,
 				B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */,
 				B7D9D6B82C94C75500BD13F3 /* MTALine.swift in Sources */,
 				B7E3FA1B2C4F0A7B0036CCDF /* LocationFetcher.swift in Sources */,
-				B74C732A2CB49D4400B8E2E1 /* StationEntry.swift in Sources */,
+				B74C732A2CB49D4400B8E2E1 /* MTAStation.swift in Sources */,
 				B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */,
 				B77807C32C6D740C00216D68 /* ArrivalCard.swift in Sources */,
 				B7D9D6BD2C94CFF300BD13F3 /* EncodingUtils.swift in Sources */,

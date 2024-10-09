@@ -3,7 +3,7 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-  @Query var stations: [StationEntry]
+  @Query var stations: [MTAStation]
 
   @StateObject private var locationFetcher = LocationFetcher()
   @State var trainArrivals: [TrainArrivalEntry] = []
@@ -11,9 +11,9 @@ struct ContentView: View {
   @State var selectionSheetActive: Bool = false
 
   @State private var selectedDirection: TripDirection = .south
-  @State private var selectedStation: StationEntry?
+  @State private var selectedStation: MTAStation?
 
-  @State private var nearestStation: StationEntry?
+  @State private var nearestStation: MTAStation?
 
   @State private var loading: Bool = true
 

@@ -1,16 +1,16 @@
+import Algorithms
 import CoreLocation
 import Foundation
 import SwiftData
-import Algorithms
 
 @Model
-class StationEntry {
+class MTAStation {
   @Attribute(.unique)
   var id: Int
   var name: String
-  var stops: [StopEntry]
+  var stops: [MTAStop]
 
-  init(id: Int, name: String, stops: [StopEntry]) {
+  init(id: Int, name: String, stops: [MTAStop]) {
     self.id = id
     self.name = name
     self.stops = stops
@@ -39,13 +39,13 @@ class StationEntry {
   }
 }
 
-extension StationEntry {
-  static func mergeStops(_ stops: [StopEntry]) -> [StationEntry] {
+extension MTAStation {
+  static func mergeStops(_ stops: [MTAStop]) -> [MTAStation] {
     let stationsToStops = Dictionary(grouping: stops, by: { $0.complexID })
 
     let stations = stationsToStops.map { (complexID, stationStops) in
       let stationName = stationStops.first?.stopName ?? "Unknown"
-      return StationEntry(
+      return MTAStation(
         id: complexID,
         name: stationName,
         stops: stationStops
@@ -55,7 +55,7 @@ extension StationEntry {
   }
 }
 
-extension StationEntry {
+extension MTAStation {
   func getArrivals() async -> [TrainArrivalEntry] {
     let feedData = await getFeedData()
 
@@ -71,7 +71,7 @@ extension StationEntry {
   }
 }
 
-extension StationEntry {
+extension MTAStation {
   func getFeedData() async -> [MTALine:
     TransitRealtime_FeedMessage]
   {

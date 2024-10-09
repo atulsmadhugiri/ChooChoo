@@ -3,16 +3,16 @@ import SwiftData
 import SwiftUI
 
 struct StationSelectionSheet: View {
-  @Query var stations: [StationEntry]
+  @Query var stations: [MTAStation]
 
   var location: CLLocation?
   @State private var searchTerm = ""
   @Binding var isPresented: Bool
-  @Binding var selectedStation: StationEntry?
+  @Binding var selectedStation: MTAStation?
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
-  var filteredStationEntries: [StationEntry] {
+  var filteredStationEntries: [MTAStation] {
     guard !searchTerm.isEmpty else { return stations }
     return stations.filter {
       $0.name.localizedCaseInsensitiveContains(searchTerm)

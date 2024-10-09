@@ -2,13 +2,13 @@ import PostHog
 import SwiftData
 import SwiftUI
 
-nonisolated(unsafe) var mtaStopsByGTFSID: [String: StopEntry] = [:]
+nonisolated(unsafe) var mtaStopsByGTFSID: [String: MTAStop] = [:]
 
 @main
 struct ChooChooApp: App {
   var modelContainer = {
     do {
-      return try ModelContainer(for: StationEntry.self)
+      return try ModelContainer(for: MTAStation.self)
     } catch {
       fatalError("Could not create ModelContainer: \(error)")
     }
@@ -23,13 +23,13 @@ struct ChooChooApp: App {
     )
     PostHogSDK.shared.setup(configuration)
 
-    let stopEntries = StopEntry.loadStopsFromCSV()
-    let stationEntries = StationEntry.mergeStops(stopEntries)
+    let stopEntries = MTAStop.loadStopsFromCSV()
+    let stationEntries = MTAStation.mergeStops(stopEntries)
     for stationEntry in stationEntries {
       modelContainer.mainContext.insert(stationEntry)
     }
     try! modelContainer.mainContext.save()
-    
+
     mtaStopsByGTFSID = Dictionary(
       uniqueKeysWithValues: stopEntries.map { ($0.gtfsStopID, $0) }
     )

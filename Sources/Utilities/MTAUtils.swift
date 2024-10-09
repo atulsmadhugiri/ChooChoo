@@ -1,7 +1,7 @@
 import Foundation
 
 func getTrainArrivalsForStop(
-  stop: StopEntry,
+  stop: MTAStop,
   feed: [TransitRealtime_FeedEntity]
 ) -> [TrainArrivalEntry] {
 
@@ -35,7 +35,7 @@ private func extractTripUpdates(
 }
 
 private func filterStopTimeUpdates(
-  for stop: StopEntry,
+  for stop: MTAStop,
   from tripUpdate: TransitRealtime_TripUpdate
 ) -> [TransitRealtime_TripUpdate.StopTimeUpdate] {
   return tripUpdate.stopTimeUpdate.filter { stopTimeUpdate in
@@ -46,7 +46,7 @@ private func filterStopTimeUpdates(
 private func createTrainArrivalEntry(
   from stopTimeUpdate: TransitRealtime_TripUpdate.StopTimeUpdate,
   trip: TransitRealtime_TripDescriptor,
-  stop: StopEntry,
+  stop: MTAStop,
   terminalStation: String
 ) -> TrainArrivalEntry? {
 
