@@ -55,43 +55,8 @@ extension StationEntry {
 }
 
 extension StationEntry {
-  func getFeedData() async -> [MTALine: TransitRealtime_FeedMessage] {
-    let lines = self.lines
-    var results = [MTALine: TransitRealtime_FeedMessage]()
-
-    await withTaskGroup(of: (MTALine, TransitRealtime_FeedMessage)?.self) {
-      group in
-
-      for line in lines {
-        group.addTask {
-          do {
-            let data = try await NetworkUtils.sendNetworkRequest(
-              to: line.endpoint
-            )
-            let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-            return (line, feed)
-          } catch {
-            print("Failed to fetch feed for line \(line): \(error)")
-            return nil
-          }
-        }
-      }
-
-      for await taskResult in group {
-        if let (line, feed) = taskResult {
-          results[line] = feed
-        }
-      }
-
-    }
-    return results
-
-  }
-}
-
-extension StationEntry {
   func getArrivals() async -> [TrainArrivalEntry] {
-    let feedData = await self.getFeedData()
+    let feedData = await getFeedDataForLine(lines: self.lines)
 
     let arrivalEntries = feedData.values.flatMap { feed in
       self.stops.flatMap { stop in
@@ -116,4 +81,37 @@ extension StationEntry {
       .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
       .sorted { $0.arrivalTime < $1.arrivalTime }
   }
+}
+
+func getFeedDataForLine(lines: [MTALine]) async -> [MTALine:
+  TransitRealtime_FeedMessage]
+{
+  var results = [MTALine: TransitRealtime_FeedMessage]()
+
+  await withTaskGroup(of: (MTALine, TransitRealtime_FeedMessage)?.self) {
+    group in
+
+    for line in lines {
+      group.addTask {
+        do {
+          let data = try await NetworkUtils.sendNetworkRequest(
+            to: line.endpoint
+          )
+          let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
+          return (line, feed)
+        } catch {
+          print("Failed to fetch feed for line \(line): \(error)")
+          return nil
+        }
+      }
+    }
+
+    for await taskResult in group {
+      if let (line, feed) = taskResult {
+        results[line] = feed
+      }
+    }
+
+  }
+  return results
 }

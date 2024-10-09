@@ -110,7 +110,6 @@ struct ContentView: View {
         selectedDirection = selectedDirection.flipped
       }
     }
-
   }
 
   func setNearestStation() {
