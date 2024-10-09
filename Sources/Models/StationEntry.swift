@@ -4,6 +4,7 @@ import SwiftData
 
 @Model
 class StationEntry {
+  @Attribute(.unique)
   var id: Int
   var name: String
   var stops: [StopEntry]
