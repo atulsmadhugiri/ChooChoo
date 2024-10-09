@@ -39,7 +39,7 @@ class StationEntry {
 }
 
 extension StationEntry {
-  func mergeStops(_ stops: [StopEntry]) -> [StationEntry] {
+  static func mergeStops(_ stops: [StopEntry]) -> [StationEntry] {
     let stationsToStops = Dictionary(grouping: stops, by: { $0.complexID })
 
     let stations = stationsToStops.map { (complexID, stationStops) in
