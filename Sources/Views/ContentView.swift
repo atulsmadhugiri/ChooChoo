@@ -13,6 +13,8 @@ struct ContentView: View {
   @State private var selectedDirection: TripDirection = .south
   @State private var selectedStation: MTAStation?
 
+  @State private var nearestStation: StationEntry?
+
   @State private var loading: Bool = true
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
@@ -72,8 +74,9 @@ struct ContentView: View {
       .padding(12)
     }
     .background(.ultraThickMaterial)
-    .onChange(of: locationFetcher.nearestStation) {
+    .onChange(of: locationFetcher.location) {
       if selectedStation != nil { return }
+      setNearestStation()
       Task { await refreshData() }
     }.onChange(of: selectedStation) {
       Task { await refreshData() }
@@ -106,6 +109,14 @@ struct ContentView: View {
     if sameDirection.isEmpty {
       selectedDirection = selectedDirection.flipped
     }
+  }
+
+  func setNearestStation() {
+    guard let currentLocation = locationFetcher.location else { return }
+    nearestStation = stations.min(by: {
+      currentLocation.distance(from: $0.location)
+        < currentLocation.distance(from: $1.location)
+    })
   }
 }
 
