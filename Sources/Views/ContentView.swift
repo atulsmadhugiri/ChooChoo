@@ -1,7 +1,10 @@
 import PostHog
+import SwiftData
 import SwiftUI
 
 struct ContentView: View {
+  @Query var stations: [StationEntry]
+
   @StateObject private var locationFetcher = LocationFetcher()
   @State var trainArrivals: [TrainArrivalEntry] = []
 

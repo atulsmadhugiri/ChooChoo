@@ -18,6 +18,8 @@ class StopEntry {
   var northDirectionLabel: String
   var southDirectionLabel: String
 
+  var station: StationEntry?
+
   var daytimeRoutes: [MTATrain] {
     return daytimeRoutesString.split(separator: " ").compactMap {
       MTATrain(rawValue: String($0))

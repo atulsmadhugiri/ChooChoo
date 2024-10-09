@@ -6,7 +6,7 @@ import SwiftUI
 struct ChooChooApp: App {
   var modelContainer = {
     do {
-      return try ModelContainer(for: StopEntry.self)
+      return try ModelContainer(for: StationEntry.self)
     } catch {
       fatalError("Could not create ModelContainer: \(error)")
     }
@@ -22,8 +22,9 @@ struct ChooChooApp: App {
     PostHogSDK.shared.setup(configuration)
 
     let stopEntries = StopEntry.loadStopsFromCSV()
-    for stopEntry in stopEntries {
-      modelContainer.mainContext.insert(stopEntry)
+    let stationEntries = StationEntry.mergeStops(stopEntries)
+    for stationEntry in stationEntries {
+      modelContainer.mainContext.insert(stationEntry)
     }
     try! modelContainer.mainContext.save()
   }
