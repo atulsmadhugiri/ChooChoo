@@ -11,7 +11,7 @@ struct ContentView: View {
   @State var selectionSheetActive: Bool = false
 
   @State private var selectedDirection: TripDirection = .south
-  @State private var selectedStation: MTAStation?
+  @State private var selectedStation: StationEntry?
 
   @State private var nearestStation: StationEntry?
 
@@ -22,7 +22,7 @@ struct ContentView: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      let visibleStation = selectedStation ?? locationFetcher.nearestStation
+      let visibleStation = selectedStation ?? nearestStation
       if let visibleStation {
         StationSign(
           stationName: visibleStation.name,
@@ -95,20 +95,22 @@ struct ContentView: View {
   }
 
   func refreshData() async {
-    loading = true
-    defer { loading = false }
-
-    guard let station = selectedStation ?? locationFetcher.nearestStation else {
+    guard let station = selectedStation ?? nearestStation else {
       return
     }
 
-    trainArrivals = await station.getArrivals()
-    let sameDirection = trainArrivals.filter {
-      $0.direction == selectedDirection
+    Task {
+      loading = true
+      defer { loading = false }
+      trainArrivals = await station.getArrivals()
+      let sameDirection = trainArrivals.filter {
+        $0.direction == selectedDirection
+      }
+      if sameDirection.isEmpty {
+        selectedDirection = selectedDirection.flipped
+      }
     }
-    if sameDirection.isEmpty {
-      selectedDirection = selectedDirection.flipped
-    }
+
   }
 
   func setNearestStation() {

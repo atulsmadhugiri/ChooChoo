@@ -8,7 +8,7 @@ struct StationSelectionSheet: View {
   var location: CLLocation?
   @State private var searchTerm = ""
   @Binding var isPresented: Bool
-  @Binding var selectedStation: MTAStation?
+  @Binding var selectedStation: StationEntry?
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
@@ -32,7 +32,7 @@ struct StationSelectionSheet: View {
             trains: station.daytimeRoutes
           ).onTapGesture {
             tapHaptic.impactOccurred()
-            //            selectedStation = station
+            selectedStation = station
             isPresented = false
           }
         }.listStyle(.plain)
