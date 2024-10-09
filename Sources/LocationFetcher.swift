@@ -1,10 +1,5 @@
 import CoreLocation
 
-let mtaStops: [MTAStop] = loadStopsFromCSV()
-let mtaStopsByGTFSID: [String: MTAStop] = Dictionary(
-  uniqueKeysWithValues: mtaStops.map { ($0.gtfsStopID, $0) }
-)
-
 class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
   let locationManager = CLLocationManager()
 

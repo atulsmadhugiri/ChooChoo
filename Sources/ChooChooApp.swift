@@ -2,6 +2,8 @@ import PostHog
 import SwiftData
 import SwiftUI
 
+nonisolated(unsafe) var mtaStopsByGTFSID: [String: StopEntry] = [:]
+
 @main
 struct ChooChooApp: App {
   var modelContainer = {
@@ -27,6 +29,10 @@ struct ChooChooApp: App {
       modelContainer.mainContext.insert(stationEntry)
     }
     try! modelContainer.mainContext.save()
+    
+    mtaStopsByGTFSID = Dictionary(
+      uniqueKeysWithValues: stopEntries.map { ($0.gtfsStopID, $0) }
+    )
   }
 
   var body: some Scene {
