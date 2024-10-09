@@ -56,7 +56,7 @@ extension StationEntry {
 
 extension StationEntry {
   func getArrivals() async -> [TrainArrivalEntry] {
-    let feedData = await getFeedDataForLine(lines: self.lines)
+    let feedData = await getFeedData()
 
     let arrivalEntries = feedData.values.flatMap { feed in
       self.stops.flatMap { stop in
@@ -83,35 +83,39 @@ extension StationEntry {
   }
 }
 
-func getFeedDataForLine(lines: [MTALine]) async -> [MTALine:
-  TransitRealtime_FeedMessage]
-{
-  var results = [MTALine: TransitRealtime_FeedMessage]()
+extension StationEntry {
+  func getFeedData() async -> [MTALine:
+    TransitRealtime_FeedMessage]
+  {
+    var results = [MTALine: TransitRealtime_FeedMessage]()
 
-  await withTaskGroup(of: (MTALine, TransitRealtime_FeedMessage)?.self) {
-    group in
+    let lines = self.lines
+    await withTaskGroup(of: (MTALine, TransitRealtime_FeedMessage)?.self) {
+      group in
 
-    for line in lines {
-      group.addTask {
-        do {
-          let data = try await NetworkUtils.sendNetworkRequest(
-            to: line.endpoint
-          )
-          let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-          return (line, feed)
-        } catch {
-          print("Failed to fetch feed for line \(line): \(error)")
-          return nil
+      for line in lines {
+        group.addTask {
+          do {
+            let data = try await NetworkUtils.sendNetworkRequest(
+              to: line.endpoint
+            )
+            let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
+            return (line, feed)
+          } catch {
+            print("Failed to fetch feed for line \(line): \(error)")
+            return nil
+          }
         }
       }
-    }
 
-    for await taskResult in group {
-      if let (line, feed) = taskResult {
-        results[line] = feed
+      for await taskResult in group {
+        if let (line, feed) = taskResult {
+          results[line] = feed
+        }
       }
-    }
 
+    }
+    return results
   }
-  return results
+
 }
