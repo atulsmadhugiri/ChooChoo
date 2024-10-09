@@ -105,3 +105,17 @@ extension StopEntry {
     }
   }
 }
+
+extension StopEntry {
+  func getLabelFor(direction: TripDirection) -> String {
+    // HACK: Accounting for weird direction labels for 34 St-Hudson Yards.
+    //       As with all the other hacks, there's definitely a better way.
+    let adjustedDirection =
+      self.gtfsStopID == "726" ? direction.flipped : direction
+    if adjustedDirection == .north {
+      return self.northDirectionLabel
+    } else {
+      return self.southDirectionLabel
+    }
+  }
+}

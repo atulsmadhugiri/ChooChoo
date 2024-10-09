@@ -60,20 +60,7 @@ extension StationEntry {
 
     let arrivalEntries = feedData.values.flatMap { feed in
       self.stops.flatMap { stop in
-        let mtaStop = MTAStop(
-          complexID: stop.complexID,
-          gtfsStopID: stop.gtfsStopID,
-          division: stop.division,
-          line: stop.line,
-          stopName: stop.stopName,
-          daytimeRoutes: stop.daytimeRoutes,
-          gtfsLatitude: stop.gtfsLatitude,
-          gtfsLongitude: stop.gtfsLongitude,
-          northDirectionLabel: stop.northDirectionLabel,
-          southDirectionLabel: stop.southDirectionLabel
-        )
-
-        return getTrainArrivalsForStop(stop: mtaStop, feed: feed.entity)
+        getTrainArrivalsForStopEntry(stop: stop, feed: feed.entity)
       }
     }
 
