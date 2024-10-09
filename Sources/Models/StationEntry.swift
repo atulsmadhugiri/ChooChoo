@@ -1,6 +1,7 @@
 import CoreLocation
 import Foundation
 import SwiftData
+import Algorithms
 
 @Model
 class StationEntry {
