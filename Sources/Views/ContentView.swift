@@ -25,7 +25,7 @@ struct ContentView: View {
       let visibleStation = selectedStation ?? nearestStation
       if let visibleStation {
         StationSign(
-          stationName: visibleStation.name,
+          station: visibleStation,
           trains: visibleStation.daytimeRoutes
         ).onTapGesture {
           tapHaptic.impactOccurred()

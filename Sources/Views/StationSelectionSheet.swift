@@ -28,7 +28,7 @@ struct StationSelectionSheet: View {
       NavigationView {
         List(sortedStationEntries) { station in
           StationSign(
-            stationName: station.name,
+            station: station,
             trains: station.daytimeRoutes
           ).onTapGesture {
             tapHaptic.impactOccurred()

@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct StationSign: View {
-  var stationName: String
+  var station: MTAStation
   var trains: [MTATrain]
   var body: some View {
     VStack(spacing: 0) {
       HStack(alignment: .bottom) {
-        Text(stationName)
+        Text(station.name)
           .font(.title)
           .foregroundStyle(.white)
           .bold()
@@ -50,12 +50,4 @@ struct StationSign: View {
         alignment: .top
       )
   }
-}
-
-#Preview {
-  StationSign(
-    stationName: "Eighth Avenue Station",
-    trains: [.a, .c, .e, .f, .g, .seven, .b, .two, .one]
-  )
-  .padding()
 }
