@@ -61,7 +61,7 @@ extension StationEntry {
 
     let arrivalEntries = feedData.values.flatMap { feed in
       self.stops.flatMap { stop in
-        getTrainArrivalsForStopEntry(stop: stop, feed: feed.entity)
+        getTrainArrivalsForStop(stop: stop, feed: feed.entity)
       }
     }
 
