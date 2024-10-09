@@ -5,7 +5,7 @@ struct StationSign: View {
   var trains: [MTATrain]
   var body: some View {
     VStack(spacing: 0) {
-      HStack {
+      HStack(alignment: .bottom) {
         Text(stationName)
           .font(.title)
           .foregroundStyle(.white)
@@ -20,13 +20,17 @@ struct StationSign: View {
           )
         Spacer()
       }
-      ScrollView(.horizontal) {
-        HStack {
-          ForEach(trains) { route in
-            TrainBadge(train: route, badgeSize: .small)
+      HStack {
+        ScrollView(.horizontal) {
+          HStack {
+            ForEach(trains) { route in
+              TrainBadge(train: route, badgeSize: .small)
+            }
+            Spacer()
           }
-          Spacer()
         }
+        Spacer()
+        PinButton()
       }.padding(
         EdgeInsets(
           top: 0,
@@ -34,7 +38,8 @@ struct StationSign: View {
           bottom: 12,
           trailing: 12
         )
-      ).scrollIndicators(.hidden)
+      )
+      .scrollIndicators(.hidden)
     }.background(.black)
       .cornerRadius(8)
       .overlay(
@@ -48,5 +53,9 @@ struct StationSign: View {
 }
 
 #Preview {
-  StationSign(stationName: "Eighth Avenue Station", trains: [.a, .c, .e])
+  StationSign(
+    stationName: "Eighth Avenue Station",
+    trains: [.a, .c, .e, .f, .g, .seven, .b, .two, .one]
+  )
+  .padding()
 }
