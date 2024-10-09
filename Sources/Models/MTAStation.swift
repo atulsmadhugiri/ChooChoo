@@ -9,11 +9,18 @@ class MTAStation {
   var id: Int
   var name: String
   var stops: [MTAStop]
+  var pinned: Bool
 
-  init(id: Int, name: String, stops: [MTAStop]) {
+  init(
+    id: Int,
+    name: String,
+    stops: [MTAStop],
+    pinned: Bool = false
+  ) {
     self.id = id
     self.name = name
     self.stops = stops
+    self.pinned = pinned
   }
 
   var location: CLLocation {
