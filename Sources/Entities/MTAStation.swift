@@ -85,14 +85,3 @@ extension MTAStation {
     return results
   }
 }
-
-func mergeStops(_ stops: [MTAStop]) -> [MTAStation] {
-  let stationToStops = Dictionary(grouping: stops, by: { $0.complexID })
-
-  let stations = stationToStops.map { (complexID, stationStops) in
-    let stationName = stationStops.first?.stopName ?? "Unknown"
-    return MTAStation(id: complexID, name: stationName, stops: stationStops)
-  }
-
-  return stations
-}
