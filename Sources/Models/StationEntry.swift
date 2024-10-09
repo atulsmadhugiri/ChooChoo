@@ -88,3 +88,32 @@ extension StationEntry {
 
   }
 }
+
+extension StationEntry {
+  func getArrivals() async -> [TrainArrivalEntry] {
+    let feedData = await self.getFeedData()
+
+    let arrivalEntries = feedData.values.flatMap { feed in
+      self.stops.flatMap { stop in
+        let mtaStop = MTAStop(
+          complexID: stop.complexID,
+          gtfsStopID: stop.gtfsStopID,
+          division: stop.division,
+          line: stop.line,
+          stopName: stop.stopName,
+          daytimeRoutes: stop.daytimeRoutes,
+          gtfsLatitude: stop.gtfsLatitude,
+          gtfsLongitude: stop.gtfsLongitude,
+          northDirectionLabel: stop.northDirectionLabel,
+          southDirectionLabel: stop.southDirectionLabel
+        )
+
+        return getTrainArrivalsForStop(stop: mtaStop, feed: feed.entity)
+      }
+    }
+
+    return arrivalEntries.uniqued(on: \.id)
+      .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
+      .sorted { $0.arrivalTime < $1.arrivalTime }
+  }
+}
