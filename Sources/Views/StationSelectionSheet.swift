@@ -12,14 +12,6 @@ struct StationSelectionSheet: View {
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
-  let mergedStations = mergeStops(mtaStops)
-  var filteredStations: [MTAStation] {
-    guard !searchTerm.isEmpty else { return mergedStations }
-    return mergedStations.filter {
-      $0.name.localizedCaseInsensitiveContains(searchTerm)
-    }
-  }
-
   var filteredStationEntries: [StationEntry] {
     guard !searchTerm.isEmpty else { return stations }
     return stations.filter {
@@ -29,22 +21,18 @@ struct StationSelectionSheet: View {
 
   var body: some View {
     if let location {
-      let sorted = filteredStations.sorted(by: {
-        location.distance(from: $0.location)
-          < location.distance(from: $1.location)
-      })
       let sortedStationEntries = filteredStationEntries.sorted(by: {
         location.distance(from: $0.location)
           < location.distance(from: $1.location)
       })
       NavigationView {
-        List(sorted) { station in
+        List(sortedStationEntries) { station in
           StationSign(
             stationName: station.name,
             trains: station.daytimeRoutes
           ).onTapGesture {
             tapHaptic.impactOccurred()
-            selectedStation = station
+            //            selectedStation = station
             isPresented = false
           }
         }.listStyle(.plain)
@@ -54,7 +42,7 @@ struct StationSelectionSheet: View {
             prompt: "Search stations"
           )
           .overlay {
-            if sorted.isEmpty, !searchTerm.isEmpty {
+            if sortedStationEntries.isEmpty, !searchTerm.isEmpty {
               ContentUnavailableView.search(text: searchTerm)
             }
           }
