@@ -34,7 +34,7 @@ struct StationSelectionSheet: View {
             tapHaptic.impactOccurred()
             selectedStation = station
             isPresented = false
-          }
+          }.shadow(radius: 2)
         }.listStyle(.plain)
           .searchable(
             text: $searchTerm,
