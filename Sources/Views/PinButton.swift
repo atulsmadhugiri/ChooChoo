@@ -15,14 +15,16 @@ struct PinButton: View {
       if station.pinned {
         likeFeedback.impactOccurred()
         modelContext.insert(station)
+        try! modelContext.save()
       } else {
         unlikeFeedback.impactOccurred()
         modelContext.insert(station)
+        try! modelContext.save()
       }
     } label: {
       Image(systemName: "star.fill")
         .frame(height: 40)
-        .foregroundColor(station.pinned ? .yellow : .gray)
+        .foregroundColor(station.pinned ? .yellow : .gray.opacity(0.5))
         .symbolEffect(.bounce, value: bounceValue)
         .imageScale(.large)
     }.buttonStyle(.plain)

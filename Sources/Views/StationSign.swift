@@ -5,40 +5,50 @@ struct StationSign: View {
   var trains: [MTATrain]
   var body: some View {
     VStack(spacing: 0) {
-      HStack(alignment: .bottom) {
-        Text(station.name)
-          .font(.title)
-          .foregroundStyle(.white)
-          .bold()
-          .padding(
-            EdgeInsets(
-              top: 12,
-              leading: 12,
-              bottom: 6,
-              trailing: 4
+      VStack(spacing: 0) {
+        HStack(alignment: .bottom) {
+          Text(station.name)
+            .font(.title)
+            .foregroundStyle(.white)
+            .bold()
+            .padding(
+              EdgeInsets(
+                top: 12,
+                leading: 12,
+                bottom: 6,
+                trailing: 4
+              )
             )
-          )
-        Spacer()
-      }.background(.black)
-      HStack {
-        ScrollView(.horizontal) {
-          HStack {
-            ForEach(trains) { route in
-              TrainBadge(train: route, badgeSize: .small)
-            }
-            Spacer()
-          }
+          Spacer()
         }
-      }.padding(
-        EdgeInsets(
-          top: 0,
-          leading: 12,
-          bottom: 12,
-          trailing: 12
+        HStack {
+          ScrollView(.horizontal) {
+            HStack {
+              ForEach(trains) { route in
+                TrainBadge(train: route, badgeSize: .small)
+              }
+              Spacer()
+            }
+          }
+        }.padding(
+          EdgeInsets(
+            top: 0,
+            leading: 12,
+            bottom: 12,
+            trailing: 12
+          )
         )
-      )
-      .scrollIndicators(.hidden)
+        .scrollIndicators(.hidden)
+      }
       .background(.black)
+      .overlay(
+        Rectangle()
+          .fill(.white)
+          .frame(height: 2)
+          .padding(.top, 12),
+        alignment: .top
+      )
+
       HStack {
         Spacer()
         PinButton(station: station)
@@ -52,14 +62,7 @@ struct StationSign: View {
       ).background(
         .ultraThickMaterial
       )
-    }
-    .cornerRadius(8)
-    .overlay(
-      Rectangle()
-        .fill(.white)
-        .frame(height: 2)
-        .padding(.top, 12),
-      alignment: .top
-    )
+
+    }.cornerRadius(8)
   }
 }
