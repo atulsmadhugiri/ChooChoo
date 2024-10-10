@@ -30,7 +30,7 @@ struct StationSign: View {
           }
         }
         Spacer()
-        PinButton()
+        PinButton(station: station)
       }.padding(
         EdgeInsets(
           top: 0,

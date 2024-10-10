@@ -1,31 +1,32 @@
 import SwiftUI
 
 struct PinButton: View {
-  @State var liked: Bool = false
-  @State var bounceValue: Bool = false
+  @Environment(\.modelContext) private var modelContext
+  var station: MTAStation
 
   let likeFeedback = UIImpactFeedbackGenerator(style: .heavy)
   let unlikeFeedback = UIImpactFeedbackGenerator(style: .light)
+  @State private var bounceValue: Bool = false
 
   var body: some View {
     Button {
-      bounceValue = !liked ? !bounceValue : bounceValue
-      liked = !liked
-      if liked {
+      bounceValue = !station.pinned ? !bounceValue : bounceValue
+      station.pinned = !station.pinned
+      if station.pinned {
         likeFeedback.impactOccurred()
+        modelContext.insert(station)
+        try! modelContext.save()
       } else {
         unlikeFeedback.impactOccurred()
+        modelContext.insert(station)
+        try! modelContext.save()
       }
     } label: {
       Image(systemName: "star.fill")
         .frame(height: 40)
-        .foregroundColor(liked ? .yellow : .gray)
+        .foregroundColor(station.pinned ? .yellow : .gray)
         .symbolEffect(.bounce, value: bounceValue)
         .imageScale(.large)
     }.buttonStyle(.plain)
   }
-}
-
-#Preview {
-  PinButton()
 }
