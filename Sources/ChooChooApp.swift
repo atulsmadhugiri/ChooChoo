@@ -24,15 +24,23 @@ struct ChooChooApp: App {
     PostHogSDK.shared.setup(configuration)
 
     let stopEntries = MTAStop.loadStopsFromCSV()
-    let stationEntries = MTAStation.mergeStops(stopEntries)
-    for stationEntry in stationEntries {
-      modelContainer.mainContext.insert(stationEntry)
+
+    let defaults = UserDefaults.standard
+    if !defaults.bool(forKey: "stationsDataLoaded") {
+      print("Loading data into SwiftData store.")
+      let stationEntries = MTAStation.mergeStops(stopEntries)
+      for stationEntry in stationEntries {
+        modelContainer.mainContext.insert(stationEntry)
+      }
+      try! modelContainer.mainContext.save()
+
+      defaults.set(true, forKey: "stationsDataLoaded")
     }
-    try! modelContainer.mainContext.save()
 
     mtaStopsByGTFSID = Dictionary(
       uniqueKeysWithValues: stopEntries.map { ($0.gtfsStopID, $0) }
     )
+
   }
 
   var body: some Scene {

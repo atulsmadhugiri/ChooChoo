@@ -15,11 +15,9 @@ struct PinButton: View {
       if station.pinned {
         likeFeedback.impactOccurred()
         modelContext.insert(station)
-        try! modelContext.save()
       } else {
         unlikeFeedback.impactOccurred()
         modelContext.insert(station)
-        try! modelContext.save()
       }
     } label: {
       Image(systemName: "star.fill")
