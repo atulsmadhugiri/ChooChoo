@@ -27,7 +27,7 @@ struct StationSelectionSheet: View {
       })
       NavigationView {
         List(sortedStationEntries) { station in
-          StationSign(
+          BaseStationSign(
             station: station,
             trains: station.daytimeRoutes
           ).onTapGesture {

@@ -24,7 +24,7 @@ struct ContentView: View {
     VStack(spacing: 0) {
       let visibleStation = selectedStation ?? nearestStation
       if let visibleStation {
-        StationSign(
+        BaseStationSign(
           station: visibleStation,
           trains: visibleStation.daytimeRoutes
         ).onTapGesture {

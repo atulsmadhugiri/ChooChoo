@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct StationSign: View {
+struct BaseStationSign: View {
   var station: MTAStation
   var trains: [MTATrain]
   var body: some View {
