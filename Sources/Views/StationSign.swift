@@ -4,6 +4,62 @@ struct StationSign: View {
   var station: MTAStation
   var trains: [MTATrain]
   var body: some View {
-    BaseStationSign(station: station, trains: trains)
+    VStack(spacing: 0) {
+      HStack(alignment: .bottom) {
+        Text(station.name)
+          .font(.title)
+          .foregroundStyle(.white)
+          .bold()
+          .padding(
+            EdgeInsets(
+              top: 12,
+              leading: 12,
+              bottom: 6,
+              trailing: 4
+            )
+          )
+        Spacer()
+      }.background(.black)
+      HStack {
+        ScrollView(.horizontal) {
+          HStack {
+            ForEach(trains) { route in
+              TrainBadge(train: route, badgeSize: .small)
+            }
+            Spacer()
+          }
+        }
+      }.padding(
+        EdgeInsets(
+          top: 0,
+          leading: 12,
+          bottom: 12,
+          trailing: 12
+        )
+      )
+      .scrollIndicators(.hidden)
+      .background(.black)
+      HStack {
+        Spacer()
+        PinButton(station: station)
+      }.padding(
+        EdgeInsets(
+          top: 0,
+          leading: 12,
+          bottom: 0,
+          trailing: 12
+        )
+      ).background(
+        .ultraThickMaterial
+      )
+    }
+    .cornerRadius(8)
+    .overlay(
+      Rectangle()
+        .fill(.white)
+        .frame(height: 2)
+        .padding(.top, 12),
+      alignment: .top
+    )
   }
 }

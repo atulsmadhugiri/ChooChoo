@@ -13,7 +13,7 @@
 		B74C732A2CB49D4400B8E2E1 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73292CB49D4400B8E2E1 /* MTAStation.swift */; };
 		B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B752EDAF2CA1FB5E00525072 /* PostHog */; };
 		B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */; };
-		B75860A22C52F4D00007404D /* BaseStationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75860A12C52F4D00007404D /* BaseStationSign.swift */; };
+		B75860A22C52F4D00007404D /* StationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75860A12C52F4D00007404D /* StationSign.swift */; };
 		B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7697CB72C5192AB001B880C /* FormatterUtils.swift */; };
 		B77807C32C6D740C00216D68 /* ArrivalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77807C22C6D740C00216D68 /* ArrivalCard.swift */; };
 		B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */; };
@@ -28,7 +28,6 @@
 		B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A856942BB3848E00D571AA /* Assets.xcassets */; };
 		B7A856982BB3848E00D571AA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A856972BB3848E00D571AA /* Preview Assets.xcassets */; };
 		B7AD529C2CB70E060084F49C /* PinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AD529B2CB70E060084F49C /* PinButton.swift */; };
-		B7AD529E2CB856390084F49C /* StationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AD529D2CB856390084F49C /* StationSign.swift */; };
 		B7D904372C65A745009B4D18 /* StationSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */; };
 		B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */; };
 		B7D9D6B82C94C75500BD13F3 /* MTALine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6B72C94C75500BD13F3 /* MTALine.swift */; };
@@ -45,7 +44,7 @@
 		B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = PrivacyPolicy.rtf; sourceTree = "<group>"; };
 		B752EDB62CA2097400525072 /* Support.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Support.html; sourceTree = "<group>"; };
 		B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainArrivalEntry.swift; sourceTree = "<group>"; };
-		B75860A12C52F4D00007404D /* BaseStationSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseStationSign.swift; sourceTree = "<group>"; };
+		B75860A12C52F4D00007404D /* StationSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSign.swift; sourceTree = "<group>"; };
 		B7697CB72C5192AB001B880C /* FormatterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterUtils.swift; sourceTree = "<group>"; };
 		B77807C22C6D740C00216D68 /* ArrivalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrivalCard.swift; sourceTree = "<group>"; };
 		B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
@@ -59,7 +58,6 @@
 		B7A856942BB3848E00D571AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B7A856972BB3848E00D571AA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B7AD529B2CB70E060084F49C /* PinButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinButton.swift; sourceTree = "<group>"; };
-		B7AD529D2CB856390084F49C /* StationSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSign.swift; sourceTree = "<group>"; };
 		B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSelectionSheet.swift; sourceTree = "<group>"; };
 		B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAUtils.swift; sourceTree = "<group>"; };
 		B7D9D6B72C94C75500BD13F3 /* MTALine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTALine.swift; sourceTree = "<group>"; };
@@ -118,8 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */,
-				B75860A12C52F4D00007404D /* BaseStationSign.swift */,
-				B7AD529D2CB856390084F49C /* StationSign.swift */,
+				B75860A12C52F4D00007404D /* StationSign.swift */,
 				B7A856922BB3848D00D571AA /* ContentView.swift */,
 				B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */,
 				B77807C22C6D740C00216D68 /* ArrivalCard.swift */,
@@ -288,12 +285,11 @@
 				B77807C32C6D740C00216D68 /* ArrivalCard.swift in Sources */,
 				B7D9D6BD2C94CFF300BD13F3 /* EncodingUtils.swift in Sources */,
 				B7A856932BB3848D00D571AA /* ContentView.swift in Sources */,
-				B75860A22C52F4D00007404D /* BaseStationSign.swift in Sources */,
+				B75860A22C52F4D00007404D /* StationSign.swift in Sources */,
 				B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */,
 				B78613B82C4EF39B00F8A35B /* nyct-subway.pb.swift in Sources */,
 				B78613BA2C4EF3A000F8A35B /* gtfs-realtime.pb.swift in Sources */,
 				B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */,
-				B7AD529E2CB856390084F49C /* StationSign.swift in Sources */,
 				B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */,
 				B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */,
 			);
