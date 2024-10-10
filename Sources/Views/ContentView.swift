@@ -99,10 +99,13 @@ struct ContentView: View {
       return
     }
 
+    let lines = station.lines
+    let stops = station.stops
+
     Task {
       loading = true
       defer { loading = false }
-      trainArrivals = await station.getArrivals()
+      trainArrivals = await getArrivals(lines: lines, stops: stops)
       let sameDirection = trainArrivals.filter {
         $0.direction == selectedDirection
       }
