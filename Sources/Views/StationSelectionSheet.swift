@@ -22,7 +22,12 @@ struct StationSelectionSheet: View {
   var body: some View {
     if let location {
       let sortedStationEntries = filteredStationEntries.sorted(by: {
-        location.distance(from: $0.location)
+
+        if $0.pinned != $1.pinned {
+          return $0.pinned && !$1.pinned
+        }
+
+        return location.distance(from: $0.location)
           < location.distance(from: $1.location)
       })
       NavigationView {
