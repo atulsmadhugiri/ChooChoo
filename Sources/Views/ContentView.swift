@@ -26,7 +26,8 @@ struct ContentView: View {
       if let visibleStation {
         StationSign(
           station: visibleStation,
-          trains: visibleStation.daytimeRoutes
+          trains: visibleStation.daytimeRoutes,
+          location: locationFetcher.location
         ).onTapGesture {
           tapHaptic.impactOccurred()
           selectionSheetActive = true

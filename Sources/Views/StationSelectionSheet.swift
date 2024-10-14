@@ -34,7 +34,8 @@ struct StationSelectionSheet: View {
         List(sortedStationEntries) { station in
           StationSign(
             station: station,
-            trains: station.daytimeRoutes
+            trains: station.daytimeRoutes,
+            location: location
           ).onTapGesture {
             tapHaptic.impactOccurred()
             selectedStation = station

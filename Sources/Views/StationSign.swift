@@ -1,8 +1,12 @@
+import CoreLocation
 import SwiftUI
 
 struct StationSign: View {
   var station: MTAStation
   var trains: [MTATrain]
+
+  var location: CLLocation?
+
   var body: some View {
     VStack(spacing: 0) {
       VStack(spacing: 0) {
