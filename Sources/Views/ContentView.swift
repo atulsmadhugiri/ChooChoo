@@ -100,7 +100,7 @@ struct ContentView: View {
     }
 
     let lines = station.lines
-    let stops = station.stops
+    let stops = station.stops.map { MTAStopValue(mtaStop: $0) }
 
     Task {
       loading = true

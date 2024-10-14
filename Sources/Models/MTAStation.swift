@@ -62,7 +62,7 @@ extension MTAStation {
   }
 }
 
-func getArrivals(lines: [MTALine], stops: [MTAStop]) async
+func getArrivals(lines: [MTALine], stops: [MTAStopValue]) async
   -> [TrainArrivalEntry]
 {
   let feedData = await getFeedData(lines: lines)

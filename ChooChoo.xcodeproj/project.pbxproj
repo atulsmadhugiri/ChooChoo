@@ -168,7 +168,6 @@
 		B7A8568F2BB3848D00D571AA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				B7D9B54C2CBC9A4C0026C609 /* New Group */,
 				B74C73252CB4883A00B8E2E1 /* Models */,
 				B77807C12C6D707600216D68 /* Views */,
 				B7D9D6BB2C94CEB300BD13F3 /* Entities */,
@@ -188,13 +187,6 @@
 				B7A856972BB3848E00D571AA /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		B7D9B54C2CBC9A4C0026C609 /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "New Group";
 			sourceTree = "<group>";
 		};
 		B7D9D6BB2C94CEB300BD13F3 /* Entities */ = {
