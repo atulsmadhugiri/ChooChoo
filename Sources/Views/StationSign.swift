@@ -54,6 +54,15 @@ struct StationSign: View {
       )
 
       HStack {
+        if let location {
+          Text(
+            formattedDistanceTraveled(
+              distance: location.distance(from: station.location))
+          ).font(.headline)
+            .bold()
+            .fontDesign(.rounded)
+            .foregroundStyle(.secondary)
+        }
         Spacer()
         PinButton(station: station)
       }.padding(
