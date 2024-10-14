@@ -30,6 +30,7 @@
 		B7AD529C2CB70E060084F49C /* PinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AD529B2CB70E060084F49C /* PinButton.swift */; };
 		B7D904372C65A745009B4D18 /* StationSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */; };
 		B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */; };
+		B7D9B54E2CBC9A5F0026C609 /* MTAStopValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9B54D2CBC9A5F0026C609 /* MTAStopValue.swift */; };
 		B7D9D6B82C94C75500BD13F3 /* MTALine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6B72C94C75500BD13F3 /* MTALine.swift */; };
 		B7D9D6BA2C94C9FE00BD13F3 /* MTATrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6B92C94C9FE00BD13F3 /* MTATrain.swift */; };
 		B7D9D6BD2C94CFF300BD13F3 /* EncodingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */; };
@@ -60,6 +61,7 @@
 		B7AD529B2CB70E060084F49C /* PinButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinButton.swift; sourceTree = "<group>"; };
 		B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSelectionSheet.swift; sourceTree = "<group>"; };
 		B7D9B5252BB385ED00AE6E3D /* MTAUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAUtils.swift; sourceTree = "<group>"; };
+		B7D9B54D2CBC9A5F0026C609 /* MTAStopValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStopValue.swift; sourceTree = "<group>"; };
 		B7D9D6B72C94C75500BD13F3 /* MTALine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTALine.swift; sourceTree = "<group>"; };
 		B7D9D6B92C94C9FE00BD13F3 /* MTATrain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTATrain.swift; sourceTree = "<group>"; };
 		B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingUtils.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 		B7A8568F2BB3848D00D571AA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				B7D9B54C2CBC9A4C0026C609 /* New Group */,
 				B74C73252CB4883A00B8E2E1 /* Models */,
 				B77807C12C6D707600216D68 /* Views */,
 				B7D9D6BB2C94CEB300BD13F3 /* Entities */,
@@ -187,11 +190,19 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		B7D9B54C2CBC9A4C0026C609 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
 		B7D9D6BB2C94CEB300BD13F3 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
 				B7D9D6B72C94C75500BD13F3 /* MTALine.swift */,
 				B7D9D6B92C94C9FE00BD13F3 /* MTATrain.swift */,
+				B7D9B54D2CBC9A5F0026C609 /* MTAStopValue.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -283,6 +294,7 @@
 				B74C732A2CB49D4400B8E2E1 /* MTAStation.swift in Sources */,
 				B7D9B5262BB385ED00AE6E3D /* MTAUtils.swift in Sources */,
 				B77807C32C6D740C00216D68 /* ArrivalCard.swift in Sources */,
+				B7D9B54E2CBC9A5F0026C609 /* MTAStopValue.swift in Sources */,
 				B7D9D6BD2C94CFF300BD13F3 /* EncodingUtils.swift in Sources */,
 				B7A856932BB3848D00D571AA /* ContentView.swift in Sources */,
 				B75860A22C52F4D00007404D /* StationSign.swift in Sources */,
