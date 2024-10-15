@@ -29,6 +29,10 @@ struct ChooChooApp: App {
         "https://51386dccc28a7d8f4861cedc64b48e14@o4508127794561024.ingest.us.sentry.io/4508127795478528"
       options.debug = true
       options.tracesSampleRate = 1.0
+      options.enableNetworkTracking = true
+      options.enableAppLaunchProfiling = true
+      options.enableAutoPerformanceTracing = true
+      options.profilesSampleRate = 1.0
 
       options.attachViewHierarchy = true  // This adds the view hierarchy to the error events
     }
