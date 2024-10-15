@@ -50,13 +50,13 @@ struct StationSelectionSheet: View {
             station: entry.station,
             trains: entry.station.daytimeRoutes,
             distance: entry.distance
-          )
-          .onTapGesture {
-            tapHaptic.impactOccurred()
-            selectedStation = entry.station
-            isPresented = false
-          }
-          .shadow(radius: 2)
+          ).id(entry.id)
+            .onTapGesture {
+              tapHaptic.impactOccurred()
+              selectedStation = entry.station
+              isPresented = false
+            }
+            .shadow(radius: 2)
         }
         .listStyle(.plain)
         .searchable(
