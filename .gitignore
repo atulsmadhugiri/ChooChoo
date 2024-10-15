@@ -90,3 +90,5 @@ fastlane/test_output
 iOSInjectionProject/
 
 Sources/Secrets.swift
+
+.sentryclirc

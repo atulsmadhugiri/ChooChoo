@@ -35,6 +35,7 @@
 		B7D9D6BA2C94C9FE00BD13F3 /* MTATrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6B92C94C9FE00BD13F3 /* MTATrain.swift */; };
 		B7D9D6BD2C94CFF300BD13F3 /* EncodingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */; };
 		B7E3FA1B2C4F0A7B0036CCDF /* LocationFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */; };
+		3376C5D5B0D14FB490637867 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = D11BE48F774F4CEF802F4D75 /* Sentry */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 				B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */,
 				B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */,
 				B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */,
+				3376C5D5B0D14FB490637867 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +211,7 @@
 				B7A856892BB3848D00D571AA /* Sources */,
 				B7A8568A2BB3848D00D571AA /* Frameworks */,
 				B7A8568B2BB3848D00D571AA /* Resources */,
+				838D0F291B4446CD91446776 /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -218,6 +221,9 @@
 			productName = ChooChoo;
 			productReference = B7A8568D2BB3848D00D571AA /* ChooChoo NYC.app */;
 			productType = "com.apple.product-type.application";
+			packageProductDependencies = (
+				D11BE48F774F4CEF802F4D75 /* Sentry */,
+			);
 		};
 /* End PBXNativeTarget section */
 
@@ -247,6 +253,7 @@
 				B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */,
 				B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 				B71E2AD82CADE447004E63DD /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				AE28358B60CC46DFA8B5A2AF /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = B7A8568E2BB3848D00D571AA /* Products */;
 			projectDirPath = "";
@@ -451,6 +458,8 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = Debug;
 		};
@@ -484,6 +493,8 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = Release;
 		};
@@ -535,6 +546,14 @@
 				minimumVersion = 1.27.0;
 			};
 		};
+		AE28358B60CC46DFA8B5A2AF /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -558,7 +577,30 @@
 			package = B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */;
 			productName = SwiftProtobufPluginLibrary;
 		};
+		D11BE48F774F4CEF802F4D75 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AE28358B60CC46DFA8B5A2AF /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		838D0F291B4446CD91446776 /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Upload Debug Symbols to Sentry";
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			outputPaths = (
+			);
+			shellPath = /bin/sh;
+			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=atul-madhugiri\nexport SENTRY_PROJECT=apple-ios\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 	};
 	rootObject = B7A856852BB3848D00D571AA /* Project object */;
 }
