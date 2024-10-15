@@ -43,40 +43,39 @@ struct StationSelectionSheet: View {
   }
 
   var body: some View {
-    if location != nil {
-      NavigationView {
-        List(sortedStationEntries) { entry in
-          StationSign(
-            station: entry.station,
-            trains: entry.station.daytimeRoutes,
-            distance: entry.distance
-          ).id(entry.id)
-            .onTapGesture {
-              tapHaptic.impactOccurred()
-              selectedStation = entry.station
-              isPresented = false
-            }
-            .shadow(radius: 2)
-        }
-        .listStyle(.plain)
-        .searchable(
-          text: $searchTerm,
-          placement: .automatic,
-          prompt: "Search stations"
-        )
-        .overlay {
-          if sortedStationEntries.isEmpty, !searchTerm.isEmpty {
-            ContentUnavailableView.search(text: searchTerm)
+
+    NavigationView {
+      List(sortedStationEntries) { entry in
+        StationSign(
+          station: entry.station,
+          trains: entry.station.daytimeRoutes,
+          distance: entry.distance
+        ).id(entry.id)
+          .onTapGesture {
+            tapHaptic.impactOccurred()
+            selectedStation = entry.station
+            isPresented = false
           }
+          .shadow(radius: 2)
+      }
+      .listStyle(.plain)
+      .searchable(
+        text: $searchTerm,
+        placement: .automatic,
+        prompt: "Search stations"
+      )
+      .overlay {
+        if sortedStationEntries.isEmpty, !searchTerm.isEmpty {
+          ContentUnavailableView.search(text: searchTerm)
         }
-        .navigationBarTitle(
-          "Nearby Stations",
-          displayMode: .inline
-        )
       }
-      .onAppear {
-        tapHaptic.prepare()
-      }
+      .navigationBarTitle(
+        "Nearby Stations",
+        displayMode: .inline
+      )
+    }
+    .onAppear {
+      tapHaptic.prepare()
     }
   }
 }
