@@ -2,6 +2,12 @@ import CoreLocation
 import SwiftData
 import SwiftUI
 
+struct StationWithDistance: Identifiable {
+  let station: MTAStation
+  let distance: CLLocationDistance
+  var id: MTAStation.ID { station.id }
+}
+
 struct StationSelectionSheet: View {
   @Query var stations: [MTAStation]
 
@@ -19,47 +25,58 @@ struct StationSelectionSheet: View {
     }
   }
 
+  var sortedStationEntries: [StationWithDistance] {
+    guard let location else { return [] }
+    let stationDistances = filteredStationEntries.map { station in
+      StationWithDistance(
+        station: station,
+        distance: location.distance(from: station.location)
+      )
+    }
+
+    return stationDistances.sorted { a, b in
+      if a.station.pinned != b.station.pinned {
+        return a.station.pinned && !b.station.pinned
+      }
+      return a.distance < b.distance
+    }
+  }
+
   var body: some View {
     if let location {
-      let sortedStationEntries = filteredStationEntries.sorted(by: {
-
-        if $0.pinned != $1.pinned {
-          return $0.pinned && !$1.pinned
-        }
-
-        return location.distance(from: $0.location)
-          < location.distance(from: $1.location)
-      })
       NavigationView {
-        List(sortedStationEntries) { station in
+        List(sortedStationEntries) { entry in
           StationSign(
-            station: station,
-            trains: station.daytimeRoutes,
+            station: entry.station,
+            trains: entry.station.daytimeRoutes,
             location: location
-          ).onTapGesture {
+          )
+          .onTapGesture {
             tapHaptic.impactOccurred()
-            selectedStation = station
+            selectedStation = entry.station
             isPresented = false
-          }.shadow(radius: 2)
-        }.listStyle(.plain)
-          .searchable(
-            text: $searchTerm,
-            placement: .automatic,
-            prompt: "Search stations"
-          )
-          .overlay {
-            if sortedStationEntries.isEmpty, !searchTerm.isEmpty {
-              ContentUnavailableView.search(text: searchTerm)
-            }
           }
-          .navigationBarTitle(
-            "Nearby Stations",
-            displayMode: .inline
-          )
-      }.onAppear {
+          .shadow(radius: 2)
+        }
+        .listStyle(.plain)
+        .searchable(
+          text: $searchTerm,
+          placement: .automatic,
+          prompt: "Search stations"
+        )
+        .overlay {
+          if sortedStationEntries.isEmpty, !searchTerm.isEmpty {
+            ContentUnavailableView.search(text: searchTerm)
+          }
+        }
+        .navigationBarTitle(
+          "Nearby Stations",
+          displayMode: .inline
+        )
+      }
+      .onAppear {
         tapHaptic.prepare()
       }
-
     }
   }
 }
