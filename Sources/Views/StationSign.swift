@@ -5,7 +5,7 @@ struct StationSign: View {
   var station: MTAStation
   var trains: [MTATrain]
 
-  var location: CLLocation?
+  let distance: CLLocationDistance
 
   var body: some View {
     VStack(spacing: 0) {
@@ -54,15 +54,12 @@ struct StationSign: View {
       )
 
       HStack {
-        if let location {
-          Text(
-            formattedDistanceTraveled(
-              distance: location.distance(from: station.location))
-          ).font(.headline)
-            .bold()
-            .fontDesign(.rounded)
-            .foregroundStyle(.secondary)
-        }
+        Text(
+          formattedDistanceTraveled(distance: distance)
+        ).font(.headline)
+          .bold()
+          .fontDesign(.rounded)
+          .foregroundStyle(.secondary)
         Spacer()
         PinButton(station: station)
       }.padding(

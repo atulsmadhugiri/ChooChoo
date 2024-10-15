@@ -23,11 +23,11 @@ struct ContentView: View {
   var body: some View {
     VStack(spacing: 0) {
       let visibleStation = selectedStation ?? nearestStation
-      if let visibleStation {
+      if let visibleStation, let location = locationFetcher.location {
         StationSign(
           station: visibleStation,
           trains: visibleStation.daytimeRoutes,
-          location: locationFetcher.location
+          distance: location.distance(from: visibleStation.location)
         ).onTapGesture {
           tapHaptic.impactOccurred()
           selectionSheetActive = true

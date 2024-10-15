@@ -43,13 +43,13 @@ struct StationSelectionSheet: View {
   }
 
   var body: some View {
-    if let location {
+    if location != nil {
       NavigationView {
         List(sortedStationEntries) { entry in
           StationSign(
             station: entry.station,
             trains: entry.station.daytimeRoutes,
-            location: location
+            distance: entry.distance
           )
           .onTapGesture {
             tapHaptic.impactOccurred()
