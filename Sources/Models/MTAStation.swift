@@ -24,9 +24,10 @@ class MTAStation {
   }
 
   var location: CLLocation {
-    CLLocation(
-      latitude: self.stops.first!.gtfsLatitude,
-      longitude: self.stops.first!.gtfsLongitude)
+    guard let firstStop = self.stops.first else { return CLLocation() }
+    return CLLocation(
+      latitude: firstStop.gtfsLatitude,
+      longitude: firstStop.gtfsLongitude)
   }
 
   var daytimeRoutes: [MTATrain] {
