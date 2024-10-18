@@ -118,10 +118,11 @@ struct ContentView: View {
 
   func setNearestStation() {
     guard let currentLocation = locationFetcher.location else { return }
-    nearestStation = stations.min(by: {
+    let nearestStations = stations.sorted(by: {
       currentLocation.distance(from: $0.location)
         < currentLocation.distance(from: $1.location)
     })
+    nearestStation = nearestStations.first
   }
 }
 
