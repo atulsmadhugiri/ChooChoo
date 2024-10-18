@@ -9,7 +9,7 @@ nonisolated(unsafe) var mtaStopsByGTFSID: [String: MTAStop] = [:]
 struct ChooChooApp: App {
   var modelContainer = {
     do {
-      return try ModelContainer(for: MTAStation.self)
+      return try ModelContainer(for: MTAStation.self, MTAStop.self)
     } catch {
       fatalError("Could not create ModelContainer: \(error)")
     }
@@ -33,7 +33,7 @@ struct ChooChooApp: App {
       options.enableAutoPerformanceTracing = true
       options.profilesSampleRate = 1.0
 
-      options.attachViewHierarchy = true  // This adds the view hierarchy to the error events
+      options.attachViewHierarchy = true
     }
 
     let stopEntries = MTAStop.loadStopsFromCSV()
