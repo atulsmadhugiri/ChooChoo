@@ -8,7 +8,7 @@ class MTAStation {
   @Attribute(.unique)
   var id: Int
   var name: String
-  var stops: [MTAStop]
+  var stops: [MTAStop] = []
   var pinned: Bool
 
   init(
@@ -19,8 +19,8 @@ class MTAStation {
   ) {
     self.id = id
     self.name = name
-    self.stops = stops
     self.pinned = pinned
+    self.stops.append(contentsOf: stops)
   }
 
   var location: CLLocation {
