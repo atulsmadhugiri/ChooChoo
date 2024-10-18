@@ -18,7 +18,7 @@ struct ContentView: View {
   @State private var loading: Bool = true
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
-  let timer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
+  let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
 
   var body: some View {
     VStack(spacing: 0) {
