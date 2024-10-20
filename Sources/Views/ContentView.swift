@@ -32,8 +32,17 @@ struct ContentView: View {
           tapHaptic.impactOccurred()
           selectionSheetActive = true
           logStationSignTapped(for: visibleStation)
-        }.padding(12).shadow(radius: 2)
+        }.padding(
+          EdgeInsets(
+            top: 12,
+            leading: 12,
+            bottom: 0,
+            trailing: 12
+          )
+        ).shadow(radius: 2)
       }
+
+      AlertBox()
 
       Divider()
 

@@ -5,17 +5,28 @@ struct AlertBox: View {
     GroupBox {
       VStack(alignment: .leading) {
         Text("Delays on the ")
-          + Text("\(Image(systemName: "f.circle.fill"))").foregroundStyle(
+          + Text(
+            Image(systemName: "f.circle.fill")
+              .renderingMode(.original)
+          ).foregroundStyle(
             MTALine.bdfm.color)
           + Text(" and ")
-          + Text("\(Image(systemName: "g.circle.fill"))").foregroundStyle(
-            MTALine.g.color)
+          + Text(
+            Image(systemName: "g.circle.fill")
+              .renderingMode(.original)
+          ).foregroundStyle(MTALine.g.color)
+
           + Text(" trains due to signal issues at Bergen Street.")
       }
     } label: {
-      Label("Warning", systemImage: "exclamationmark.triangle.fill")
+      Label("Alert", systemImage: "exclamationmark.triangle.fill")
         .foregroundStyle(.orange)
-    }.padding()
+    }
+    .backgroundStyle(.yellow.opacity(0.1))
+    .overlay(
+      RoundedRectangle(cornerRadius: 8)
+        .stroke(Color.yellow, lineWidth: 1)
+    ).padding(12)
   }
 }
 
