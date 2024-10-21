@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3376C5D5B0D14FB490637867 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = D11BE48F774F4CEF802F4D75 /* Sentry */; };
+		B701CC322CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC312CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift */; };
 		B71E2ADA2CADE447004E63DD /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = B71E2AD92CADE447004E63DD /* Algorithms */; };
 		B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B37582CA37FC100FAC872 /* LoggingUtils.swift */; };
 		B74C73282CB488FC00B8E2E1 /* MTAStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73272CB488FC00B8E2E1 /* MTAStop.swift */; };
@@ -40,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B701CC312CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "gtfs-realtime-service-status.pb.swift"; sourceTree = "<group>"; };
 		B72B37582CA37FC100FAC872 /* LoggingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingUtils.swift; sourceTree = "<group>"; };
 		B72B375A2CA4B97200FAC872 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 		B74C73272CB488FC00B8E2E1 /* MTAStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStop.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				B78613B92C4EF3A000F8A35B /* gtfs-realtime.pb.swift */,
+				B701CC312CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift */,
 				B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */,
 			);
 			path = Generated;
@@ -319,6 +322,7 @@
 				B7D9B54E2CBC9A5F0026C609 /* MTAStopValue.swift in Sources */,
 				B7D9D6BD2C94CFF300BD13F3 /* EncodingUtils.swift in Sources */,
 				B7A856932BB3848D00D571AA /* ContentView.swift in Sources */,
+				B701CC322CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift in Sources */,
 				B75860A22C52F4D00007404D /* StationSign.swift in Sources */,
 				B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */,
 				B78613B82C4EF39B00F8A35B /* nyct-subway.pb.swift in Sources */,
