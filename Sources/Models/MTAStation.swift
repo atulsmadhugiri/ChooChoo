@@ -63,22 +63,6 @@ extension MTAStation {
   }
 }
 
-func getArrivals(lines: [MTALine], stops: [MTAStopValue]) async
-  -> [TrainArrivalEntry]
-{
-  let feedData = await getFeedData(lines: lines)
-
-  let arrivalEntries = feedData.values.flatMap { feed in
-    stops.flatMap { stop in
-      getTrainArrivalsForStop(stop: stop, feed: feed.entity)
-    }
-  }
-
-  return arrivalEntries.uniqued(on: \.id)
-    .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
-    .sorted { $0.arrivalTime < $1.arrivalTime }
-}
-
 func getFeedData(lines: [MTALine]) async -> [MTALine:
   TransitRealtime_FeedMessage]
 {
@@ -110,4 +94,20 @@ func getFeedData(lines: [MTALine]) async -> [MTALine:
 
   }
   return results
+}
+
+func getArrivals(lines: [MTALine], stops: [MTAStopValue]) async
+  -> [TrainArrivalEntry]
+{
+  let feedData = await getFeedData(lines: lines)
+
+  let arrivalEntries = feedData.values.flatMap { feed in
+    stops.flatMap { stop in
+      getTrainArrivalsForStop(stop: stop, feed: feed.entity)
+    }
+  }
+
+  return arrivalEntries.uniqued(on: \.id)
+    .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
+    .sorted { $0.arrivalTime < $1.arrivalTime }
 }
