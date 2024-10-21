@@ -111,3 +111,17 @@ func getArrivals(lines: [MTALine], stops: [MTAStopValue]) async
     .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
     .sorted { $0.arrivalTime < $1.arrivalTime }
 }
+
+private func extractTripAlerts(
+  from feed: [TransitRealtime_FeedEntity]
+) -> [TransitRealtime_Alert] {
+  return feed.compactMap { $0.hasAlert ? $0.alert : nil }
+}
+
+func getTripDelays(
+  lines: [MTALine],
+  stops: [MTAStopValue]
+) async -> [TransitRealtime_Alert] {
+  let feedData = await getFeedData(lines: lines)
+  return feedData.values.flatMap { extractTripAlerts(from: $0.entity) }
+}
