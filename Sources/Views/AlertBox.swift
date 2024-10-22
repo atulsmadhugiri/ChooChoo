@@ -7,13 +7,15 @@ struct AlertBox: View {
       VStack(alignment: .leading) {
         parseAlertBody(alertBody)
           .fontDesign(.rounded)
+          .frame(maxWidth: .infinity, alignment: .leading)
       }
     } label: {
       Label("Service Alert", systemImage: "exclamationmark.triangle.fill")
         .foregroundStyle(.orange)
-        .fontDesign(.rounded)
-    }
-    .backgroundStyle(.yellow.opacity(0.1))
+    }.background(
+      RoundedRectangle(cornerRadius: 8)
+        .fill(Color.yellow.opacity(0.2))
+    )
     .overlay(
       RoundedRectangle(cornerRadius: 8)
         .stroke(Color.yellow, lineWidth: 1)
@@ -27,7 +29,7 @@ struct AlertBox: View {
     var result = Text("")
     var currentIndex = updatedAlertBody.startIndex
 
-    let pattern = /\[([A-Za-z]+)\]/
+    let pattern = /\[([A-Za-z1-7]+)\]/
 
     while currentIndex < updatedAlertBody.endIndex {
       if let match = updatedAlertBody[currentIndex...].firstMatch(of: pattern) {
