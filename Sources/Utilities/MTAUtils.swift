@@ -83,6 +83,16 @@ func getServiceAlerts() async -> [TransitRealtime_Alert] {
   }
 }
 
+private func timeRangesToDateIntervals(
+  timeRanges: [TransitRealtime_TimeRange]
+) -> [DateInterval] {
+  return timeRanges.compactMap { timeRange in
+    DateInterval(
+      start: Date(timeIntervalSince1970: Double(timeRange.start)),
+      end: Date(timeIntervalSince1970: Double(timeRange.end)))
+  }
+}
+
 func constructServiceAlertsForStop() async -> [String: [MTAServiceAlert]] {
   let serviceAlerts = await getServiceAlerts()
 
