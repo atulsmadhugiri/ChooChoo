@@ -94,7 +94,8 @@ struct ContentView: View {
       StationSelectionSheet(
         location: locationFetcher.location,
         isPresented: $selectionSheetActive,
-        selectedStation: $selectedStation)
+        selectedStation: $selectedStation,
+        serviceAlerts: $serviceAlerts)
     }.onAppear {
       tapHaptic.prepare()
       Task {

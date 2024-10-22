@@ -16,6 +16,8 @@ struct StationSelectionSheet: View {
   @Binding var isPresented: Bool
   @Binding var selectedStation: MTAStation?
 
+  @Binding var serviceAlerts: [String: [MTAServiceAlert]]
+
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
   var filteredStationEntries: [MTAStation] {
@@ -46,11 +48,16 @@ struct StationSelectionSheet: View {
 
     NavigationView {
       List(sortedStationEntries) { entry in
+        let alertsForStation: [MTAServiceAlert] = entry.station.stops
+          .compactMap { stop in
+            serviceAlerts[stop.gtfsStopID]
+          }.flatMap { $0 }
+
         StationSign(
           station: entry.station,
           trains: entry.station.daytimeRoutes,
           distance: entry.distance,
-          serviceAlerts: []
+          serviceAlerts: alertsForStation
         ).id(entry.id)
           .onTapGesture {
             tapHaptic.impactOccurred()
