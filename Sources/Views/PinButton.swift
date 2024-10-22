@@ -29,6 +29,6 @@ struct PinButton: View {
         .imageScale(.large)
     }.buttonStyle(.bordered)
       .tint(station.pinned ? .pink : .secondary)
-      .padding(.vertical, 6)
+      .padding(.vertical, 10)
   }
 }

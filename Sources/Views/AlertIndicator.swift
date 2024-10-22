@@ -23,7 +23,7 @@ struct AlertIndicator: View {
 
     }.buttonStyle(.bordered)
       .tint(.yellow)
-      .padding(.vertical, 6)
+      .padding(.vertical, 10)
       .onAppear {
         tapHaptic.prepare()
       }
