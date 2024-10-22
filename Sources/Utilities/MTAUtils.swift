@@ -86,26 +86,21 @@ func getServiceAlerts() async -> [TransitRealtime_Alert] {
 func constructServiceAlertsForStop() async -> [String: [MTAServiceAlert]] {
   let serviceAlerts = await getServiceAlerts()
 
-  let mtaServiceAlerts: [MTAServiceAlert] = serviceAlerts.compactMap {
-    alert -> MTAServiceAlert? in
+  let mtaServiceAlerts = serviceAlerts.flatMap { alert -> [MTAServiceAlert] in
     guard let headerText = alert.headerText.translation.first?.text,
       let descriptionText = alert.descriptionText.translation.first?.text
-    else {
-      return nil
-    }
+    else { return [] }
 
-    for entity in alert.informedEntity {
-      guard entity.hasStopID else { continue }
+    return alert.informedEntity.compactMap { entity in
+      guard entity.hasStopID else { return nil }
       let stopID = entity.stopID
-      let alert = MTAServiceAlert(
+      return MTAServiceAlert(
         stopID: stopID,
         header: headerText,
         description: descriptionText,
         activePeriod: []
       )
-      return alert
     }
-    return nil
   }
 
   return Dictionary(grouping: mtaServiceAlerts, by: { $0.stopID })
