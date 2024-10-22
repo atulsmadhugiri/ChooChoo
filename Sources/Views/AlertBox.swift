@@ -14,7 +14,7 @@ struct AlertBox: View {
         .foregroundStyle(.orange)
     }.background(
       RoundedRectangle(cornerRadius: 8)
-        .fill(Color.yellow.opacity(0.2))
+        .fill(Color.yellow.opacity(0.6))
     )
     .overlay(
       RoundedRectangle(cornerRadius: 8)
