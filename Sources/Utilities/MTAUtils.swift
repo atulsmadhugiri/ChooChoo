@@ -67,3 +67,18 @@ private func createTrainArrivalEntry(
     directionLabel: stop.getLabelFor(direction: direction)
   )
 }
+
+let MTAServiceAlertFeedURL =
+  "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts"
+
+func getServiceAlerts() async -> [TransitRealtime_FeedEntity] {
+  do {
+    let data = try await NetworkUtils.sendNetworkRequest(
+      to: MTAServiceAlertFeedURL)
+    let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
+    return feed.entity
+  } catch {
+    print("Failed to fetch data from MTA Service Alerts feed.")
+    return []
+  }
+}

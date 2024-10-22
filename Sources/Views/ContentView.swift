@@ -97,6 +97,7 @@ struct ContentView: View {
         selectedStation: $selectedStation)
     }.onAppear {
       tapHaptic.prepare()
+      Task { await getServiceAlerts() }
     }.onReceive(timer) { _ in
       Task { await refreshData() }
     }.onDisappear {
