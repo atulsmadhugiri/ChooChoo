@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3376C5D5B0D14FB490637867 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = D11BE48F774F4CEF802F4D75 /* Sentry */; };
 		B701CC322CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC312CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift */; };
 		B701CC342CC72AA800EB1AB0 /* MTAServiceAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC332CC72AA800EB1AB0 /* MTAServiceAlert.swift */; };
 		B701CC362CC7457800EB1AB0 /* AlertIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC352CC7457800EB1AB0 /* AlertIndicator.swift */; };
@@ -89,7 +88,6 @@
 				B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */,
 				B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */,
 				B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */,
-				3376C5D5B0D14FB490637867 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,7 +224,6 @@
 				B7A856892BB3848D00D571AA /* Sources */,
 				B7A8568A2BB3848D00D571AA /* Frameworks */,
 				B7A8568B2BB3848D00D571AA /* Resources */,
-				838D0F291B4446CD91446776 /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -234,7 +231,6 @@
 			);
 			name = "ChooChoo NYC";
 			packageProductDependencies = (
-				D11BE48F774F4CEF802F4D75 /* Sentry */,
 			);
 			productName = ChooChoo;
 			productReference = B7A8568D2BB3848D00D571AA /* ChooChoo NYC.app */;
@@ -268,7 +264,6 @@
 				B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */,
 				B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 				B71E2AD82CADE447004E63DD /* XCRemoteSwiftPackageReference "swift-algorithms" */,
-				AE28358B60CC46DFA8B5A2AF /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = B7A8568E2BB3848D00D571AA /* Products */;
 			projectDirPath = "";
@@ -291,25 +286,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		838D0F291B4446CD91446776 /* Upload Debug Symbols to Sentry */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-			);
-			name = "Upload Debug Symbols to Sentry";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=atul-madhugiri\nexport SENTRY_PROJECT=apple-ios\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B7A856892BB3848D00D571AA /* Sources */ = {
@@ -561,14 +537,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		AE28358B60CC46DFA8B5A2AF /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getsentry/sentry-cocoa/";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
-			};
-		};
 		B71E2AD82CADE447004E63DD /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
@@ -615,11 +583,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */;
 			productName = SwiftProtobufPluginLibrary;
-		};
-		D11BE48F774F4CEF802F4D75 /* Sentry */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AE28358B60CC46DFA8B5A2AF /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = Sentry;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
