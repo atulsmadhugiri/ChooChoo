@@ -71,14 +71,42 @@ private func createTrainArrivalEntry(
 let MTAServiceAlertFeedURL =
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts"
 
-func getServiceAlerts() async -> [TransitRealtime_FeedEntity] {
+func getServiceAlerts() async -> [TransitRealtime_Alert] {
   do {
     let data = try await NetworkUtils.sendNetworkRequest(
       to: MTAServiceAlertFeedURL)
     let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-    return feed.entity
+    return feed.entity.compactMap { $0.hasAlert ? $0.alert : nil }
   } catch {
     print("Failed to fetch data from MTA Service Alerts feed.")
     return []
   }
+}
+
+func constructServiceAlertsForStop() async -> [String: MTAServiceAlert] {
+  let serviceAlerts = await getServiceAlerts()
+
+  var alertsForStop: [String: MTAServiceAlert] = [:]
+  for alert in serviceAlerts {
+    guard let headerText = alert.headerText.translation.first?.text,
+      let descriptionText = alert.descriptionText.translation.first?.text
+    else {
+      continue
+    }
+    let entitySelectors = alert.informedEntity
+    for entitySelector in entitySelectors {
+      if !entitySelector.hasStopID { continue }
+      let stopID = entitySelector.stopID
+
+      let alert: MTAServiceAlert = MTAServiceAlert(
+        stopID: stopID,
+        header: headerText,
+        description: descriptionText,
+        activePeriod: []
+      )
+
+      alertsForStop[stopID] = alert
+    }
+  }
+  return alertsForStop
 }
