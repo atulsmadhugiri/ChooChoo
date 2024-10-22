@@ -61,6 +61,7 @@ struct StationSign: View {
           .fontDesign(.rounded)
           .foregroundStyle(.secondary)
         Spacer()
+        AlertIndicator(alertCount: 6)
         PinButton(station: station)
       }.padding(
         EdgeInsets(

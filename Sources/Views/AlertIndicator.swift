@@ -6,12 +6,16 @@ struct AlertIndicator: View {
     Button {
     } label: {
       Image(systemName: "exclamationmark.triangle.fill")
-        .frame(height: 20)
+        .frame(height: 12)
         .foregroundColor(.orange)
+        .imageScale(.large)
       Text(String(alertCount))
         .foregroundColor(.orange)
-        .monospacedDigit()
-    }.buttonStyle(.bordered).tint(.orange)
+        .fontWeight(.bold)
+        .fontDesign(.rounded)
+        .imageScale(.large)
+
+    }.buttonStyle(.bordered).tint(.orange).padding(.vertical, 6)
   }
 }
 

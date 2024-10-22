@@ -38,16 +38,6 @@ struct ContentView: View {
         }.padding(12).shadow(radius: 2)
       }
 
-      if let visibleStation {
-        let allAlertsForStop = visibleStation.stops.compactMap { stop in
-          serviceAlerts[stop.gtfsStopID]
-        }.flatMap { $0 }
-
-        ForEach(allAlertsForStop) { alert in
-          AlertBox(alertBody: alert.header)
-        }
-      }
-
       Divider()
 
       let visibleArrivals = trainArrivals.filter {
