@@ -7,13 +7,19 @@ struct AlertSheet: View {
     NavigationView {
       List {
         ForEach(serviceAlerts) { serviceAlert in
-          AlertBox(alertBody: serviceAlert.header).listRowSeparator(.hidden)
+          AlertBox(alertBody: serviceAlert.header)
+            .listRowSeparator(.hidden)
+            .backgroundStyle(.thickMaterial)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+
         }
-      }.listStyle(.plain)
+      }.scrollContentBackground(.hidden)
+        .listStyle(.plain)
         .navigationBarTitle(
           "Service Alerts",
           displayMode: .inline
-        )
+        ).backgroundStyle(.thickMaterial)
     }
   }
 }

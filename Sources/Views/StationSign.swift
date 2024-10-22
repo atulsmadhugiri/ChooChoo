@@ -89,6 +89,7 @@ struct StationSign: View {
           .medium, .large,
         ])
         .presentationDragIndicator(.visible)
+        .presentationBackground(.thickMaterial)
       }
   }
 }

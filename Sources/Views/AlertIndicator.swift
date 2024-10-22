@@ -17,7 +17,9 @@ struct AlertIndicator: View {
         .fontDesign(.rounded)
         .imageScale(.large)
 
-    }.buttonStyle(.bordered).tint(.orange).padding(.vertical, 6)
+    }.buttonStyle(.bordered)
+      .tint(.yellow)
+      .padding(.vertical, 6)
   }
 }
 
