@@ -57,12 +57,20 @@ struct StationSign: View {
       )
 
       HStack {
-        Text(
-          formattedDistanceTraveled(distance: distance)
-        ).font(.headline)
-          .bold()
-          .fontDesign(.rounded)
-          .foregroundStyle(.secondary)
+
+        Button {
+        } label: {
+          Text(
+            formattedDistanceTraveled(distance: distance)
+          ).font(.headline)
+            .bold()
+            .fontDesign(.rounded)
+            .foregroundStyle(.secondary)
+        }.buttonStyle(.bordered)
+          .tint(.secondary)
+          .padding(.vertical, 10)
+          .allowsHitTesting(false)
+
         Spacer()
 
         if !serviceAlerts.isEmpty {
