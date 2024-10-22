@@ -1,22 +1,11 @@
 import SwiftUI
 
 struct AlertBox: View {
+  let alertBody: String
   var body: some View {
     GroupBox {
       VStack(alignment: .leading) {
-        Text("Delays on the ")
-          + Text(
-            Image(systemName: "f.circle.fill")
-              .renderingMode(.original)
-          ).foregroundStyle(
-            MTALine.bdfm.color)
-          + Text(" and ")
-          + Text(
-            Image(systemName: "g.circle.fill")
-              .renderingMode(.original)
-          ).foregroundStyle(MTALine.g.color)
-
-          + Text(" trains due to signal issues at Bergen Street.")
+        Text(alertBody).lineLimit(2)
       }
     } label: {
       Label("Alert", systemImage: "exclamationmark.triangle.fill")
@@ -26,10 +15,18 @@ struct AlertBox: View {
     .overlay(
       RoundedRectangle(cornerRadius: 8)
         .stroke(Color.yellow, lineWidth: 1)
-    ).padding(12)
+    ).padding(
+      EdgeInsets(
+        top: 0,
+        leading: 12,
+        bottom: 12,
+        trailing: 12
+      ))
   }
 }
 
 #Preview {
-  AlertBox()
+  AlertBox(
+    alertBody:
+      "Delays on the F and G trains due to signal issues at Bergen Street.")
 }

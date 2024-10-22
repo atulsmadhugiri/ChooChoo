@@ -17,6 +17,8 @@ struct ContentView: View {
 
   @State private var loading: Bool = true
 
+  @State private var serviceAlerts: [String: [MTAServiceAlert]] = [:]
+
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
   let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
 
@@ -24,6 +26,7 @@ struct ContentView: View {
     VStack(spacing: 0) {
       let visibleStation = selectedStation ?? nearestStation
       if let visibleStation, let location = locationFetcher.location {
+
         StationSign(
           station: visibleStation,
           trains: visibleStation.daytimeRoutes,
@@ -32,17 +35,18 @@ struct ContentView: View {
           tapHaptic.impactOccurred()
           selectionSheetActive = true
           logStationSignTapped(for: visibleStation)
-        }.padding(
-          EdgeInsets(
-            top: 12,
-            leading: 12,
-            bottom: 0,
-            trailing: 12
-          )
-        ).shadow(radius: 2)
+        }.padding(12).shadow(radius: 2)
       }
 
-      AlertBox()
+      if let visibleStation {
+        let allAlertsForStop = visibleStation.stops.compactMap { stop in
+          serviceAlerts[stop.gtfsStopID]
+        }.flatMap { $0 }
+
+        ForEach(allAlertsForStop) { alert in
+          AlertBox(alertBody: alert.header)
+        }
+      }
 
       Divider()
 
@@ -97,7 +101,9 @@ struct ContentView: View {
         selectedStation: $selectedStation)
     }.onAppear {
       tapHaptic.prepare()
-      Task { await getServiceAlerts() }
+      Task {
+        serviceAlerts = await constructServiceAlertsForStop()
+      }
     }.onReceive(timer) { _ in
       Task { await refreshData() }
     }.onDisappear {

@@ -1,6 +1,7 @@
 import Foundation
 
-struct MTAServiceAlert {
+struct MTAServiceAlert: Identifiable {
+  let id: UUID = UUID()
   let stopID: String
   let header: String
   let description: String
