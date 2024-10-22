@@ -108,7 +108,7 @@ func constructServiceAlertsForStop() async -> [String: [MTAServiceAlert]] {
         stopID: stopID,
         header: headerText,
         description: descriptionText,
-        activePeriod: []
+        activePeriod: timeRangesToDateIntervals(timeRanges: alert.activePeriod)
       )
     }
   }
