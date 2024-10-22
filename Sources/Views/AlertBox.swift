@@ -40,14 +40,16 @@ struct AlertBox: View {
           updatedAlertBody[currentIndex..<range.lowerBound])
         result = result + Text(prefixText)
 
-        let imageName = "\(lineSymbol.lowercased()).circle.fill"
+        let imageName = "\(lineSymbol.first?.lowercased() ?? "a").circle.fill"
         let lineColor =
-          MTATrain(rawValue: String(lineSymbol))?.color ?? MTATrain.a.color
+          MTATrain(rawValue: String(lineSymbol.first ?? "A"))?.color
+          ?? MTATrain.a.color
         let lineText = Text(
           Image(systemName: imageName)
             .renderingMode(.original)
         )
         .foregroundStyle(lineColor)
+        .font(.title3).baselineOffset(-1)
 
         result = result + lineText
 
