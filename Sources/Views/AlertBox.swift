@@ -5,7 +5,7 @@ struct AlertBox: View {
   var body: some View {
     GroupBox {
       VStack(alignment: .leading) {
-        Text(alertBody).lineLimit(2)
+        Text(alertBody)
       }
     } label: {
       Label("Alert", systemImage: "exclamationmark.triangle.fill")
@@ -15,13 +15,7 @@ struct AlertBox: View {
     .overlay(
       RoundedRectangle(cornerRadius: 8)
         .stroke(Color.yellow, lineWidth: 1)
-    ).padding(
-      EdgeInsets(
-        top: 0,
-        leading: 12,
-        bottom: 12,
-        trailing: 12
-      ))
+    )
   }
 }
 

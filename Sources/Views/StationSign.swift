@@ -8,6 +8,8 @@ struct StationSign: View {
   let distance: CLLocationDistance
   let serviceAlerts: [MTAServiceAlert]
 
+  @State var alertSheetActive: Bool = false
+
   var body: some View {
     VStack(spacing: 0) {
       VStack(spacing: 0) {
@@ -64,7 +66,10 @@ struct StationSign: View {
         Spacer()
 
         if !serviceAlerts.isEmpty {
-          AlertIndicator(alertCount: serviceAlerts.count)
+          AlertIndicator(
+            alertCount: serviceAlerts.count,
+            alertSheetActive: $alertSheetActive
+          )
         }
         PinButton(station: station)
       }.padding(
@@ -79,5 +84,11 @@ struct StationSign: View {
       )
 
     }.cornerRadius(8)
+      .sheet(isPresented: $alertSheetActive) {
+        AlertSheet(serviceAlerts: serviceAlerts).presentationDetents([
+          .medium, .large,
+        ])
+        .presentationDragIndicator(.visible)
+      }
   }
 }

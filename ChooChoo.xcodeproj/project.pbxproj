@@ -11,6 +11,7 @@
 		B701CC322CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC312CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift */; };
 		B701CC342CC72AA800EB1AB0 /* MTAServiceAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC332CC72AA800EB1AB0 /* MTAServiceAlert.swift */; };
 		B701CC362CC7457800EB1AB0 /* AlertIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC352CC7457800EB1AB0 /* AlertIndicator.swift */; };
+		B701CC382CC7510800EB1AB0 /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC372CC7510800EB1AB0 /* AlertSheet.swift */; };
 		B71E2ADA2CADE447004E63DD /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = B71E2AD92CADE447004E63DD /* Algorithms */; };
 		B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B37582CA37FC100FAC872 /* LoggingUtils.swift */; };
 		B74C73282CB488FC00B8E2E1 /* MTAStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73272CB488FC00B8E2E1 /* MTAStop.swift */; };
@@ -46,6 +47,7 @@
 		B701CC312CC71BA200EB1AB0 /* gtfs-realtime-service-status.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "gtfs-realtime-service-status.pb.swift"; sourceTree = "<group>"; };
 		B701CC332CC72AA800EB1AB0 /* MTAServiceAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAServiceAlert.swift; sourceTree = "<group>"; };
 		B701CC352CC7457800EB1AB0 /* AlertIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertIndicator.swift; sourceTree = "<group>"; };
+		B701CC372CC7510800EB1AB0 /* AlertSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSheet.swift; sourceTree = "<group>"; };
 		B72B37582CA37FC100FAC872 /* LoggingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingUtils.swift; sourceTree = "<group>"; };
 		B72B375A2CA4B97200FAC872 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 		B74C73272CB488FC00B8E2E1 /* MTAStop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStop.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				B7AD529B2CB70E060084F49C /* PinButton.swift */,
 				B791D0452CC3227200699275 /* AlertBox.swift */,
 				B701CC352CC7457800EB1AB0 /* AlertIndicator.swift */,
+				B701CC372CC7510800EB1AB0 /* AlertSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -321,6 +324,7 @@
 				B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */,
 				B7AD529C2CB70E060084F49C /* PinButton.swift in Sources */,
 				B7D9D6B82C94C75500BD13F3 /* MTALine.swift in Sources */,
+				B701CC382CC7510800EB1AB0 /* AlertSheet.swift in Sources */,
 				B701CC362CC7457800EB1AB0 /* AlertIndicator.swift in Sources */,
 				B7E3FA1B2C4F0A7B0036CCDF /* LocationFetcher.swift in Sources */,
 				B74C732A2CB49D4400B8E2E1 /* MTAStation.swift in Sources */,

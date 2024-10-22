@@ -2,8 +2,10 @@ import SwiftUI
 
 struct AlertIndicator: View {
   let alertCount: Int
+  @Binding var alertSheetActive: Bool
   var body: some View {
     Button {
+      alertSheetActive = true
     } label: {
       Image(systemName: "exclamationmark.triangle.fill")
         .frame(height: 12)
@@ -20,5 +22,5 @@ struct AlertIndicator: View {
 }
 
 #Preview {
-  AlertIndicator(alertCount: 10)
+  AlertIndicator(alertCount: 10, alertSheetActive: .constant(false))
 }
