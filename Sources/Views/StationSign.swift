@@ -62,7 +62,10 @@ struct StationSign: View {
           .fontDesign(.rounded)
           .foregroundStyle(.secondary)
         Spacer()
-        AlertIndicator(alertCount: serviceAlerts.count)
+
+        if !serviceAlerts.isEmpty {
+          AlertIndicator(alertCount: serviceAlerts.count)
+        }
         PinButton(station: station)
       }.padding(
         EdgeInsets(
