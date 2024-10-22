@@ -6,6 +6,7 @@ struct StationSign: View {
   var trains: [MTATrain]
 
   let distance: CLLocationDistance
+  let serviceAlerts: [MTAServiceAlert]
 
   var body: some View {
     VStack(spacing: 0) {
@@ -61,7 +62,7 @@ struct StationSign: View {
           .fontDesign(.rounded)
           .foregroundStyle(.secondary)
         Spacer()
-        AlertIndicator(alertCount: 6)
+        AlertIndicator(alertCount: serviceAlerts.count)
         PinButton(station: station)
       }.padding(
         EdgeInsets(

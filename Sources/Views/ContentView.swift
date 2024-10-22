@@ -27,10 +27,16 @@ struct ContentView: View {
       let visibleStation = selectedStation ?? nearestStation
       if let visibleStation, let location = locationFetcher.location {
 
+        let alertsForStation: [MTAServiceAlert] = visibleStation.stops
+          .compactMap { stop in
+            serviceAlerts[stop.gtfsStopID]
+          }.flatMap { $0 }
+
         StationSign(
           station: visibleStation,
           trains: visibleStation.daytimeRoutes,
-          distance: location.distance(from: visibleStation.location)
+          distance: location.distance(from: visibleStation.location),
+          serviceAlerts: alertsForStation
         ).onTapGesture {
           tapHaptic.impactOccurred()
           selectionSheetActive = true

@@ -49,7 +49,8 @@ struct StationSelectionSheet: View {
         StationSign(
           station: entry.station,
           trains: entry.station.daytimeRoutes,
-          distance: entry.distance
+          distance: entry.distance,
+          serviceAlerts: []
         ).id(entry.id)
           .onTapGesture {
             tapHaptic.impactOccurred()
