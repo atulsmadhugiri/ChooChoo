@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "ChooChooWhite.png",
+      "filename" : "ChooChooLink.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ChooChooBlack.png",
+      "filename" : "ChooChooLinkDark.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "ChooChooBlack 1.png",
+      "filename" : "ChooChooLinkDark 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
