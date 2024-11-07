@@ -92,3 +92,5 @@ iOSInjectionProject/
 Sources/Secrets.swift
 
 .sentryclirc
+
+ChooChooLink/Secrets.swift
