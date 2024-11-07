@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -57,6 +57,7 @@
 		B75860A12C52F4D00007404D /* StationSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSign.swift; sourceTree = "<group>"; };
 		B7697CB72C5192AB001B880C /* FormatterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterUtils.swift; sourceTree = "<group>"; };
 		B77807C22C6D740C00216D68 /* ArrivalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrivalCard.swift; sourceTree = "<group>"; };
+		B780A8E32CDC3A080017E886 /* ChooChooLink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChooChooLink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
 		B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "nyct-subway.pb.swift"; sourceTree = "<group>"; };
 		B78613B92C4EF3A000F8A35B /* gtfs-realtime.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "gtfs-realtime.pb.swift"; sourceTree = "<group>"; };
@@ -79,7 +80,18 @@
 		B7F3283B2C9104F2005E4EA9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		B780A8E42CDC3A080017E886 /* ChooChooLink */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ChooChooLink; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
+		B780A8E02CDC3A080017E886 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B7A8568A2BB3848D00D571AA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -167,6 +179,7 @@
 				B7A8568F2BB3848D00D571AA /* Sources */,
 				B78613B42C4EF29900F8A35B /* Generated */,
 				B752EDB12CA2058100525072 /* Misc */,
+				B780A8E42CDC3A080017E886 /* ChooChooLink */,
 				B7A8568E2BB3848D00D571AA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -175,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				B7A8568D2BB3848D00D571AA /* ChooChoo NYC.app */,
+				B780A8E32CDC3A080017E886 /* ChooChooLink.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -217,6 +231,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B780A8E22CDC3A080017E886 /* ChooChooLink */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B780A8F02CDC3A090017E886 /* Build configuration list for PBXNativeTarget "ChooChooLink" */;
+			buildPhases = (
+				B780A8DF2CDC3A080017E886 /* Sources */,
+				B780A8E02CDC3A080017E886 /* Frameworks */,
+				B780A8E12CDC3A080017E886 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B780A8E42CDC3A080017E886 /* ChooChooLink */,
+			);
+			name = ChooChooLink;
+			packageProductDependencies = (
+			);
+			productName = ChooChooLink;
+			productReference = B780A8E32CDC3A080017E886 /* ChooChooLink.app */;
+			productType = "com.apple.product-type.application";
+		};
 		B7A8568C2BB3848D00D571AA /* ChooChoo NYC */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B7A8569B2BB3848E00D571AA /* Build configuration list for PBXNativeTarget "ChooChoo NYC" */;
@@ -243,9 +279,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1530;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
+					B780A8E22CDC3A080017E886 = {
+						CreatedOnToolsVersion = 16.2;
+					};
 					B7A8568C2BB3848D00D571AA = {
 						CreatedOnToolsVersion = 15.3;
 					};
@@ -270,11 +309,19 @@
 			projectRoot = "";
 			targets = (
 				B7A8568C2BB3848D00D571AA /* ChooChoo NYC */,
+				B780A8E22CDC3A080017E886 /* ChooChooLink */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B780A8E12CDC3A080017E886 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B7A8568B2BB3848D00D571AA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -288,6 +335,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B780A8DF2CDC3A080017E886 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B7A856892BB3848D00D571AA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -324,6 +378,69 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		B780A8EE2CDC3A090017E886 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_ASSET_PATHS = "\"ChooChooLink/Preview Content\"";
+				DEVELOPMENT_TEAM = HM6Y2RQS2R;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = atul.ChooChooLink;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B780A8EF2CDC3A090017E886 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ChooChooLink/Preview Content\"";
+				DEVELOPMENT_TEAM = HM6Y2RQS2R;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = atul.ChooChooLink;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		B7A856992BB3848E00D571AA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -516,6 +633,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B780A8F02CDC3A090017E886 /* Build configuration list for PBXNativeTarget "ChooChooLink" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B780A8EE2CDC3A090017E886 /* Debug */,
+				B780A8EF2CDC3A090017E886 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B7A856882BB3848D00D571AA /* Build configuration list for PBXProject "ChooChoo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
