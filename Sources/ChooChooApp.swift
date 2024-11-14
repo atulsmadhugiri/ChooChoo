@@ -21,6 +21,7 @@ struct ChooChooApp: App {
       apiKey: POSTHOG_API_KEY,
       host: POSTHOG_HOST
     )
+    configuration.personProfiles = .always
     PostHogSDK.shared.setup(configuration)
 
     let stopEntries = MTAStop.loadStopsFromCSV()
