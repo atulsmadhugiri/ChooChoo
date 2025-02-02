@@ -16,6 +16,7 @@
 		B74C73282CB488FC00B8E2E1 /* MTAStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73272CB488FC00B8E2E1 /* MTAStop.swift */; };
 		B74C732A2CB49D4400B8E2E1 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73292CB49D4400B8E2E1 /* MTAStation.swift */; };
 		B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = B752EDAF2CA1FB5E00525072 /* PostHog */; };
+		B755E3772D4F02820079509C /* AlertStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B755E3762D4F02820079509C /* AlertStatusIndicator.swift */; };
 		B758609E2C52E44E0007404D /* TrainArrivalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */; };
 		B75860A22C52F4D00007404D /* StationSign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75860A12C52F4D00007404D /* StationSign.swift */; };
 		B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7697CB72C5192AB001B880C /* FormatterUtils.swift */; };
@@ -53,6 +54,7 @@
 		B74C73292CB49D4400B8E2E1 /* MTAStation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStation.swift; sourceTree = "<group>"; };
 		B752EDB22CA2059900525072 /* PrivacyPolicy.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = PrivacyPolicy.rtf; sourceTree = "<group>"; };
 		B752EDB62CA2097400525072 /* Support.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Support.html; sourceTree = "<group>"; };
+		B755E3762D4F02820079509C /* AlertStatusIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertStatusIndicator.swift; sourceTree = "<group>"; };
 		B758609D2C52E44E0007404D /* TrainArrivalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainArrivalEntry.swift; sourceTree = "<group>"; };
 		B75860A12C52F4D00007404D /* StationSign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationSign.swift; sourceTree = "<group>"; };
 		B7697CB72C5192AB001B880C /* FormatterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterUtils.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				B791D0452CC3227200699275 /* AlertBox.swift */,
 				B701CC352CC7457800EB1AB0 /* AlertIndicator.swift */,
 				B701CC372CC7510800EB1AB0 /* AlertSheet.swift */,
+				B755E3762D4F02820079509C /* AlertStatusIndicator.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -369,6 +372,7 @@
 				B78613B82C4EF39B00F8A35B /* nyct-subway.pb.swift in Sources */,
 				B701CC342CC72AA800EB1AB0 /* MTAServiceAlert.swift in Sources */,
 				B78613BA2C4EF3A000F8A35B /* gtfs-realtime.pb.swift in Sources */,
+				B755E3772D4F02820079509C /* AlertStatusIndicator.swift in Sources */,
 				B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */,
 				B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */,
 				B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */,

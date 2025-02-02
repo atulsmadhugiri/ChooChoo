@@ -7,3 +7,13 @@ struct MTAServiceAlert: Identifiable {
   let description: String
   let activePeriod: [DateInterval]
 }
+
+extension MTAServiceAlert {
+  var earliestStart: Date {
+    activePeriod.map { $0.start }.min() ?? Date.distantFuture
+  }
+
+  var earliestEnd: Date {
+    activePeriod.map { $0.end }.min() ?? Date.distantFuture
+  }
+}
