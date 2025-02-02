@@ -2,6 +2,8 @@ import SwiftUI
 
 struct AlertBox: View {
   let alertBody: String
+  let activePeriods: [DateInterval]
+
   var body: some View {
     GroupBox {
       VStack(alignment: .leading) {
@@ -10,9 +12,13 @@ struct AlertBox: View {
           .frame(maxWidth: .infinity, alignment: .leading)
       }
     } label: {
-      Label("Service Alert", systemImage: "exclamationmark.triangle.fill")
-        .foregroundStyle(.orange)
-    }.background(
+      VStack(alignment: .leading, spacing: 6) {
+        Label("Service Alert", systemImage: "exclamationmark.triangle.fill")
+          .foregroundStyle(.orange)
+        AlertStatusIndicator(activePeriods: activePeriods)
+      }
+    }
+    .background(
       RoundedRectangle(cornerRadius: 8)
         .fill(Color.yellow.opacity(0.6))
     )
@@ -63,10 +69,4 @@ struct AlertBox: View {
 
     return result
   }
-}
-
-#Preview {
-  AlertBox(
-    alertBody:
-      "Delays on the F and G trains due to signal issues at Bergen Street.")
 }
