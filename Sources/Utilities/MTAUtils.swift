@@ -59,10 +59,13 @@ private func createTrainArrivalEntry(
   else { return nil }
 
   let direction = tripDirection(for: tripID)
+  let arrivalTimestamp =
+    stopTimeUpdate.arrival.time != 0
+    ? stopTimeUpdate.arrival.time : stopTimeUpdate.departure.time
+
   return TrainArrivalEntry(
     id: tripID,
-    arrivalTimestamp: stopTimeUpdate.arrival.time != 0
-      ? stopTimeUpdate.arrival.time : stopTimeUpdate.departure.time,
+    arrivalTimestamp: arrivalTimestamp,
     train: train,
     terminalStation: terminalStation,
     direction: direction,
