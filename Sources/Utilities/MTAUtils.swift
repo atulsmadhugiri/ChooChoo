@@ -89,9 +89,7 @@ private func timeRangesToDateIntervals(
   timeRanges: [TransitRealtime_TimeRange]
 ) -> [DateInterval] {
   return timeRanges.compactMap { timeRange in
-    if !timeRange.hasEnd || !timeRange.hasStart {
-      return nil
-    }
+    guard timeRange.hasStart, timeRange.hasEnd else { return nil }
     return DateInterval(
       start: Date(timeIntervalSince1970: Double(timeRange.start)),
       end: Date(timeIntervalSince1970: Double(timeRange.end)))
