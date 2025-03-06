@@ -50,12 +50,11 @@ class MTAStation {
 extension MTAStation {
   static func mergeStops(_ stops: [MTAStop]) -> [MTAStation] {
     let stationsToStops = Dictionary(grouping: stops, by: { $0.complexID })
-
-    let stations = stationsToStops.map { (complexID, stationStops) in
-      let stationName = stationStops.first?.stopName ?? "Unknown"
+    let stations = stationsToStops.compactMap { (complexID, stationStops) -> MTAStation? in
+      guard let station = stationStops.first else { return nil }
       return MTAStation(
         id: complexID,
-        name: stationName,
+        name: station.stopName,
         stops: stationStops
       )
     }
