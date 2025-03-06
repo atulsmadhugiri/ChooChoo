@@ -41,7 +41,8 @@ extension MTAStopValue {
     // HACK: Accounting for weird direction labels for 34 St-Hudson Yards.
     //       As with all the other hacks, there's definitely a better way.
     let adjustedDirection =
-      self.gtfsStopID == "726" ? direction.flipped : direction
+      (self.gtfsStopID == "726" || self.gtfsStopID == "139")
+      ? direction.flipped : direction
     if adjustedDirection == .north {
       return self.northDirectionLabel
     } else {

@@ -52,8 +52,10 @@ private func createTrainArrivalEntry(
 
   let tripID = standardizeTripIDForSevenTrain(trip.tripID)
 
-  guard let firstChar = trip.routeID.first,
-    let train = MTATrain(rawValue: String(firstChar))
+  guard
+    let train = trip.routeID == "FS"
+      ? MTATrain(rawValue: "S")
+      : trip.routeID.first.flatMap({ MTATrain(rawValue: String($0)) })
   else { return nil }
 
   let direction = tripDirection(for: tripID)
