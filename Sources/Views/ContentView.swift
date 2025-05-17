@@ -116,16 +116,14 @@ struct ContentView: View {
     let lines = station.lines
     let stops = station.stops.map { MTAStopValue(mtaStop: $0) }
 
-    Task {
-      loading = true
-      defer { loading = false }
-      trainArrivals = await getArrivals(lines: lines, stops: stops)
-      let sameDirection = trainArrivals.filter {
-        $0.direction == selectedDirection
-      }
-      if sameDirection.isEmpty {
-        selectedDirection = selectedDirection.flipped
-      }
+    loading = true
+    defer { loading = false }
+    trainArrivals = await getArrivals(lines: lines, stops: stops)
+    let sameDirection = trainArrivals.filter {
+      $0.direction == selectedDirection
+    }
+    if sameDirection.isEmpty {
+      selectedDirection = selectedDirection.flipped
     }
   }
 
