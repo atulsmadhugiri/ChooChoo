@@ -5,6 +5,7 @@ import SwiftUI
 struct StationWithDistance: Identifiable {
   let station: MTAStation
   let distance: CLLocationDistance
+  let alerts: [MTAServiceAlert]
   var id: MTAStation.ID { station.id }
 }
 
@@ -27,16 +28,28 @@ struct StationSelectionSheet: View {
     }
   }
 
-  var sortedStationEntries: [StationWithDistance] {
-    guard let location else { return [] }
+  @State private var sortedStationEntries: [StationWithDistance] = []
+
+  func updateSortedStationEntries() {
+    guard let location else {
+      sortedStationEntries = []
+      return
+    }
+
     let stationDistances = filteredStationEntries.map { station in
-      StationWithDistance(
+      let alertsForStation: [MTAServiceAlert] = station.stops
+        .compactMap { stop in
+          serviceAlerts[stop.gtfsStopID]
+        }.flatMap { $0 }
+
+      return StationWithDistance(
         station: station,
-        distance: location.distance(from: station.location)
+        distance: location.distance(from: station.location),
+        alerts: alertsForStation
       )
     }
 
-    return stationDistances.sorted { a, b in
+    sortedStationEntries = stationDistances.sorted { a, b in
       if a.station.pinned != b.station.pinned {
         return a.station.pinned && !b.station.pinned
       }
@@ -48,16 +61,11 @@ struct StationSelectionSheet: View {
 
     NavigationView {
       List(sortedStationEntries) { entry in
-        let alertsForStation: [MTAServiceAlert] = entry.station.stops
-          .compactMap { stop in
-            serviceAlerts[stop.gtfsStopID]
-          }.flatMap { $0 }
-
         StationSign(
           station: entry.station,
           trains: entry.station.daytimeRoutes,
           distance: entry.distance,
-          serviceAlerts: alertsForStation
+          serviceAlerts: entry.alerts
         ).id(entry.id)
           .onTapGesture {
             tapHaptic.impactOccurred()
@@ -84,6 +92,16 @@ struct StationSelectionSheet: View {
     }
     .onAppear {
       tapHaptic.prepare()
+      updateSortedStationEntries()
+    }
+    .onChange(of: searchTerm) { _ in
+      updateSortedStationEntries()
+    }
+    .onChange(of: stations) { _ in
+      updateSortedStationEntries()
+    }
+    .onChange(of: serviceAlerts) { _ in
+      updateSortedStationEntries()
     }
   }
 }

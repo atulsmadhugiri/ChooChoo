@@ -10,7 +10,11 @@ func formatTimeInterval(interval: TimeInterval) -> String {
 }
 
 func formattedDistanceTraveled(distance: CLLocationDistance) -> String {
-  let distanceFormatter = MKDistanceFormatter()
-  distanceFormatter.unitStyle = .full
   return distanceFormatter.string(fromDistance: distance)
 }
+
+private let distanceFormatter: MKDistanceFormatter = {
+  let formatter = MKDistanceFormatter()
+  formatter.unitStyle = .full
+  return formatter
+}()
