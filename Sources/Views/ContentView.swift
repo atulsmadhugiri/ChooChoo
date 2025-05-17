@@ -55,7 +55,7 @@ struct ContentView: View {
           Text(TripDirection.south.rawValue).tag(TripDirection.south)
           Text(TripDirection.north.rawValue).tag(TripDirection.north)
         }.pickerStyle(.segmented).labelsHidden().padding(.bottom, 8)
-
+        
         List(visibleArrivals) { arrival in
           ArrivalCard(arrival: arrival).listRowInsets(
             EdgeInsets(
@@ -88,8 +88,13 @@ struct ContentView: View {
       if selectedStation != nil { return }
       setNearestStation()
       Task { await refreshData() }
-    }.onChange(of: selectedStation) {
+    }.onChange(of: selectedStation) { newValue in
+      if let station = newValue {
+        logStationSelected(station)
+      }
       Task { await refreshData() }
+    }.onChange(of: selectedDirection) { newDirection in
+      logDirectionChanged(newDirection, station: selectedStation ?? nearestStation)
     }.sheet(isPresented: $selectionSheetActive) {
       StationSelectionSheet(
         location: locationFetcher.location,
@@ -112,6 +117,8 @@ struct ContentView: View {
     guard let station = selectedStation ?? nearestStation else {
       return
     }
+
+    logRefresh(for: station)
 
     let lines = station.lines
     let stops = station.stops.map { MTAStopValue(mtaStop: $0) }

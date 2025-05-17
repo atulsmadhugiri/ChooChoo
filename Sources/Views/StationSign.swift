@@ -93,11 +93,15 @@ struct StationSign: View {
 
     }.cornerRadius(8)
       .sheet(isPresented: $alertSheetActive) {
-        AlertSheet(serviceAlerts: serviceAlerts).presentationDetents([
-          .medium, .large,
-        ])
-        .presentationDragIndicator(.visible)
-        .presentationBackground(.thickMaterial)
+        AlertSheet(serviceAlerts: serviceAlerts)
+          .presentationDetents([
+            .medium, .large,
+          ])
+          .presentationDragIndicator(.visible)
+          .presentationBackground(.thickMaterial)
+          .onAppear {
+            logServiceAlertsViewed(for: station)
+          }
       }
   }
 }
