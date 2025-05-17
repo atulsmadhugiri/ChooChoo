@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 import TabularData
 
-// Each `MTAStopEntry` corresponds to a GTFS stop in `Stations.csv`
+// Each `MTAStop` corresponds to a GTFS stop in `Stations.csv`
 
 @Model
 class MTAStop {
