@@ -21,6 +21,7 @@ struct PinButton: View {
         modelContext.insert(station)
         try! modelContext.save()
       }
+      logPinToggled(for: station, pinned: station.pinned)
     } label: {
       Image(systemName: "heart.fill")
         .frame(height: 22)

@@ -69,6 +69,7 @@ struct StationSelectionSheet: View {
             tapHaptic.impactOccurred()
             selectedStation = entry.station
             isPresented = false
+            logStationSelected(entry.station)
           }
           .shadow(radius: 2)
       }
@@ -92,7 +93,10 @@ struct StationSelectionSheet: View {
       tapHaptic.prepare()
       updateSortedStationEntries()
     }
-    .onChange(of: searchTerm) { _ in
+    .onChange(of: searchTerm) { newTerm in
+      if !newTerm.isEmpty {
+        logSearch(term: newTerm)
+      }
       updateSortedStationEntries()
     }
     .onChange(of: stations) { _ in
