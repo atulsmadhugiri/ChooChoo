@@ -36,14 +36,11 @@ class MTAStation {
         < stopB.daytimeRoutes.first!.rawValue
     }
 
-    return sortedRoutes.flatMap { $0.daytimeRoutes }
+    return sortedRoutes.flatMap(\.daytimeRoutes)
   }
 
   var lines: [MTALine] {
-    let routes = self.daytimeRoutes
-    let lines = routes.map { $0.line }
-    let uniqueLines = Set(lines)
-    return Array(uniqueLines)
+    return self.daytimeRoutes.map(\.line).uniqued()
   }
 }
 
@@ -100,10 +97,8 @@ func getArrivals(lines: [MTALine], stops: [MTAStopValue]) async
 {
   let feedData = await getFeedData(lines: lines)
 
-  let arrivalEntries = feedData.values.flatMap { feed in
-    stops.flatMap { stop in
-      getTrainArrivalsForStop(stop: stop, feed: feed.entity)
-    }
+  let arrivalEntries = product(feedData.values, stops).flatMap { feed, stop in
+    getTrainArrivalsForStop(stop: stop, feed: feed.entity)
   }
 
   return arrivalEntries.uniqued(on: \.id)
