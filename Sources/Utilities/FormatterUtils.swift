@@ -12,12 +12,8 @@ func formatTimeInterval(interval: TimeInterval) -> String {
   timeIntervalFormatter.string(from: interval) ?? ""
 }
 
-private let distanceFormatter: MKDistanceFormatter = {
+func formattedDistanceTraveled(distance: CLLocationDistance) -> String {
   let formatter = MKDistanceFormatter()
   formatter.unitStyle = .full
-  return formatter
-}()
-
-func formattedDistanceTraveled(distance: CLLocationDistance) -> String {
-  distanceFormatter.string(fromDistance: distance)
+  return formatter.string(fromDistance: distance)
 }

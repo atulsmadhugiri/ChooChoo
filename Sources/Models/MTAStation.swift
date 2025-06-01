@@ -40,7 +40,7 @@ class MTAStation {
   }
 
   var lines: [MTALine] {
-    return self.daytimeRoutes.map(\.line).uniqued()
+    return Array(self.daytimeRoutes.map(\.line).uniqued())
   }
 }
 
