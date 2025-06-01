@@ -52,8 +52,12 @@ struct ContentView: View {
 
       VStack {
         Picker("", selection: $selectedDirection) {
-          Text(TripDirection.south.rawValue).tag(TripDirection.south)
-          Text(TripDirection.north.rawValue).tag(TripDirection.north)
+          let southLabel = visibleStation?.getLabelFor(direction: .south)
+            ?? TripDirection.south.rawValue
+          let northLabel = visibleStation?.getLabelFor(direction: .north)
+            ?? TripDirection.north.rawValue
+          Text(southLabel).tag(TripDirection.south)
+          Text(northLabel).tag(TripDirection.north)
         }.pickerStyle(.segmented).labelsHidden().padding(.bottom, 8)
         
         List(visibleArrivals) { arrival in
