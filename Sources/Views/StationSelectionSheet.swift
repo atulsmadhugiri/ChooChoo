@@ -27,13 +27,8 @@ struct StationSelectionSheet: View {
     }
   }
 
-  @State private var sortedStationEntries: [StationWithDistance] = []
-
-  func updateSortedStationEntries() {
-    guard let location else {
-      sortedStationEntries = []
-      return
-    }
+  var sortedStationEntries: [StationWithDistance] {
+    guard let location else { return [] }
 
     let stationDistances = filteredStationEntries.map { station in
       StationWithDistance(
@@ -42,7 +37,7 @@ struct StationSelectionSheet: View {
       )
     }
 
-    sortedStationEntries = stationDistances.sorted { a, b in
+    return stationDistances.sorted { a, b in
       if a.station.pinned != b.station.pinned {
         return a.station.pinned && !b.station.pinned
       }
@@ -91,16 +86,11 @@ struct StationSelectionSheet: View {
     }
     .onAppear {
       tapHaptic.prepare()
-      updateSortedStationEntries()
     }
     .onChange(of: searchTerm) { newTerm in
       if !newTerm.isEmpty {
         logSearch(term: newTerm)
       }
-      updateSortedStationEntries()
-    }
-    .onChange(of: stations) { _ in
-      updateSortedStationEntries()
     }
   }
 }
