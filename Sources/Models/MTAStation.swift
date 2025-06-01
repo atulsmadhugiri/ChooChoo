@@ -42,6 +42,32 @@ class MTAStation {
   var lines: [MTALine] {
     return Array(self.daytimeRoutes.map(\.line).uniqued())
   }
+
+  func getLabelFor(direction: TripDirection) -> String {
+    let labels = Set(self.stops.map { $0.getLabelFor(direction: direction) })
+      .filter { !$0.isEmpty }
+
+    if labels.isEmpty {
+      return direction.rawValue
+    }
+
+    // Combine common borough labels the way the MTA styles them
+    if labels.contains("Downtown") && labels.contains("Brooklyn") {
+      return "Downtown & Brooklyn"
+    }
+    if labels.contains("Uptown") && labels.contains("The Bronx") {
+      return "Uptown & The Bronx"
+    }
+    if labels.contains("Uptown") && labels.contains("Queens") {
+      return "Uptown & Queens"
+    }
+
+    if labels.count == 1, let only = labels.first {
+      return only
+    }
+
+    return labels.sorted().joined(separator: " & ")
+  }
 }
 
 extension MTAStation {
