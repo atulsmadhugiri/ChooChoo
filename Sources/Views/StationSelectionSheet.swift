@@ -8,19 +8,11 @@ struct StationWithDistance: Identifiable {
   var id: MTAStation.ID { station.id }
 }
 
-enum StationFilter: String, CaseIterable, Identifiable {
-  case nearby = "Nearby"
-  case favorites = "Favorites"
-
-  var id: Self { self }
-}
-
 struct StationSelectionSheet: View {
   @Query var stations: [MTAStation]
 
   var location: CLLocation?
   @State private var searchTerm = ""
-  @State private var selectedFilter: StationFilter = .nearby
   @Binding var isPresented: Bool
   @Binding var selectedStation: MTAStation?
 
@@ -29,16 +21,10 @@ struct StationSelectionSheet: View {
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
   var filteredStationEntries: [MTAStation] {
-    var filtered = stations
-    if selectedFilter == .favorites {
-      filtered = filtered.filter(\.pinned)
+    guard !searchTerm.isEmpty else { return stations }
+    return stations.filter {
+      $0.name.localizedCaseInsensitiveContains(searchTerm)
     }
-    if !searchTerm.isEmpty {
-      filtered = filtered.filter {
-        $0.name.localizedCaseInsensitiveContains(searchTerm)
-      }
-    }
-    return filtered
   }
 
   var sortedStationEntries: [StationWithDistance] {
@@ -62,17 +48,7 @@ struct StationSelectionSheet: View {
   var body: some View {
 
     NavigationView {
-      VStack {
-        Picker("Filter", selection: $selectedFilter) {
-          ForEach(StationFilter.allCases) { filter in
-            Text(filter.rawValue).tag(filter)
-          }
-        }
-        .pickerStyle(.segmented)
-        .labelsHidden()
-        .padding([.horizontal, .top])
-
-        List(sortedStationEntries) { entry in
+      List(sortedStationEntries) { entry in
         let alertsForStation: [MTAServiceAlert] = entry.station.stops
           .compactMap { stop in
             serviceAlerts[stop.gtfsStopID]
@@ -91,21 +67,20 @@ struct StationSelectionSheet: View {
             logStationSelected(entry.station)
           }
           .shadow(radius: 2)
-        }
-        .listStyle(.plain)
-        .searchable(
-          text: $searchTerm,
-          placement: .automatic,
-          prompt: "Search stations"
-        )
-        .overlay {
-          if sortedStationEntries.isEmpty, !searchTerm.isEmpty {
-            ContentUnavailableView.search(text: searchTerm)
-          }
+      }
+      .listStyle(.plain)
+      .searchable(
+        text: $searchTerm,
+        placement: .automatic,
+        prompt: "Search stations"
+      )
+      .overlay {
+        if sortedStationEntries.isEmpty, !searchTerm.isEmpty {
+          ContentUnavailableView.search(text: searchTerm)
         }
       }
       .navigationBarTitle(
-        selectedFilter == .favorites ? "Favorite Stations" : "Nearby Stations",
+        "Nearby Stations",
         displayMode: .inline
       )
     }
