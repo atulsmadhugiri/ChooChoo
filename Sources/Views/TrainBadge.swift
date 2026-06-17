@@ -1,4 +1,43 @@
 import SwiftUI
+import UIKit
+
+extension MTALine {
+  private var colorSuffix: String {
+    switch self {
+    case .oneTwoThree:
+      return "123"
+    case .fourFiveSix:
+      return "456"
+    case .seven:
+      return "7"
+    case .ace:
+      return "ACE"
+    case .bdfm:
+      return "BDFM"
+    case .g:
+      return "G"
+    case .jz:
+      return "JZ"
+    case .l:
+      return "L"
+    case .nqrw:
+      return "NQRW"
+    case .s:
+      return "S"
+    }
+  }
+
+  var color: Color {
+    let colorName = "MTAColors/\(self.colorSuffix)"
+    return Color(UIColor(named: colorName)!)
+  }
+}
+
+extension MTATrain {
+  var color: Color {
+    return self.line.color
+  }
+}
 
 enum BadgeSize {
   case small
