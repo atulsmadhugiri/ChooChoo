@@ -29,7 +29,10 @@ extension MTALine {
 
   var color: Color {
     let colorName = "MTAColors/\(self.colorSuffix)"
-    return Color(UIColor(named: colorName)!)
+    guard let color = UIColor(named: colorName) else {
+      return .gray
+    }
+    return Color(color)
   }
 }
 

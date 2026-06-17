@@ -11,18 +11,21 @@ struct PinButton: View {
 
   var body: some View {
     Button {
-      bounceValue = !station.pinned ? !bounceValue : bounceValue
-      station.pinned = !station.pinned
-      if station.pinned {
-        likeFeedback.impactOccurred()
-        modelContext.insert(station)
-        try! modelContext.save()
-      } else {
-        unlikeFeedback.impactOccurred()
-        modelContext.insert(station)
-        try! modelContext.save()
+      let nextPinnedValue = !station.pinned
+      station.pinned = nextPinnedValue
+      do {
+        try modelContext.save()
+        if nextPinnedValue {
+          bounceValue.toggle()
+          likeFeedback.impactOccurred()
+        } else {
+          unlikeFeedback.impactOccurred()
+        }
+        logPinToggled(for: station, pinned: nextPinnedValue)
+      } catch {
+        modelContext.rollback()
+        print("Failed to save pinned station: \(error)")
       }
-      logPinToggled(for: station, pinned: station.pinned)
     } label: {
       Image(systemName: "heart.fill")
         .frame(height: 22)
