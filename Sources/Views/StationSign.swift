@@ -57,19 +57,23 @@ struct StationSign: View {
       )
 
       HStack {
-
-        Button {
-        } label: {
-          Text(
-            distance.map(formattedDistanceTraveled(distance:)) ?? "Station"
-          ).font(.headline)
-            .bold()
-            .fontDesign(.rounded)
-            .foregroundStyle(.secondary)
-        }.buttonStyle(.bordered)
-          .tint(.secondary)
+        Text(distanceText)
+          .font(.headline)
+          .bold()
+          .fontDesign(.rounded)
+          .foregroundStyle(.secondary)
+          .padding(.horizontal, 12)
+          .padding(.vertical, 7)
+          .background(
+            Capsule()
+              .fill(Color.secondary.opacity(0.12))
+          )
+          .overlay(
+            Capsule()
+              .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+          )
           .padding(.vertical, 10)
-          .allowsHitTesting(false)
+          .accessibilityLabel(distanceText)
 
         Spacer()
 
@@ -88,10 +92,10 @@ struct StationSign: View {
           trailing: 12
         )
       ).background(
-        .ultraThickMaterial
+        Color(.secondarySystemGroupedBackground)
       )
 
-    }.cornerRadius(8)
+    }.clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
       .sheet(isPresented: $alertSheetActive) {
         AlertSheet(serviceAlerts: serviceAlerts)
           .presentationDetents([
@@ -103,5 +107,9 @@ struct StationSign: View {
             logServiceAlertsViewed(for: station)
           }
       }
+  }
+
+  private var distanceText: String {
+    distance.map(formattedDistanceTraveled(distance:)) ?? "Station"
   }
 }
