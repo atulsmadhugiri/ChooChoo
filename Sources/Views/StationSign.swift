@@ -20,9 +20,9 @@ struct StationSign: View {
             .bold()
             .padding(
               EdgeInsets(
-                top: 12,
+                top: 18,
                 leading: 12,
-                bottom: 6,
+                bottom: 8,
                 trailing: 4
               )
             )
@@ -52,7 +52,7 @@ struct StationSign: View {
         Rectangle()
           .fill(.white)
           .frame(height: 2)
-          .padding(.top, 12),
+          .padding(.top, 14),
         alignment: .top
       )
 
