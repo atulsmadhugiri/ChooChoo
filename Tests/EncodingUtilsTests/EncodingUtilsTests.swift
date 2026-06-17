@@ -333,6 +333,27 @@ struct EncodingUtilsTests {
         #expect(arrivals.first?.direction == .south)
     }
 
+    @Test func nyctDescriptorWithoutDirectionFallsBackToTripIDSuffix() {
+        var entity = TransitRealtime_FeedEntity()
+        entity.id = "trip"
+        entity.tripUpdate = makeTripUpdateWithoutNYCTDirection(
+            tripID: "ABC..S",
+            routeID: "1",
+            stopUpdates: [
+                makeStopTimeUpdate(stopID: "120S", arrival: 1_800_000_000),
+                makeStopTimeUpdate(stopID: "121S", arrival: 1_800_000_100),
+            ]
+        )
+
+        let arrivals = getTrainArrivalsForStop(
+            stop: stopValue(gtfsStopID: "120"),
+            feed: [entity],
+            stopNamesByGTFSID: ["121": "Terminal"]
+        )
+
+        #expect(arrivals.first?.direction == .south)
+    }
+
     @Test func unknownRouteIDDoesNotCreateArrival() {
         var entity = TransitRealtime_FeedEntity()
         entity.id = "trip"
@@ -420,6 +441,26 @@ private func makeTripUpdate(
     tripDescriptor.routeID = routeID
     var nyctTripDescriptor = NyctTripDescriptor()
     nyctTripDescriptor.direction = nyctDirection
+    tripDescriptor.nyctTripDescriptor = nyctTripDescriptor
+
+    var tripUpdate = TransitRealtime_TripUpdate()
+    tripUpdate.trip = tripDescriptor
+    tripUpdate.stopTimeUpdate = stopUpdates
+    return tripUpdate
+}
+
+private func makeTripUpdateWithoutNYCTDirection(
+    tripID: String,
+    routeID: String,
+    stopUpdates: [TransitRealtime_TripUpdate.StopTimeUpdate]
+) -> TransitRealtime_TripUpdate {
+    var tripDescriptor = TransitRealtime_TripDescriptor()
+    tripDescriptor.tripID = tripID
+    tripDescriptor.routeID = routeID
+    // Attach a NYCT descriptor that carries metadata but leaves `direction`
+    // unset, as the feed often does, so `hasDirection` is false.
+    var nyctTripDescriptor = NyctTripDescriptor()
+    nyctTripDescriptor.isAssigned = true
     tripDescriptor.nyctTripDescriptor = nyctTripDescriptor
 
     var tripUpdate = TransitRealtime_TripUpdate()

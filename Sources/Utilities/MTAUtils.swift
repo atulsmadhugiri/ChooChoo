@@ -135,7 +135,7 @@ private func tripDirection(
   for trip: TransitRealtime_TripDescriptor,
   fallbackTripID: String
 ) -> TripDirection {
-  if trip.hasNyctTripDescriptor {
+  if trip.hasNyctTripDescriptor, trip.nyctTripDescriptor.hasDirection {
     switch trip.nyctTripDescriptor.direction {
     case .north:
       return .north
