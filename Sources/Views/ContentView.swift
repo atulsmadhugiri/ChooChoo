@@ -1,3 +1,4 @@
+import Combine
 import PostHog
 import SwiftData
 import SwiftUI
@@ -92,12 +93,12 @@ struct ContentView: View {
       if selectedStation != nil { return }
       setNearestStation()
       Task { await refreshData() }
-    }.onChange(of: selectedStation) { newValue in
+    }.onChange(of: selectedStation) { _, newValue in
       if let station = newValue {
         logStationSelected(station)
       }
       Task { await refreshData() }
-    }.onChange(of: selectedDirection) { newDirection in
+    }.onChange(of: selectedDirection) { _, newDirection in
       logDirectionChanged(newDirection, station: selectedStation ?? nearestStation)
     }.sheet(isPresented: $selectionSheetActive) {
       StationSelectionSheet(

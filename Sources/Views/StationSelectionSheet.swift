@@ -87,7 +87,7 @@ struct StationSelectionSheet: View {
     .onAppear {
       tapHaptic.prepare()
     }
-    .onChange(of: searchTerm) { newTerm in
+    .onChange(of: searchTerm) { _, newTerm in
       if !newTerm.isEmpty {
         logSearch(term: newTerm)
       }
