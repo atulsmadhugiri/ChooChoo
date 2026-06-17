@@ -145,44 +145,10 @@ enum AuditError: Error, CustomStringConvertible {
   }
 }
 
-struct StationStop {
-  let gtfsStopID: String
-  let complexID: Int
-  let division: String
-  let line: String
-  let stopName: String
-  let daytimeRoutesString: String
-  let gtfsLatitude: Double
-  let gtfsLongitude: Double
-  let northDirectionLabel: String
-  let southDirectionLabel: String
-
-  var value: MTAStopValue {
-    MTAStopValue(
-      gtfsStopID: gtfsStopID,
-      complexID: complexID,
-      division: division,
-      line: line,
-      stopName: stopName,
-      daytimeRoutesString: daytimeRoutesString,
-      gtfsLatitude: gtfsLatitude,
-      gtfsLongitude: gtfsLongitude,
-      northDirectionLabel: northDirectionLabel,
-      southDirectionLabel: southDirectionLabel
-    )
-  }
-
-  var lines: Set<MTALine> {
-    Set(daytimeRoutesString.split(separator: " ").compactMap {
-      MTATrain(rawValue: String($0))?.line
-    })
-  }
-}
-
 struct StationGroup {
   let complexID: Int
   let name: String
-  let stops: [StationStop]
+  let stops: [MTAStopValue]
 
   var lines: Set<MTALine> {
     stops.reduce(into: Set<MTALine>()) { result, stop in
@@ -192,18 +158,18 @@ struct StationGroup {
 }
 
 enum StationCSV {
-  static func loadStops(from path: String) throws -> [StationStop] {
+  static func loadStops(from path: String) throws -> [MTAStopValue] {
     let url = URL(fileURLWithPath: path)
     guard FileManager.default.fileExists(atPath: url.path) else {
       throw AuditError.missingStationsCSV(path)
     }
 
     let dataFrame = try DataFrame(contentsOfCSVFile: url)
-    return dataFrame.rows.compactMap(StationStop.init(row:))
+    return dataFrame.rows.compactMap(MTAStopValue.init(row:))
   }
 }
 
-extension StationStop {
+extension MTAStopValue {
   init?(row: DataFrame.Row) {
     guard row["Division"] as? String != "SIR",
       let complexID = row["Complex ID"] as? Int,
@@ -235,7 +201,7 @@ extension StationStop {
 
 enum StationSelector {
   static func selectStations(
-    from stops: [StationStop],
+    from stops: [MTAStopValue],
     options: AuditOptions
   ) throws -> [StationGroup] {
     let grouped = Dictionary(grouping: stops, by: \.complexID)
@@ -406,8 +372,7 @@ struct AuditRunner {
 
     for line in station.lines {
       guard let feeds = feedData[line] else { continue }
-      for stop in station.stops {
-        let stopValue = stop.value
+      for stopValue in station.stops {
         for payload in feeds.payloads {
           let payloadAppArrivals = try getTrainArrivalsForStop(
             stop: stopValue,
@@ -468,10 +433,12 @@ struct AuditRunner {
     if comparisonMode.includesMTAWeb {
       var webArrivals: [ComparableArrival] = []
       for stop in station.stops {
-        let data = try await HTTPClient.fetch(MTAWebEndpoint.nearbyURL(for: stop.gtfsStopID))
+        let data = try await HTTPClient.fetch(
+          try MTAWebEndpoint.nearbyURL(for: stop.gtfsStopID)
+        )
         webArrivals.append(
           contentsOf: try MTAWebArrivalDecoder.arrivals(
-            for: stop.value,
+            for: stop,
             feedData: data
           )
           .filter { $0.arrivalTime > now }
@@ -556,16 +523,21 @@ enum HTTPClient {
 enum MTAWebEndpoint {
   private static let apiKey = "Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE"
 
-  static func nearbyURL(for stopID: String) -> URL {
-    var components = URLComponents(
+  static func nearbyURL(for stopID: String) throws -> URL {
+    guard var components = URLComponents(
       string: "https://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby"
-    )!
+    ) else {
+      throw AuditError.network("invalid MTA web endpoint")
+    }
     components.queryItems = [
       URLQueryItem(name: "stops", value: "MTASBWY:\(stopID)"),
       URLQueryItem(name: "timeRange", value: "84600"),
       URLQueryItem(name: "apikey", value: apiKey),
     ]
-    return components.url!
+    guard let url = components.url else {
+      throw AuditError.network("could not build MTA web URL for stop \(stopID)")
+    }
+    return url
   }
 }
 

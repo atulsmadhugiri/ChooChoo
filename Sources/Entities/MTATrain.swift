@@ -130,6 +130,18 @@ extension MTATrain {
     }
     self = routeID.train
   }
+
+  public static func routes(in routeString: String) -> [MTATrain] {
+    routeTokens(in: routeString).compactMap(MTATrain.init(rawValue:))
+  }
+
+  public static func lines(in routeString: String) -> Set<MTALine> {
+    Set(routes(in: routeString).map(\.line))
+  }
+
+  public static func routeTokens(in routeString: String) -> [String] {
+    routeString.split(separator: " ").map(String.init)
+  }
 }
 
 extension MTATrain {

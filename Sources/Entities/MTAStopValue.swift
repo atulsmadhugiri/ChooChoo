@@ -37,9 +37,11 @@ public struct MTAStopValue: Sendable {
   }
 
   public var daytimeRoutes: [MTATrain] {
-    return daytimeRoutesString.split(separator: " ").compactMap {
-      MTATrain(rawValue: String($0))
-    }
+    MTATrain.routes(in: daytimeRoutesString)
+  }
+
+  public var lines: Set<MTALine> {
+    MTATrain.lines(in: daytimeRoutesString)
   }
 }
 

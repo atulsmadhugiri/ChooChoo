@@ -473,14 +473,12 @@ struct EncodingUtilsTests {
         #expect(rows.count > 400)
 
         let rowsWithoutRoutes = rows.filter {
-            ($0["Daytime Routes"] ?? "").split(separator: " ").isEmpty
+            MTATrain.routeTokens(in: $0["Daytime Routes"] ?? "").isEmpty
         }
         #expect(rowsWithoutRoutes.isEmpty)
 
         let unknownRoutes = rows.flatMap { row in
-            (row["Daytime Routes"] ?? "")
-                .split(separator: " ")
-                .map(String.init)
+            MTATrain.routeTokens(in: row["Daytime Routes"] ?? "")
                 .filter { MTATrain(rawValue: $0) == nil }
                 .map { "\(row["GTFS Stop ID"] ?? "?"):\($0)" }
         }

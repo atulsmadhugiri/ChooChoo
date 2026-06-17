@@ -21,13 +21,7 @@ class MTAStop {
   var station: MTAStation?
 
   var daytimeRoutes: [MTATrain] {
-    return daytimeRouteTokens.compactMap {
-      MTATrain(rawValue: $0)
-    }
-  }
-
-  var daytimeRouteTokens: [String] {
-    daytimeRoutesString.split(separator: " ").map(String.init)
+    MTATrain.routes(in: daytimeRoutesString)
   }
 
   init(
