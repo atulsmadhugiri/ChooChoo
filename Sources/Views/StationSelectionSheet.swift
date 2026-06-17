@@ -4,7 +4,7 @@ import SwiftUI
 
 struct StationWithDistance: Identifiable {
   let station: MTAStation
-  let distance: CLLocationDistance
+  let distance: CLLocationDistance?
   var id: MTAStation.ID { station.id }
 }
 
@@ -28,12 +28,10 @@ struct StationSelectionSheet: View {
   }
 
   var sortedStationEntries: [StationWithDistance] {
-    guard let location else { return [] }
-
     let stationDistances = filteredStationEntries.map { station in
       StationWithDistance(
         station: station,
-        distance: location.distance(from: station.location)
+        distance: location.map { $0.distance(from: station.location) }
       )
     }
 
@@ -41,7 +39,10 @@ struct StationSelectionSheet: View {
       if a.station.pinned != b.station.pinned {
         return a.station.pinned && !b.station.pinned
       }
-      return a.distance < b.distance
+      guard let distanceA = a.distance, let distanceB = b.distance else {
+        return a.station.name.localizedStandardCompare(b.station.name) == .orderedAscending
+      }
+      return distanceA < distanceB
     }
   }
 
@@ -49,16 +50,11 @@ struct StationSelectionSheet: View {
 
     NavigationView {
       List(sortedStationEntries) { entry in
-        let alertsForStation: [MTAServiceAlert] = entry.station.stops
-          .compactMap { stop in
-            serviceAlerts[stop.gtfsStopID]
-          }.flatMap { $0 }
-
         StationSign(
           station: entry.station,
           trains: entry.station.daytimeRoutes,
           distance: entry.distance,
-          serviceAlerts: alertsForStation
+          serviceAlerts: entry.station.serviceAlerts(in: serviceAlerts)
         ).id(entry.id)
           .onTapGesture {
             tapHaptic.impactOccurred()
@@ -80,7 +76,7 @@ struct StationSelectionSheet: View {
         }
       }
       .navigationBarTitle(
-        "Nearby Stations",
+        location == nil ? "Stations" : "Nearby Stations",
         displayMode: .inline
       )
     }

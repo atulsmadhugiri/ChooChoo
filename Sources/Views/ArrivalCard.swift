@@ -6,6 +6,8 @@ struct ArrivalCard: View {
   @State private var arrivingGlow: Bool = false
 
   var body: some View {
+    let remainingTime = arrival.arrivalTime.timeIntervalSince(Date())
+
     HStack {
       TrainBadge(train: arrival.train, badgeSize: .small)
       VStack(alignment: .leading, spacing: -2) {
@@ -19,7 +21,7 @@ struct ArrivalCard: View {
       Spacer()
       VStack(alignment: .trailing, spacing: -2) {
 
-        if arrival.arrivalTime.timeIntervalSinceNow < 60 {
+        if remainingTime < 60 {
           Text("Arriving")
             .font(.headline)
             .fontDesign(.rounded)
@@ -40,16 +42,14 @@ struct ArrivalCard: View {
             }
         } else {
           Text(
-            "\(formatTimeInterval(interval: arrival.arrivalTime.timeIntervalSinceNow))"
+            "\(formatTimeInterval(interval: remainingTime))"
           )
           .font(.headline)
           .fontDesign(.rounded)
         }
 
         Text(
-          Date(
-            timeIntervalSinceNow: arrival.arrivalTime.timeIntervalSinceNow
-          ).formatted(date: .omitted, time: .shortened)
+          arrival.arrivalTime.formatted(date: .omitted, time: .shortened)
         )
         .font(.subheadline)
         .foregroundStyle(.tertiary)

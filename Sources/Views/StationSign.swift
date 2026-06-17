@@ -5,7 +5,7 @@ struct StationSign: View {
   var station: MTAStation
   var trains: [MTATrain]
 
-  let distance: CLLocationDistance
+  let distance: CLLocationDistance?
   let serviceAlerts: [MTAServiceAlert]
 
   @State var alertSheetActive: Bool = false
@@ -61,7 +61,7 @@ struct StationSign: View {
         Button {
         } label: {
           Text(
-            formattedDistanceTraveled(distance: distance)
+            distance.map(formattedDistanceTraveled(distance:)) ?? "Station"
           ).font(.headline)
             .bold()
             .fontDesign(.rounded)

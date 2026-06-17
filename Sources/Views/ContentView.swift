@@ -19,6 +19,8 @@ struct ContentView: View {
   @State private var loading: Bool = true
 
   @State private var serviceAlerts: [String: [MTAServiceAlert]] = [:]
+  @State private var refreshTask: Task<Void, Never>?
+  @State private var refreshGeneration = 0
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
   let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
@@ -26,23 +28,27 @@ struct ContentView: View {
   var body: some View {
     VStack(spacing: 0) {
       let visibleStation = selectedStation ?? nearestStation
-      if let visibleStation, let location = locationFetcher.location {
-
-        let alertsForStation: [MTAServiceAlert] = visibleStation.stops
-          .compactMap { stop in
-            serviceAlerts[stop.gtfsStopID]
-          }.flatMap { $0 }
-
+      if let visibleStation {
         StationSign(
           station: visibleStation,
           trains: visibleStation.daytimeRoutes,
-          distance: location.distance(from: visibleStation.location),
-          serviceAlerts: alertsForStation
+          distance: locationFetcher.location?.distance(from: visibleStation.location),
+          serviceAlerts: visibleStation.serviceAlerts(in: serviceAlerts)
         ).onTapGesture {
           tapHaptic.impactOccurred()
           selectionSheetActive = true
           logStationSignTapped(for: visibleStation)
         }.padding(12).shadow(radius: 2)
+      } else {
+        Button {
+          tapHaptic.impactOccurred()
+          selectionSheetActive = true
+        } label: {
+          Label("Choose Station", systemImage: "tram.fill")
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .padding(12)
       }
 
       Divider()
@@ -60,7 +66,7 @@ struct ContentView: View {
           Text(southLabel).tag(TripDirection.south)
           Text(northLabel).tag(TripDirection.north)
         }.pickerStyle(.segmented).labelsHidden().padding(.bottom, 8)
-        
+
         List(visibleArrivals) { arrival in
           ArrivalCard(arrival: arrival).listRowInsets(
             EdgeInsets(
@@ -74,7 +80,7 @@ struct ContentView: View {
           .background(.background)
           .cornerRadius(8)
           .clipped()
-          .refreshable { await refreshData() }
+          .refreshable { await refreshSelectedStation() }
           .shadow(radius: 2)
           .overlay {
             if visibleArrivals.isEmpty, !loading {
@@ -92,12 +98,12 @@ struct ContentView: View {
     .onChange(of: locationFetcher.location) {
       if selectedStation != nil { return }
       setNearestStation()
-      Task { await refreshData() }
+      queueRefresh()
     }.onChange(of: selectedStation) { _, newValue in
       if let station = newValue {
         logStationSelected(station)
       }
-      Task { await refreshData() }
+      queueRefresh()
     }.onChange(of: selectedDirection) { _, newDirection in
       logDirectionChanged(newDirection, station: selectedStation ?? nearestStation)
     }.sheet(isPresented: $selectionSheetActive) {
@@ -112,13 +118,31 @@ struct ContentView: View {
         serviceAlerts = await constructServiceAlertsForStop()
       }
     }.onReceive(timer) { _ in
-      Task { await refreshData() }
+      guard selectedStation ?? nearestStation != nil else { return }
+      queueRefresh()
     }.onDisappear {
+      refreshTask?.cancel()
       timer.upstream.connect().cancel()
     }
   }
 
-  func refreshData() async {
+  private func queueRefresh() {
+    refreshGeneration += 1
+    let generation = refreshGeneration
+    refreshTask?.cancel()
+    refreshTask = Task {
+      await refreshData(generation: generation)
+    }
+  }
+
+  private func refreshSelectedStation() async {
+    refreshGeneration += 1
+    let generation = refreshGeneration
+    refreshTask?.cancel()
+    await refreshData(generation: generation)
+  }
+
+  private func refreshData(generation: Int) async {
     guard let station = selectedStation ?? nearestStation else {
       return
     }
@@ -133,13 +157,17 @@ struct ContentView: View {
     )
 
     loading = true
-    defer { loading = false }
-    trainArrivals = await getArrivals(
+    let arrivals = await getArrivals(
       lines: lines,
       stops: stops,
       stopNamesByGTFSID: stopNamesByGTFSID
     )
-    let sameDirection = trainArrivals.filter {
+
+    guard !Task.isCancelled, generation == refreshGeneration else { return }
+
+    trainArrivals = arrivals
+    loading = false
+    let sameDirection = arrivals.filter {
       $0.direction == selectedDirection
     }
     if sameDirection.isEmpty {

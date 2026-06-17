@@ -1,20 +1,22 @@
 import CoreLocation
+import Foundation
 
 class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
   let locationManager = CLLocationManager()
 
   @Published var location: CLLocation?
 
-  private let distanceThreshold: CLLocationDistance = 15
+  private var distanceThreshold: CLLocationDistance {
+    ProcessInfo.processInfo.isLowPowerModeEnabled ? 500 : 100
+  }
 
   override init() {
     super.init()
     locationManager.delegate = self
-    locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-    locationManager.distanceFilter = distanceThreshold
     locationManager.pausesLocationUpdatesAutomatically = true
+    configureAccuracy()
     locationManager.requestWhenInUseAuthorization()
-    locationManager.startUpdatingLocation()
+    startUpdatingIfAuthorized()
   }
 
   func locationManager(
@@ -24,4 +26,35 @@ class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
     location = locations.last
   }
 
+  func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+    startUpdatingIfAuthorized()
+  }
+
+  func locationManager(
+    _ manager: CLLocationManager,
+    didFailWithError error: Error
+  ) {
+    print("Location update failed: \(error)")
+  }
+
+  private func startUpdatingIfAuthorized() {
+    switch locationManager.authorizationStatus {
+    case .authorizedAlways, .authorizedWhenInUse:
+      configureAccuracy()
+      locationManager.startUpdatingLocation()
+    case .denied, .restricted:
+      locationManager.stopUpdatingLocation()
+    case .notDetermined:
+      break
+    @unknown default:
+      break
+    }
+  }
+
+  private func configureAccuracy() {
+    locationManager.desiredAccuracy = ProcessInfo.processInfo.isLowPowerModeEnabled
+      ? kCLLocationAccuracyKilometer
+      : kCLLocationAccuracyHundredMeters
+    locationManager.distanceFilter = distanceThreshold
+  }
 }
