@@ -9,6 +9,7 @@ let package = Package(
   ],
   products: [
     .library(name: "ChooChooCore", targets: ["ChooChooCore"]),
+    .executable(name: "ChooChooAudit", targets: ["ChooChooAudit"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-protobuf.git", exact: "1.29.0")
@@ -35,6 +36,7 @@ let package = Package(
         "Sources/Preview Content",
         "Sources/Views",
         "Tests",
+        "Tools",
       ],
       sources: [
         "Generated/gtfs-realtime.pb.swift",
@@ -50,4 +52,15 @@ let package = Package(
         "Sources/Utilities/NetworkUtils.swift",
       ]
     ),
+    .executableTarget(
+      name: "ChooChooAudit",
+      dependencies: ["ChooChooCore"],
+      path: "Tools/ChooChooAudit"
+    ),
+    .testTarget(
+      name: "ChooChooCoreTests",
+      dependencies: ["ChooChooCore"],
+      path: "Tests/EncodingUtilsTests"
+    ),
   ]
+)
