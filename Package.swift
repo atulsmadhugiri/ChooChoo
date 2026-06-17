@@ -44,10 +44,12 @@ let package = Package(
         "Generated/nyct-subway.pb.swift",
         "Sources/Entities/MTALine.swift",
         "Sources/Entities/MTAServiceAlert.swift",
+        "Sources/Entities/MTAStationSnapshot.swift",
         "Sources/Entities/MTAStopValue.swift",
         "Sources/Entities/MTATrain.swift",
         "Sources/TrainArrivalEntry.swift",
         "Sources/Utilities/EncodingUtils.swift",
+        "Sources/Utilities/MTAFeedClient.swift",
         "Sources/Utilities/MTAUtils.swift",
         "Sources/Utilities/NetworkUtils.swift",
       ]

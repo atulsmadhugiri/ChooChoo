@@ -121,6 +121,82 @@ struct EncodingUtilsTests {
         #expect(periods[0].contains(Date(timeIntervalSince1970: 1_800_000_000)))
     }
 
+    @Test func mtaFeedClientUsesFreshCacheWithoutRefetching() async throws {
+        let url = try #require(URL(string: "https://example.com/feed"))
+        let firstPayload = Data("first".utf8)
+        let secondPayload = Data("second".utf8)
+        let recorder = FeedFetchRecorder(responses: [firstPayload, secondPayload])
+        let client = MTAFeedClient(fetch: { url in
+            try await recorder.fetch(url)
+        })
+        let cachePolicy = MTAFeedCachePolicy(
+            freshness: .seconds(60),
+            staleFallback: nil
+        )
+
+        let first = try await client.data(from: url, cachePolicy: cachePolicy)
+        let second = try await client.data(from: url, cachePolicy: cachePolicy)
+
+        #expect(first == firstPayload)
+        #expect(second == firstPayload)
+        #expect(await recorder.requestCount() == 1)
+    }
+
+    @Test func mtaFeedClientCoalescesInFlightRequests() async throws {
+        let url = try #require(URL(string: "https://example.com/feed"))
+        let payload = Data("shared".utf8)
+        let recorder = FeedFetchRecorder(
+            responses: [payload],
+            delay: .milliseconds(50)
+        )
+        let client = MTAFeedClient(fetch: { url in
+            try await recorder.fetch(url)
+        })
+        let cachePolicy = MTAFeedCachePolicy(
+            freshness: .seconds(0),
+            staleFallback: nil
+        )
+
+        async let first = client.data(from: url, cachePolicy: cachePolicy)
+        async let second = client.data(from: url, cachePolicy: cachePolicy)
+        let values = try await [first, second]
+
+        #expect(values == [payload, payload])
+        #expect(await recorder.requestCount() == 1)
+    }
+
+    @Test func mtaFeedClientFallsBackToStaleCacheOnFailure() async throws {
+        let url = try #require(URL(string: "https://example.com/feed"))
+        let payload = Data("stale but useful".utf8)
+        let recorder = FeedFetchRecorder(responses: [payload])
+        let client = MTAFeedClient(fetch: { url in
+            try await recorder.fetch(url)
+        })
+
+        let initial = try await client.data(
+            from: url,
+            cachePolicy: MTAFeedCachePolicy(
+                freshness: .seconds(60),
+                staleFallback: .seconds(60)
+            )
+        )
+
+        try await Task.sleep(for: .milliseconds(5))
+        await recorder.setFailing(true)
+
+        let fallback = try await client.data(
+            from: url,
+            cachePolicy: MTAFeedCachePolicy(
+                freshness: .seconds(0),
+                staleFallback: .seconds(60)
+            )
+        )
+
+        #expect(initial == payload)
+        #expect(fallback == payload)
+        #expect(await recorder.requestCount() == 2)
+    }
+
     @Test func nyctTripDescriptorDirectionBeatsTripIDSuffix() {
         var entity = TransitRealtime_FeedEntity()
         entity.id = "trip"
@@ -483,6 +559,41 @@ struct EncodingUtilsTests {
                 .map { "\(row["GTFS Stop ID"] ?? "?"):\($0)" }
         }
         #expect(unknownRoutes.isEmpty)
+    }
+}
+
+private actor FeedFetchRecorder {
+    private var responses: [Data]
+    private var requests: [URL] = []
+    private let delay: Duration
+    private var failing = false
+
+    init(
+        responses: [Data],
+        delay: Duration = .seconds(0)
+    ) {
+        self.responses = responses
+        self.delay = delay
+    }
+
+    func fetch(_ url: URL) async throws -> Data {
+        requests.append(url)
+        try await Task.sleep(for: delay)
+
+        if failing {
+            throw URLError(.notConnectedToInternet)
+        }
+
+        let responseIndex = min(requests.count - 1, responses.count - 1)
+        return responses[responseIndex]
+    }
+
+    func setFailing(_ failing: Bool) {
+        self.failing = failing
+    }
+
+    func requestCount() -> Int {
+        requests.count
     }
 }
 

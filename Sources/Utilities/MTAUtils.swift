@@ -179,12 +179,11 @@ extension TransitRealtime_TripUpdate.StopTimeUpdate {
 let MTAServiceAlertFeedURL =
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts"
 
-func getServiceAlerts() async -> [TransitRealtime_Alert] {
+func getServiceAlerts(
+  feedClient: MTAFeedClient = .shared
+) async -> [TransitRealtime_Alert] {
   do {
-    let data = try await NetworkUtils.sendNetworkRequest(
-      to: MTAServiceAlertFeedURL)
-    let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-    return feed.entity.compactMap { $0.hasAlert ? $0.alert : nil }
+    return try await fetchMTAServiceAlerts(using: feedClient)
   } catch {
     print("Failed to fetch data from MTA Service Alerts feed.")
     return []
@@ -214,8 +213,10 @@ func timeRangesToServiceAlertPeriods(
   }
 }
 
-func constructServiceAlertsForStop() async -> [String: [MTAServiceAlert]] {
-  let serviceAlerts = await getServiceAlerts()
+func constructServiceAlertsForStop(
+  feedClient: MTAFeedClient = .shared
+) async -> [String: [MTAServiceAlert]] {
+  let serviceAlerts = await getServiceAlerts(feedClient: feedClient)
   return constructServiceAlerts(from: serviceAlerts)
 }
 

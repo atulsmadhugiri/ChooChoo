@@ -1,7 +1,7 @@
 import CoreLocation
 import Foundation
 
-class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
+final class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
   let locationManager = CLLocationManager()
 
   @Published var location: CLLocation?

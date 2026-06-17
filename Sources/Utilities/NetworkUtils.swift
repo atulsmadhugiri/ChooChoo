@@ -1,7 +1,7 @@
 import Foundation
 
 struct NetworkUtils {
-  enum NetworkError: Error, LocalizedError {
+  enum NetworkError: Error, LocalizedError, Sendable {
     case invalidURL(String)
     case invalidResponse(URL)
     case badStatus(URL, Int)
@@ -22,12 +22,16 @@ struct NetworkUtils {
     guard let url = URL(string: endpoint) else {
       throw NetworkError.invalidURL(endpoint)
     }
+    return try await sendNetworkRequest(to: url)
+  }
 
+  static func sendNetworkRequest(to url: URL) async throws -> Data {
     var request = URLRequest(
       url: url,
       cachePolicy: .reloadIgnoringLocalCacheData,
       timeoutInterval: 10
     )
+    request.networkServiceType = .responsiveData
     request.httpMethod = "GET"
     request.setValue("ChooChoo/1.0", forHTTPHeaderField: "User-Agent")
 

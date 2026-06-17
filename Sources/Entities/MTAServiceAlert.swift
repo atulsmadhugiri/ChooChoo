@@ -1,6 +1,6 @@
 import Foundation
 
-struct MTAServiceAlertTimeRange {
+struct MTAServiceAlertTimeRange: Sendable {
   let start: Date?
   let end: Date?
 
@@ -19,7 +19,7 @@ struct MTAServiceAlertTimeRange {
   }
 }
 
-struct MTAServiceAlert: Identifiable {
+struct MTAServiceAlert: Identifiable, Sendable {
   let id: UUID = UUID()
   let stopID: String
   let header: String

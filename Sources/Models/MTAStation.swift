@@ -78,6 +78,14 @@ class MTAStation {
       alertsByStopID[GTFSStopID(stop.gtfsStopID).baseID] ?? []
     }
   }
+
+  func snapshot(stopNamesByGTFSID: [String: String]) -> MTAStationSnapshot {
+    MTAStationSnapshot(
+      lines: lines,
+      stops: stops.map(\.value),
+      stopNamesByGTFSID: stopNamesByGTFSID
+    )
+  }
 }
 
 extension MTAStation {
@@ -97,27 +105,35 @@ extension MTAStation {
     }
     return stations
   }
+
+  static func stopNamesByGTFSID(from stations: [MTAStation]) -> [String: String] {
+    Dictionary(
+      stations.flatMap(\.stops).map { ($0.gtfsStopID, $0.stopName) },
+      uniquingKeysWith: { first, _ in first }
+    )
+  }
 }
 
-func getFeedData(lines: [MTALine]) async -> [MTALine:
+func getFeedData(
+  lines: [MTALine],
+  feedClient: MTAFeedClient = .shared
+) async -> [MTALine:
   TransitRealtime_FeedMessage]
 {
   guard !lines.isEmpty else { return [:] }
   var results = [MTALine: TransitRealtime_FeedMessage]()
 
-  await withTaskGroup(of: (MTALine, TransitRealtime_FeedMessage)?.self) {
+  await withTaskGroup(of: (MTALine, [Data])?.self) {
     group in
 
     for line in lines {
       group.addTask {
         do {
-          var mergedFeed = TransitRealtime_FeedMessage()
-          for endpoint in line.endpoints {
-            let data = try await NetworkUtils.sendNetworkRequest(to: endpoint)
-            let feed = try parseMTARealtimeFeed(from: data)
-            mergedFeed.entity.append(contentsOf: feed.entity)
-          }
-          return (line, mergedFeed)
+          let payloads = try await fetchMTARealtimePayloads(
+            from: line.endpoints,
+            using: feedClient
+          )
+          return (line, payloads)
         } catch {
           print("Failed to fetch feed for line \(line): \(error)")
           return nil
@@ -126,8 +142,12 @@ func getFeedData(lines: [MTALine]) async -> [MTALine:
     }
 
     for await taskResult in group {
-      if let (line, feed) = taskResult {
-        results[line] = feed
+      if let (line, payloads) = taskResult {
+        do {
+          results[line] = try decodeMTARealtimeFeeds(from: payloads)
+        } catch {
+          print("Failed to decode feed for line \(line): \(error)")
+        }
       }
     }
 
@@ -138,20 +158,37 @@ func getFeedData(lines: [MTALine]) async -> [MTALine:
 func getArrivals(
   lines: [MTALine],
   stops: [MTAStopValue],
-  stopNamesByGTFSID: [String: String]
+  stopNamesByGTFSID: [String: String],
+  feedClient: MTAFeedClient = .shared
 ) async
   -> [TrainArrivalEntry]
 {
+  await getArrivals(
+    for: MTAStationSnapshot(
+      lines: lines,
+      stops: stops,
+      stopNamesByGTFSID: stopNamesByGTFSID
+    ),
+    feedClient: feedClient
+  )
+}
+
+func getArrivals(
+  for station: MTAStationSnapshot,
+  feedClient: MTAFeedClient = .shared
+) async -> [TrainArrivalEntry] {
+  let lines = station.lines
+  let stops = station.stops
   guard !lines.isEmpty, !stops.isEmpty else { return [] }
 
-  let feedData = await getFeedData(lines: lines)
+  let feedData = await getFeedData(lines: lines, feedClient: feedClient)
   let now = Date()
 
   let arrivalEntries = product(feedData.values, stops).flatMap { feed, stop in
     getTrainArrivalsForStop(
       stop: stop,
       feed: feed.entity,
-      stopNamesByGTFSID: stopNamesByGTFSID
+      stopNamesByGTFSID: station.stopNamesByGTFSID
     )
   }
 
@@ -168,8 +205,9 @@ private func extractTripAlerts(
 
 func getTripDelays(
   lines: [MTALine],
-  stops: [MTAStopValue]
+  stops: [MTAStopValue],
+  feedClient: MTAFeedClient = .shared
 ) async -> [TransitRealtime_Alert] {
-  let feedData = await getFeedData(lines: lines)
+  let feedData = await getFeedData(lines: lines, feedClient: feedClient)
   return feedData.values.flatMap { extractTripAlerts(from: $0.entity) }
 }

@@ -1,5 +1,5 @@
-import Combine
 import CoreLocation
+import Observation
 import SwiftData
 import SwiftUI
 
@@ -7,12 +7,11 @@ struct ContentView: View {
   @Query var stations: [MTAStation]
 
   @StateObject private var locationFetcher = LocationFetcher()
-  @StateObject private var viewModel = ContentViewModel()
+  @State private var viewModel = ContentViewModel()
 
   @State var selectionSheetActive: Bool = false
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
-  let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
 
   var body: some View {
     VStack(spacing: 0) {
@@ -87,12 +86,10 @@ struct ContentView: View {
     .onChange(of: locationFetcher.location) {
       if viewModel.selectedStation != nil { return }
       viewModel.setNearestStation(from: stations, location: locationFetcher.location)
-      viewModel.queueRefresh(stations: stations)
     }.onChange(of: viewModel.selectedStation) { _, newValue in
       if let station = newValue {
         logStationSelected(station)
       }
-      viewModel.queueRefresh(stations: stations)
     }.onChange(of: viewModel.selectedDirection) { _, newDirection in
       logDirectionChanged(newDirection, station: viewModel.visibleStation)
     }.sheet(isPresented: $selectionSheetActive) {
@@ -103,15 +100,10 @@ struct ContentView: View {
         serviceAlerts: $viewModel.serviceAlerts)
     }.onAppear {
       tapHaptic.prepare()
-      Task {
-        await viewModel.loadServiceAlerts()
-      }
-    }.onReceive(timer) { _ in
-      guard viewModel.visibleStation != nil else { return }
-      viewModel.queueRefresh(stations: stations)
-    }.onDisappear {
-      viewModel.cancelRefresh()
-      timer.upstream.connect().cancel()
+    }.task {
+      await viewModel.loadServiceAlerts()
+    }.task(id: viewModel.visibleStation?.id) {
+      await viewModel.refreshLoop(stations: stations)
     }
   }
 
@@ -121,15 +113,16 @@ struct ContentView: View {
 }
 
 @MainActor
-final class ContentViewModel: ObservableObject {
-  @Published var trainArrivals: [TrainArrivalEntry] = []
-  @Published var selectedDirection: TripDirection = .south
-  @Published var selectedStation: MTAStation?
-  @Published var nearestStation: MTAStation?
-  @Published var loading = true
-  @Published var serviceAlerts: [String: [MTAServiceAlert]] = [:]
+@Observable
+final class ContentViewModel {
+  var trainArrivals: [TrainArrivalEntry] = []
+  var selectedDirection: TripDirection = .south
+  var selectedStation: MTAStation?
+  var nearestStation: MTAStation?
+  var loading = true
+  var serviceAlerts: [String: [MTAServiceAlert]] = [:]
 
-  private var refreshTask: Task<Void, Never>?
+  @ObservationIgnored
   private var refreshGeneration = 0
 
   var visibleStation: MTAStation? {
@@ -137,28 +130,27 @@ final class ContentViewModel: ObservableObject {
   }
 
   func loadServiceAlerts() async {
-    serviceAlerts = await constructServiceAlertsForStop()
+    let alerts = await constructServiceAlertsForStop()
+    guard !Task.isCancelled else { return }
+    serviceAlerts = alerts
   }
 
-  func queueRefresh(stations: [MTAStation]) {
-    refreshGeneration += 1
-    let generation = refreshGeneration
-    refreshTask?.cancel()
-    refreshTask = Task {
-      await refreshData(generation: generation, stations: stations)
+  func refreshLoop(stations: [MTAStation]) async {
+    guard visibleStation != nil else {
+      loading = false
+      return
     }
-  }
 
-  func refreshSelectedStation(stations: [MTAStation]) async {
-    refreshGeneration += 1
-    let generation = refreshGeneration
-    refreshTask?.cancel()
-    await refreshData(generation: generation, stations: stations)
-  }
+    await refreshSelectedStation(stations: stations)
 
-  func cancelRefresh() {
-    refreshTask?.cancel()
-    refreshTask = nil
+    while !Task.isCancelled {
+      do {
+        try await Task.sleep(for: .seconds(20))
+      } catch {
+        return
+      }
+      await refreshSelectedStation(stations: stations)
+    }
   }
 
   func setNearestStation(from stations: [MTAStation], location: CLLocation?) {
@@ -168,27 +160,29 @@ final class ContentViewModel: ObservableObject {
     }
   }
 
+  func refreshSelectedStation(stations: [MTAStation]) async {
+    refreshGeneration += 1
+    let generation = refreshGeneration
+    await refreshData(generation: generation, stations: stations)
+  }
+
   private func refreshData(
     generation: Int,
     stations: [MTAStation]
   ) async {
-    guard let station = visibleStation else { return }
+    guard let station = visibleStation else {
+      loading = false
+      return
+    }
 
     logRefresh(for: station)
 
-    let lines = station.lines
-    let stops = station.stops.map(\.value)
-    let stopNamesByGTFSID = Dictionary(
-      stations.flatMap(\.stops).map { ($0.gtfsStopID, $0.stopName) },
-      uniquingKeysWith: { first, _ in first }
+    let snapshot = station.snapshot(
+      stopNamesByGTFSID: MTAStation.stopNamesByGTFSID(from: stations)
     )
 
     loading = true
-    let arrivals = await getArrivals(
-      lines: lines,
-      stops: stops,
-      stopNamesByGTFSID: stopNamesByGTFSID
-    )
+    let arrivals = await getArrivals(for: snapshot)
 
     guard !Task.isCancelled, generation == refreshGeneration else { return }
 
