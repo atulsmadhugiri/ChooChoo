@@ -1,18 +1,42 @@
 import Foundation
 
-struct MTAStopValue {
-  let gtfsStopID: String
-  let complexID: Int
-  let division: String
-  let line: String
-  let stopName: String
-  let daytimeRoutesString: String
-  let gtfsLatitude: Double
-  let gtfsLongitude: Double
-  let northDirectionLabel: String
-  let southDirectionLabel: String
+public struct MTAStopValue: Sendable {
+  public let gtfsStopID: String
+  public let complexID: Int
+  public let division: String
+  public let line: String
+  public let stopName: String
+  public let daytimeRoutesString: String
+  public let gtfsLatitude: Double
+  public let gtfsLongitude: Double
+  public let northDirectionLabel: String
+  public let southDirectionLabel: String
 
-  var daytimeRoutes: [MTATrain] {
+  public init(
+    gtfsStopID: String,
+    complexID: Int,
+    division: String,
+    line: String,
+    stopName: String,
+    daytimeRoutesString: String,
+    gtfsLatitude: Double,
+    gtfsLongitude: Double,
+    northDirectionLabel: String,
+    southDirectionLabel: String
+  ) {
+    self.gtfsStopID = gtfsStopID
+    self.complexID = complexID
+    self.division = division
+    self.line = line
+    self.stopName = stopName
+    self.daytimeRoutesString = daytimeRoutesString
+    self.gtfsLatitude = gtfsLatitude
+    self.gtfsLongitude = gtfsLongitude
+    self.northDirectionLabel = northDirectionLabel
+    self.southDirectionLabel = southDirectionLabel
+  }
+
+  public var daytimeRoutes: [MTATrain] {
     return daytimeRoutesString.split(separator: " ").compactMap {
       MTATrain(rawValue: String($0))
     }
@@ -20,33 +44,13 @@ struct MTAStopValue {
 }
 
 extension MTAStopValue {
-  init(mtaStop: MTAStop) {
-    self.init(
-      gtfsStopID: mtaStop.gtfsStopID,
-      complexID: mtaStop.complexID,
-      division: mtaStop.division,
-      line: mtaStop.line,
-      stopName: mtaStop.stopName,
-      daytimeRoutesString: mtaStop.daytimeRoutesString,
-      gtfsLatitude: mtaStop.gtfsLatitude,
-      gtfsLongitude: mtaStop.gtfsLongitude,
-      northDirectionLabel: mtaStop.northDirectionLabel,
-      southDirectionLabel: mtaStop.southDirectionLabel
+  public func getLabelFor(direction: TripDirection) -> String {
+    return directionLabel(
+      for: direction,
+      gtfsStopID: gtfsStopID,
+      northDirectionLabel: northDirectionLabel,
+      southDirectionLabel: southDirectionLabel,
+      stopName: stopName
     )
-  }
-}
-
-extension MTAStopValue {
-  func getLabelFor(direction: TripDirection) -> String {
-    // HACK: Accounting for weird direction labels for 34 St-Hudson Yards.
-    //       As with all the other hacks, there's definitely a better way.
-    let adjustedDirection =
-      (self.gtfsStopID == "726" || self.gtfsStopID == "139")
-      ? direction.flipped : direction
-    if adjustedDirection == .north {
-      return self.northDirectionLabel
-    } else {
-      return self.southDirectionLabel
-    }
   }
 }

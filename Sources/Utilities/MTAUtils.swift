@@ -1,28 +1,49 @@
 import Foundation
 
+func parseMTARealtimeFeed(
+  from data: Data
+) throws -> TransitRealtime_FeedMessage {
+  try TransitRealtime_FeedMessage(
+    serializedBytes: data,
+    extensions: Nyct_u45Subway_Extensions
+  )
+}
+
+public func getTrainArrivalsForStop(
+  stop: MTAStopValue,
+  feedData: Data,
+  stopNamesByGTFSID: [String: String]
+) throws -> [TrainArrivalEntry] {
+  let feed = try parseMTARealtimeFeed(from: feedData)
+  return getTrainArrivalsForStop(
+    stop: stop,
+    feed: feed.entity,
+    stopNamesByGTFSID: stopNamesByGTFSID
+  )
+}
+
 func getTrainArrivalsForStop(
   stop: MTAStopValue,
-  feed: [TransitRealtime_FeedEntity]
+  feed: [TransitRealtime_FeedEntity],
+  stopNamesByGTFSID: [String: String]
 ) -> [TrainArrivalEntry] {
 
   let tripUpdates = extractTripUpdates(from: feed)
   let arrivalsForStop =
     tripUpdates
     .flatMap { tripUpdate in
-      filterStopTimeUpdates(for: stop, from: tripUpdate).compactMap {
-        stopTimeUpdate -> TrainArrivalEntry? in
-        let lastStation = tripUpdate.stopTimeUpdate.last
-        if let lastStation {
-          let terminalStation = String(lastStation.stopID.dropLast())
-          return createTrainArrivalEntry(
-            from: stopTimeUpdate,
-            trip: tripUpdate.trip,
-            stop: stop,
-            terminalStation: mtaStopsByGTFSID[terminalStation]?.stopName
-              ?? "Unknown Destination."
-          )
-        }
-        return nil
+      let terminalStation = terminalStationName(
+        for: tripUpdate,
+        stopNamesByGTFSID: stopNamesByGTFSID
+      )
+      return filterStopTimeUpdates(for: stop, from: tripUpdate).compactMap {
+        stopTimeUpdate in
+        createTrainArrivalEntry(
+          from: stopTimeUpdate,
+          trip: tripUpdate.trip,
+          stop: stop,
+          terminalStation: terminalStation
+        )
       }
     }
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
@@ -39,7 +60,8 @@ private func filterStopTimeUpdates(
   from tripUpdate: TransitRealtime_TripUpdate
 ) -> [TransitRealtime_TripUpdate.StopTimeUpdate] {
   return tripUpdate.stopTimeUpdate.filter { stopTimeUpdate in
-    stopTimeUpdate.stopID.dropLast() == stop.gtfsStopID
+    guard stopTimeUpdate.isUsableArrival else { return false }
+    return stopTimeUpdate.baseStopID == stop.gtfsStopID
   }
 }
 
@@ -52,25 +74,106 @@ private func createTrainArrivalEntry(
 
   let tripID = standardizeTripIDForSevenTrain(trip.tripID)
 
-  guard
-    let train = trip.routeID == "FS"
-      ? MTATrain(rawValue: "S")
-      : trip.routeID.first.flatMap({ MTATrain(rawValue: String($0)) })
-  else { return nil }
+  guard let train = MTATrain(routeID: trip.routeID) else { return nil }
 
-  let direction = tripDirection(for: tripID)
-  let arrivalTimestamp =
-    stopTimeUpdate.arrival.time != 0
-    ? stopTimeUpdate.arrival.time : stopTimeUpdate.departure.time
+  let direction = tripDirection(for: trip, fallbackTripID: tripID)
+  guard let arrivalTimestamp = stopTimeUpdate.bestArrivalTimestamp else {
+    return nil
+  }
 
   return TrainArrivalEntry(
-    id: tripID,
+    id: "\(tripID)-\(stopTimeUpdate.stopID)-\(arrivalTimestamp)",
+    tripID: tripID,
+    stopID: stopTimeUpdate.stopID,
     arrivalTimestamp: arrivalTimestamp,
     train: train,
     terminalStation: terminalStation,
     direction: direction,
     directionLabel: stop.getLabelFor(direction: direction)
   )
+}
+
+private func terminalStationName(
+  for tripUpdate: TransitRealtime_TripUpdate,
+  stopNamesByGTFSID: [String: String]
+) -> String {
+  if tripUpdate.stopTimeUpdate.last?.isUsableArrival == false,
+    let fallback = fallbackTerminalStationName(
+      for: tripUpdate.trip,
+      stopNamesByGTFSID: stopNamesByGTFSID
+    )
+  {
+    return fallback
+  }
+
+  if let terminalStopID = tripUpdate.stopTimeUpdate
+    .last(where: \.isUsableArrival)?
+    .baseStopID,
+    let terminal = stopNamesByGTFSID[terminalStopID]
+  {
+    return terminal
+  }
+
+  return fallbackTerminalStationName(
+    for: tripUpdate.trip,
+    stopNamesByGTFSID: stopNamesByGTFSID
+  ) ?? "Unknown Destination."
+}
+
+private func fallbackTerminalStationName(
+  for trip: TransitRealtime_TripDescriptor,
+  stopNamesByGTFSID: [String: String]
+) -> String? {
+  let tripID = standardizeTripIDForSevenTrain(trip.tripID)
+  let direction = tripDirection(for: trip, fallbackTripID: tripID)
+  return MTARouteID(rawValue: trip.routeID)?
+    .terminalStopID(for: direction)
+    .flatMap { stopNamesByGTFSID[$0] }
+}
+
+private func tripDirection(
+  for trip: TransitRealtime_TripDescriptor,
+  fallbackTripID: String
+) -> TripDirection {
+  if trip.hasNyctTripDescriptor {
+    switch trip.nyctTripDescriptor.direction {
+    case .north:
+      return .north
+    case .south:
+      return .south
+    case .east, .west:
+      break
+    }
+  }
+
+  return tripDirection(for: fallbackTripID)
+}
+
+extension TransitRealtime_TripUpdate.StopTimeUpdate {
+  fileprivate var baseStopID: String {
+    String(stopID.dropLast())
+  }
+
+  fileprivate var bestArrivalTimestamp: Int64? {
+    if hasArrival, arrival.time > 0 {
+      return arrival.time
+    }
+    if hasDeparture, departure.time > 0 {
+      return departure.time
+    }
+    return nil
+  }
+
+  fileprivate var isUsableArrival: Bool {
+    guard !stopID.isEmpty else { return false }
+
+    switch scheduleRelationship {
+    case .scheduled:
+      return bestArrivalTimestamp != nil
+    case .skipped, .noData:
+      return false
+    }
+  }
 }
 
 let MTAServiceAlertFeedURL =
