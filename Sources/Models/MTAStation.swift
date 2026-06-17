@@ -31,12 +31,16 @@ class MTAStation {
   }
 
   var daytimeRoutes: [MTATrain] {
-    let sortedRoutes = self.stops.sorted { (stopA, stopB) -> Bool in
-      return stopA.daytimeRoutes.first!.rawValue
-        < stopB.daytimeRoutes.first!.rawValue
+    let sortedStops = self.stops.sorted { stopA, stopB -> Bool in
+      let firstRouteA = stopA.daytimeRoutes.first?.rawValue ?? stopA.daytimeRoutesString
+      let firstRouteB = stopB.daytimeRoutes.first?.rawValue ?? stopB.daytimeRoutesString
+      if firstRouteA != firstRouteB {
+        return firstRouteA < firstRouteB
+      }
+      return stopA.gtfsStopID < stopB.gtfsStopID
     }
 
-    return sortedRoutes.flatMap(\.daytimeRoutes)
+    return Array(sortedStops.flatMap(\.daytimeRoutes).uniqued())
   }
 
   var lines: [MTALine] {
@@ -68,17 +72,27 @@ class MTAStation {
 
     return labels.sorted().joined(separator: " & ")
   }
+
+  func serviceAlerts(in alertsByStopID: [String: [MTAServiceAlert]]) -> [MTAServiceAlert] {
+    stops.flatMap { stop in
+      alertsByStopID[GTFSStopID(stop.gtfsStopID).baseID] ?? []
+    }
+  }
 }
 
 extension MTAStation {
-  static func mergeStops(_ stops: [MTAStop]) -> [MTAStation] {
+  static func mergeStops(
+    _ stops: [MTAStop],
+    pinnedStationIDs: Set<Int> = []
+  ) -> [MTAStation] {
     let stationsToStops = Dictionary(grouping: stops, by: { $0.complexID })
     let stations = stationsToStops.compactMap { (complexID, stationStops) -> MTAStation? in
       guard let station = stationStops.first else { return nil }
       return MTAStation(
         id: complexID,
         name: station.stopName,
-        stops: stationStops
+        stops: stationStops,
+        pinned: pinnedStationIDs.contains(complexID)
       )
     }
     return stations
@@ -88,6 +102,7 @@ extension MTAStation {
 func getFeedData(lines: [MTALine]) async -> [MTALine:
   TransitRealtime_FeedMessage]
 {
+  guard !lines.isEmpty else { return [:] }
   var results = [MTALine: TransitRealtime_FeedMessage]()
 
   await withTaskGroup(of: (MTALine, TransitRealtime_FeedMessage)?.self) {
@@ -127,7 +142,10 @@ func getArrivals(
 ) async
   -> [TrainArrivalEntry]
 {
+  guard !lines.isEmpty, !stops.isEmpty else { return [] }
+
   let feedData = await getFeedData(lines: lines)
+  let now = Date()
 
   let arrivalEntries = product(feedData.values, stops).flatMap { feed, stop in
     getTrainArrivalsForStop(
@@ -138,7 +156,7 @@ func getArrivals(
   }
 
   return arrivalEntries.uniqued(on: \.id)
-    .filter { $0.arrivalTime.timeIntervalSinceNow > 0 }
+    .filter { $0.arrivalTime > now }
     .sorted { $0.arrivalTime < $1.arrivalTime }
 }
 

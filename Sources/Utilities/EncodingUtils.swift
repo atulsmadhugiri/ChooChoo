@@ -5,6 +5,30 @@ public enum TripDirection: String, Sendable {
   case south = "Downtown & Brooklyn"
 }
 
+public struct GTFSStopID: Hashable, Sendable {
+  public let rawValue: String
+
+  public init(_ rawValue: String) {
+    self.rawValue = rawValue
+  }
+
+  public var direction: TripDirection? {
+    switch rawValue.last {
+    case "N":
+      return .north
+    case "S":
+      return .south
+    default:
+      return nil
+    }
+  }
+
+  public var baseID: String {
+    guard direction != nil else { return rawValue }
+    return String(rawValue.dropLast())
+  }
+}
+
 extension TripDirection {
   public var flipped: TripDirection {
     return self == .north ? .south : .north

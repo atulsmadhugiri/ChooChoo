@@ -21,9 +21,13 @@ class MTAStop {
   var station: MTAStation?
 
   var daytimeRoutes: [MTATrain] {
-    return daytimeRoutesString.split(separator: " ").compactMap {
-      MTATrain(rawValue: String($0))
+    return daytimeRouteTokens.compactMap {
+      MTATrain(rawValue: $0)
     }
+  }
+
+  var daytimeRouteTokens: [String] {
+    daytimeRoutesString.split(separator: " ").map(String.init)
   }
 
   init(
@@ -103,6 +107,22 @@ extension MTAStop {
       print("Error reading CSV file: \(error)")
       return []
     }
+  }
+
+  static func seedSignature(for stops: [MTAStop]) -> String {
+    stops
+      .sorted { $0.gtfsStopID < $1.gtfsStopID }
+      .map {
+        [
+          $0.gtfsStopID,
+          String($0.complexID),
+          $0.daytimeRoutesString,
+          $0.stopName,
+          $0.northDirectionLabel,
+          $0.southDirectionLabel,
+        ].joined(separator: ":")
+      }
+      .joined(separator: "|")
   }
 }
 
