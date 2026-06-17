@@ -1,5 +1,6 @@
 import ChooChooCore
 import Foundation
+import TabularData
 
 @main
 struct ChooChooAudit {
@@ -192,113 +193,43 @@ struct StationGroup {
 
 enum StationCSV {
   static func loadStops(from path: String) throws -> [StationStop] {
-    guard let data = FileManager.default.contents(atPath: path),
-      let contents = String(data: data, encoding: .utf8)
-    else {
+    let url = URL(fileURLWithPath: path)
+    guard FileManager.default.fileExists(atPath: url.path) else {
       throw AuditError.missingStationsCSV(path)
     }
 
-    var rows = CSVParser.parse(contents)
-    guard !rows.isEmpty else { return [] }
-    let header = rows.removeFirst()
-    let indexes = Dictionary(uniqueKeysWithValues: header.enumerated().map {
-      ($0.element, $0.offset)
-    })
-
-    return rows.compactMap { row in
-      guard field("Division", row, indexes) != "SIR",
-        let complexID = Int(field("Complex ID", row, indexes)),
-        let latitude = Double(field("GTFS Latitude", row, indexes)),
-        let longitude = Double(field("GTFS Longitude", row, indexes))
-      else {
-        return nil
-      }
-
-      return StationStop(
-        gtfsStopID: field("GTFS Stop ID", row, indexes),
-        complexID: complexID,
-        division: field("Division", row, indexes),
-        line: field("Line", row, indexes),
-        stopName: field("Stop Name", row, indexes),
-        daytimeRoutesString: field("Daytime Routes", row, indexes),
-        gtfsLatitude: latitude,
-        gtfsLongitude: longitude,
-        northDirectionLabel: field("North Direction Label", row, indexes),
-        southDirectionLabel: field("South Direction Label", row, indexes)
-      )
-    }
-  }
-
-  private static func field(
-    _ name: String,
-    _ row: [String],
-    _ indexes: [String: Int]
-  ) -> String {
-    guard let index = indexes[name], index < row.count else { return "" }
-    return row[index]
+    let dataFrame = try DataFrame(contentsOfCSVFile: url)
+    return dataFrame.rows.compactMap(StationStop.init(row:))
   }
 }
 
-enum CSVParser {
-  static func parse(_ contents: String) -> [[String]] {
-    var rows: [[String]] = []
-    var row: [String] = []
-    var field = ""
-    var inQuotes = false
-    var iterator = contents.makeIterator()
-
-    while let character = iterator.next() {
-      switch character {
-      case "\"":
-        if inQuotes, let next = iterator.next() {
-          if next == "\"" {
-            field.append("\"")
-          } else {
-            inQuotes = false
-            consume(next, field: &field, row: &row, rows: &rows, inQuotes: &inQuotes)
-          }
-        } else {
-          inQuotes.toggle()
-        }
-      default:
-        consume(character, field: &field, row: &row, rows: &rows, inQuotes: &inQuotes)
-      }
+extension StationStop {
+  init?(row: DataFrame.Row) {
+    guard row["Division"] as? String != "SIR",
+      let complexID = row["Complex ID"] as? Int,
+      let gtfsStopID = row["GTFS Stop ID"] as? String,
+      let division = row["Division"] as? String,
+      let line = row["Line"] as? String,
+      let stopName = row["Stop Name"] as? String,
+      let daytimeRoutesString = row["Daytime Routes"] as? String,
+      let latitude = row["GTFS Latitude"] as? Double,
+      let longitude = row["GTFS Longitude"] as? Double
+    else {
+      return nil
     }
 
-    if !field.isEmpty || !row.isEmpty {
-      row.append(field)
-      rows.append(row)
-    }
-
-    return rows
-  }
-
-  private static func consume(
-    _ character: Character,
-    field: inout String,
-    row: inout [String],
-    rows: inout [[String]],
-    inQuotes: inout Bool
-  ) {
-    if inQuotes {
-      field.append(character)
-      return
-    }
-
-    switch character {
-    case ",":
-      row.append(field)
-      field = ""
-    case "\n":
-      row.append(field)
-      rows.append(row)
-      row = []
-      field = ""
-    case "\r":
-      break
-    default:
-      field.append(character)
-    }
+    self.init(
+      gtfsStopID: gtfsStopID,
+      complexID: complexID,
+      division: division,
+      line: line,
+      stopName: stopName,
+      daytimeRoutesString: daytimeRoutesString,
+      gtfsLatitude: latitude,
+      gtfsLongitude: longitude,
+      northDirectionLabel: row["North Direction Label"] as? String ?? "",
+      southDirectionLabel: row["South Direction Label"] as? String ?? ""
+    )
   }
 }
 
@@ -434,14 +365,19 @@ struct AuditRunner {
     endpoint: String,
     includingJSON shouldFetchJSON: Bool
   ) async throws -> FeedPayload {
-    let protobufURL = URL(string: endpoint)!
+    guard let protobufURL = URL(string: endpoint) else {
+      throw AuditError.network("invalid feed URL \(endpoint)")
+    }
     let protobuf = try await HTTPClient.fetch(protobufURL)
     let json = shouldFetchJSON ? await Self.freshJSONFeed(for: endpoint) : nil
     return FeedPayload(protobuf: protobuf, json: json)
   }
 
   private static func freshJSONFeed(for endpoint: String) async -> Data? {
-    let jsonURL = URL(string: "\(endpoint).json")!
+    guard let jsonURL = URL(string: "\(endpoint).json") else {
+      print("Skipping invalid JSON feed URL \(endpoint).json")
+      return nil
+    }
     do {
       let json = try await HTTPClient.fetch(jsonURL)
       if !isLikelyJSON(json) {
@@ -677,14 +613,15 @@ enum MTAWebArrivalDecoder {
 
         for time in group.times {
           let stopID = agencylessID(time.stopID)
-          guard String(stopID.dropLast()) == stop.gtfsStopID,
+          let parsedStopID = GTFSStopID(stopID)
+          guard parsedStopID.baseID == stop.gtfsStopID,
+            let direction = parsedStopID.direction,
             let departureFmt = time.departureFmt,
             let departure = dateFormatter.date(from: departureFmt)
           else {
             continue
           }
 
-          let direction: TripDirection = stopID.hasSuffix("S") ? .south : .north
           arrivals.append(ComparableArrival(
             tripID: agencylessID(time.tripID ?? ""),
             stopID: stopID,
@@ -754,7 +691,7 @@ struct MTAJSONStopTimeUpdate: Decodable {
   }
 
   var baseStopID: String {
-    String(stopID.dropLast())
+    GTFSStopID(stopID).baseID
   }
 
   var bestArrivalTimestamp: Int64? {
