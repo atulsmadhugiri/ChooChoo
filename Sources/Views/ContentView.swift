@@ -125,11 +125,19 @@ struct ContentView: View {
     logRefresh(for: station)
 
     let lines = station.lines
-    let stops = station.stops.map { MTAStopValue(mtaStop: $0) }
+    let stops = station.stops.map(\.value)
+    let stopNamesByGTFSID = Dictionary(
+      stations.flatMap(\.stops).map { ($0.gtfsStopID, $0.stopName) },
+      uniquingKeysWith: { first, _ in first }
+    )
 
     loading = true
     defer { loading = false }
-    trainArrivals = await getArrivals(lines: lines, stops: stops)
+    trainArrivals = await getArrivals(
+      lines: lines,
+      stops: stops,
+      stopNamesByGTFSID: stopNamesByGTFSID
+    )
     let sameDirection = trainArrivals.filter {
       $0.direction == selectedDirection
     }

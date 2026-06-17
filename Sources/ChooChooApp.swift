@@ -2,8 +2,6 @@ import PostHog
 import SwiftData
 import SwiftUI
 
-nonisolated(unsafe) var mtaStopsByGTFSID: [String: MTAStop] = [:]
-
 @main
 struct ChooChooApp: App {
   var modelContainer = {
@@ -37,11 +35,6 @@ struct ChooChooApp: App {
 
       defaults.set(true, forKey: "stationsDataLoaded")
     }
-
-    mtaStopsByGTFSID = Dictionary(
-      uniqueKeysWithValues: stopEntries.map { ($0.gtfsStopID, $0) }
-    )
-
   }
 
   var body: some Scene {

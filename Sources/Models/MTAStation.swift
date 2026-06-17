@@ -96,11 +96,13 @@ func getFeedData(lines: [MTALine]) async -> [MTALine:
     for line in lines {
       group.addTask {
         do {
-          let data = try await NetworkUtils.sendNetworkRequest(
-            to: line.endpoint
-          )
-          let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
-          return (line, feed)
+          var mergedFeed = TransitRealtime_FeedMessage()
+          for endpoint in line.endpoints {
+            let data = try await NetworkUtils.sendNetworkRequest(to: endpoint)
+            let feed = try parseMTARealtimeFeed(from: data)
+            mergedFeed.entity.append(contentsOf: feed.entity)
+          }
+          return (line, mergedFeed)
         } catch {
           print("Failed to fetch feed for line \(line): \(error)")
           return nil
@@ -118,13 +120,21 @@ func getFeedData(lines: [MTALine]) async -> [MTALine:
   return results
 }
 
-func getArrivals(lines: [MTALine], stops: [MTAStopValue]) async
+func getArrivals(
+  lines: [MTALine],
+  stops: [MTAStopValue],
+  stopNamesByGTFSID: [String: String]
+) async
   -> [TrainArrivalEntry]
 {
   let feedData = await getFeedData(lines: lines)
 
   let arrivalEntries = product(feedData.values, stops).flatMap { feed, stop in
-    getTrainArrivalsForStop(stop: stop, feed: feed.entity)
+    getTrainArrivalsForStop(
+      stop: stop,
+      feed: feed.entity,
+      stopNamesByGTFSID: stopNamesByGTFSID
+    )
   }
 
   return arrivalEntries.uniqued(on: \.id)
