@@ -15,8 +15,7 @@ class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
     locationManager.delegate = self
     locationManager.pausesLocationUpdatesAutomatically = true
     configureAccuracy()
-    locationManager.requestWhenInUseAuthorization()
-    startUpdatingIfAuthorized()
+    updateAuthorizationState()
   }
 
   func locationManager(
@@ -27,7 +26,7 @@ class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
   }
 
   func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-    startUpdatingIfAuthorized()
+    updateAuthorizationState()
   }
 
   func locationManager(
@@ -37,7 +36,7 @@ class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
     print("Location update failed: \(error)")
   }
 
-  private func startUpdatingIfAuthorized() {
+  private func updateAuthorizationState() {
     switch locationManager.authorizationStatus {
     case .authorizedAlways, .authorizedWhenInUse:
       configureAccuracy()
@@ -45,7 +44,7 @@ class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
     case .denied, .restricted:
       locationManager.stopUpdatingLocation()
     case .notDetermined:
-      break
+      locationManager.requestWhenInUseAuthorization()
     @unknown default:
       break
     }
