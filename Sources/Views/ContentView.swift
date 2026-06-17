@@ -1,5 +1,5 @@
 import Combine
-import PostHog
+import CoreLocation
 import SwiftData
 import SwiftUI
 
@@ -7,33 +7,22 @@ struct ContentView: View {
   @Query var stations: [MTAStation]
 
   @StateObject private var locationFetcher = LocationFetcher()
-  @State var trainArrivals: [TrainArrivalEntry] = []
+  @StateObject private var viewModel = ContentViewModel()
 
   @State var selectionSheetActive: Bool = false
-
-  @State private var selectedDirection: TripDirection = .south
-  @State private var selectedStation: MTAStation?
-
-  @State private var nearestStation: MTAStation?
-
-  @State private var loading: Bool = true
-
-  @State private var serviceAlerts: [String: [MTAServiceAlert]] = [:]
-  @State private var refreshTask: Task<Void, Never>?
-  @State private var refreshGeneration = 0
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
   let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
 
   var body: some View {
     VStack(spacing: 0) {
-      let visibleStation = selectedStation ?? nearestStation
+      let visibleStation = viewModel.visibleStation
       if let visibleStation {
         StationSign(
           station: visibleStation,
           trains: visibleStation.daytimeRoutes,
           distance: locationFetcher.location?.distance(from: visibleStation.location),
-          serviceAlerts: visibleStation.serviceAlerts(in: serviceAlerts)
+          serviceAlerts: visibleStation.serviceAlerts(in: viewModel.serviceAlerts)
         ).onTapGesture {
           tapHaptic.impactOccurred()
           selectionSheetActive = true
@@ -53,12 +42,12 @@ struct ContentView: View {
 
       Divider()
 
-      let visibleArrivals = trainArrivals.filter {
-        $0.direction == selectedDirection
+      let visibleArrivals = viewModel.trainArrivals.filter {
+        $0.direction == viewModel.selectedDirection
       }
 
       VStack {
-        Picker("", selection: $selectedDirection) {
+        Picker("", selection: $viewModel.selectedDirection) {
           let southLabel = visibleStation?.getLabelFor(direction: .south)
             ?? TripDirection.south.rawValue
           let northLabel = visibleStation?.getLabelFor(direction: .north)
@@ -83,7 +72,7 @@ struct ContentView: View {
           .refreshable { await refreshSelectedStation() }
           .shadow(radius: 2)
           .overlay {
-            if visibleArrivals.isEmpty, !loading {
+            if visibleArrivals.isEmpty, !viewModel.loading {
               ContentUnavailableView {
                 Label(
                   "No trains running in this direction.",
@@ -96,56 +85,94 @@ struct ContentView: View {
     }
     .background(.ultraThickMaterial)
     .onChange(of: locationFetcher.location) {
-      if selectedStation != nil { return }
-      setNearestStation()
-      queueRefresh()
-    }.onChange(of: selectedStation) { _, newValue in
+      if viewModel.selectedStation != nil { return }
+      viewModel.setNearestStation(from: stations, location: locationFetcher.location)
+      viewModel.queueRefresh(stations: stations)
+    }.onChange(of: viewModel.selectedStation) { _, newValue in
       if let station = newValue {
         logStationSelected(station)
       }
-      queueRefresh()
-    }.onChange(of: selectedDirection) { _, newDirection in
-      logDirectionChanged(newDirection, station: selectedStation ?? nearestStation)
+      viewModel.queueRefresh(stations: stations)
+    }.onChange(of: viewModel.selectedDirection) { _, newDirection in
+      logDirectionChanged(newDirection, station: viewModel.visibleStation)
     }.sheet(isPresented: $selectionSheetActive) {
       StationSelectionSheet(
         location: locationFetcher.location,
         isPresented: $selectionSheetActive,
-        selectedStation: $selectedStation,
-        serviceAlerts: $serviceAlerts)
+        selectedStation: $viewModel.selectedStation,
+        serviceAlerts: $viewModel.serviceAlerts)
     }.onAppear {
       tapHaptic.prepare()
       Task {
-        serviceAlerts = await constructServiceAlertsForStop()
+        await viewModel.loadServiceAlerts()
       }
     }.onReceive(timer) { _ in
-      guard selectedStation ?? nearestStation != nil else { return }
-      queueRefresh()
+      guard viewModel.visibleStation != nil else { return }
+      viewModel.queueRefresh(stations: stations)
     }.onDisappear {
-      refreshTask?.cancel()
+      viewModel.cancelRefresh()
       timer.upstream.connect().cancel()
     }
   }
 
-  private func queueRefresh() {
+  private func refreshSelectedStation() async {
+    await viewModel.refreshSelectedStation(stations: stations)
+  }
+}
+
+@MainActor
+final class ContentViewModel: ObservableObject {
+  @Published var trainArrivals: [TrainArrivalEntry] = []
+  @Published var selectedDirection: TripDirection = .south
+  @Published var selectedStation: MTAStation?
+  @Published var nearestStation: MTAStation?
+  @Published var loading = true
+  @Published var serviceAlerts: [String: [MTAServiceAlert]] = [:]
+
+  private var refreshTask: Task<Void, Never>?
+  private var refreshGeneration = 0
+
+  var visibleStation: MTAStation? {
+    selectedStation ?? nearestStation
+  }
+
+  func loadServiceAlerts() async {
+    serviceAlerts = await constructServiceAlertsForStop()
+  }
+
+  func queueRefresh(stations: [MTAStation]) {
     refreshGeneration += 1
     let generation = refreshGeneration
     refreshTask?.cancel()
     refreshTask = Task {
-      await refreshData(generation: generation)
+      await refreshData(generation: generation, stations: stations)
     }
   }
 
-  private func refreshSelectedStation() async {
+  func refreshSelectedStation(stations: [MTAStation]) async {
     refreshGeneration += 1
     let generation = refreshGeneration
     refreshTask?.cancel()
-    await refreshData(generation: generation)
+    await refreshData(generation: generation, stations: stations)
   }
 
-  private func refreshData(generation: Int) async {
-    guard let station = selectedStation ?? nearestStation else {
-      return
+  func cancelRefresh() {
+    refreshTask?.cancel()
+    refreshTask = nil
+  }
+
+  func setNearestStation(from stations: [MTAStation], location: CLLocation?) {
+    guard let location else { return }
+    nearestStation = stations.min {
+      location.distance(from: $0.location) < location.distance(from: $1.location)
     }
+  }
+
+  private func refreshData(
+    generation: Int,
+    stations: [MTAStation]
+  ) async {
+    guard let station = visibleStation else { return }
 
     logRefresh(for: station)
 
@@ -172,14 +199,6 @@ struct ContentView: View {
     }
     if sameDirection.isEmpty {
       selectedDirection = selectedDirection.flipped
-    }
-  }
-
-  func setNearestStation() {
-    guard let currentLocation = locationFetcher.location else { return }
-    nearestStation = stations.min {
-      currentLocation.distance(from: $0.location)
-        < currentLocation.distance(from: $1.location)
     }
   }
 }
