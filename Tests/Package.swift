@@ -2,28 +2,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "ChooChoo",
+    name: "ChooChooTests",
     platforms: [
+        .macOS(.v14),
         .iOS(.v17)
     ],
-    products: [
-        .library(name: "EncodingUtils", targets: ["EncodingUtils"])
+    dependencies: [
+        .package(path: "..")
     ],
     targets: [
-        .target(
-            name: "EncodingUtils",
-            path: "Utilities",
-            exclude: [
-                "FormatterUtils.swift",
-                "LoggingUtils.swift",
-                "MTAUtils.swift",
-                "NetworkUtils.swift"
-            ],
-            sources: ["EncodingUtils.swift"]
-        ),
         .testTarget(
             name: "EncodingUtilsTests",
-            dependencies: ["EncodingUtils"],
+            dependencies: [
+                .product(name: "ChooChooCore", package: "ChooChoo")
+            ],
             path: "EncodingUtilsTests"
         )
     ]

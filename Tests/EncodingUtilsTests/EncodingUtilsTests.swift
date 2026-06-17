@@ -1,5 +1,5 @@
 import Testing
-@testable import EncodingUtils
+@testable import ChooChooCore
 
 struct EncodingUtilsTests {
     @Test func tripDirectionNorth() {
