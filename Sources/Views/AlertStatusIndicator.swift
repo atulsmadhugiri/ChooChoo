@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AlertStatusIndicator: View {
-  let activePeriods: [DateInterval]
+  let activePeriods: [MTAServiceAlertTimeRange]
   private var now: Date { Date() }
 
   private static let customFormatter: DateFormatter = {
@@ -13,9 +13,7 @@ struct AlertStatusIndicator: View {
   var body: some View {
     if let activeInterval = activePeriods.first(where: { $0.contains(now) }) {
       HStack(spacing: 6) {
-        Text(
-          "Active until \(activeInterval.end, formatter: Self.customFormatter)"
-        )
+        Text(activeText(for: activeInterval))
         .font(.footnote)
         .foregroundColor(.green)
       }
@@ -30,13 +28,10 @@ struct AlertStatusIndicator: View {
           .stroke(Color.green, lineWidth: 1)
       )
     } else if let scheduledInterval = activePeriods.first(where: {
-      $0.start > now
+      $0.start.map { $0 > now } ?? false
     }) {
-      let startString = Self.customFormatter.string(
-        from: scheduledInterval.start)
-      let endString = Self.customFormatter.string(from: scheduledInterval.end)
       HStack(spacing: 6) {
-        Text("\(startString) → \(endString)")
+        Text(scheduledText(for: scheduledInterval))
           .font(.footnote)
           .foregroundColor(.gray)
       }
@@ -53,5 +48,17 @@ struct AlertStatusIndicator: View {
     } else {
       EmptyView()
     }
+  }
+
+  private func activeText(for period: MTAServiceAlertTimeRange) -> String {
+    guard let end = period.end else { return "Active now" }
+    return "Active until \(Self.customFormatter.string(from: end))"
+  }
+
+  private func scheduledText(for period: MTAServiceAlertTimeRange) -> String {
+    guard let start = period.start else { return "" }
+    let startString = Self.customFormatter.string(from: start)
+    guard let end = period.end else { return "Starts \(startString)" }
+    return "\(startString) -> \(Self.customFormatter.string(from: end))"
   }
 }

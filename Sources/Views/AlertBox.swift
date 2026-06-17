@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AlertBox: View {
   let alertBody: String
-  let activePeriods: [DateInterval]
+  let activePeriods: [MTAServiceAlertTimeRange]
 
   var body: some View {
     GroupBox {

@@ -61,7 +61,7 @@ private func filterStopTimeUpdates(
 ) -> [TransitRealtime_TripUpdate.StopTimeUpdate] {
   return tripUpdate.stopTimeUpdate.filter { stopTimeUpdate in
     guard stopTimeUpdate.isUsableArrival else { return false }
-    return stopTimeUpdate.baseStopID == stop.gtfsStopID
+    return GTFSStopID(stopTimeUpdate.stopID).baseID == stop.gtfsStopID
   }
 }
 
@@ -151,7 +151,7 @@ private func tripDirection(
 
 extension TransitRealtime_TripUpdate.StopTimeUpdate {
   fileprivate var baseStopID: String {
-    String(stopID.dropLast())
+    GTFSStopID(stopID).baseID
   }
 
   fileprivate var bestArrivalTimestamp: Int64? {
@@ -191,33 +191,55 @@ func getServiceAlerts() async -> [TransitRealtime_Alert] {
   }
 }
 
-private func timeRangesToDateIntervals(
+func timeRangesToServiceAlertPeriods(
   timeRanges: [TransitRealtime_TimeRange]
-) -> [DateInterval] {
+) -> [MTAServiceAlertTimeRange] {
+  guard !timeRanges.isEmpty else {
+    return [MTAServiceAlertTimeRange(start: nil, end: nil)]
+  }
+
   return timeRanges.compactMap { timeRange in
-    guard timeRange.hasStart, timeRange.hasEnd else { return nil }
-    return DateInterval(
-      start: Date(timeIntervalSince1970: Double(timeRange.start)),
-      end: Date(timeIntervalSince1970: Double(timeRange.end)))
+    let start = timeRange.hasStart
+      ? Date(timeIntervalSince1970: Double(timeRange.start)) : nil
+    let end = timeRange.hasEnd
+      ? Date(timeIntervalSince1970: Double(timeRange.end)) : nil
+    if start == nil, end == nil {
+      return MTAServiceAlertTimeRange(start: nil, end: nil)
+    }
+    guard let start, let end else {
+      return MTAServiceAlertTimeRange(start: start, end: end)
+    }
+    guard start <= end else { return nil }
+    return MTAServiceAlertTimeRange(start: start, end: end)
   }
 }
 
 func constructServiceAlertsForStop() async -> [String: [MTAServiceAlert]] {
   let serviceAlerts = await getServiceAlerts()
+  return constructServiceAlerts(from: serviceAlerts)
+}
 
+func constructServiceAlerts(
+  from serviceAlerts: [TransitRealtime_Alert]
+) -> [String: [MTAServiceAlert]] {
   let mtaServiceAlerts = serviceAlerts.flatMap { alert -> [MTAServiceAlert] in
-    guard let headerText = alert.headerText.translation.first?.text,
-      let descriptionText = alert.descriptionText.translation.first?.text
-    else { return [] }
+    guard let headerText = alert.headerText.translation.first(where: \.hasText)?.text,
+      !headerText.isEmpty
+    else {
+      return []
+    }
+    let descriptionText = alert.descriptionText.translation.first(where: \.hasText)?.text
 
-    return alert.informedEntity.compactMap { entity in
-      guard entity.hasStopID else { return nil }
-      let stopID = entity.stopID
+    let stopIDs = Set(alert.informedEntity.compactMap { entity in
+      entity.hasStopID ? GTFSStopID(entity.stopID).baseID : nil
+    })
+
+    return stopIDs.sorted().map { stopID in
       return MTAServiceAlert(
         stopID: stopID,
         header: headerText,
         description: descriptionText,
-        activePeriod: timeRangesToDateIntervals(timeRanges: alert.activePeriod)
+        activePeriod: timeRangesToServiceAlertPeriods(timeRanges: alert.activePeriod)
       )
     }
   }

@@ -1,3 +1,5 @@
+import Foundation
+import TabularData
 import Testing
 @testable import ChooChooCore
 
@@ -65,6 +67,58 @@ struct EncodingUtilsTests {
         )
 
         #expect(hudsonYards.getLabelFor(direction: .south) == "34 St-Hudson Yards")
+    }
+
+    @Test func gtfsStopIDOnlyStripsDirectionalSuffixes() {
+        #expect(GTFSStopID("120N").baseID == "120")
+        #expect(GTFSStopID("120N").direction == .north)
+        #expect(GTFSStopID("H15S").baseID == "H15")
+        #expect(GTFSStopID("H15S").direction == .south)
+        #expect(GTFSStopID("R01").baseID == "R01")
+        #expect(GTFSStopID("R01").direction == nil)
+    }
+
+    @Test func serviceAlertsKeepHeaderOnlyAlertsAndNormalizeStopIDs() {
+        var alert = TransitRealtime_Alert()
+        alert.headerText = translatedString("Service change")
+        var northEntity = TransitRealtime_EntitySelector()
+        northEntity.stopID = "120N"
+        var southEntity = TransitRealtime_EntitySelector()
+        southEntity.stopID = "120S"
+        alert.informedEntity = [northEntity, southEntity]
+
+        let alertsByStopID = constructServiceAlerts(from: [alert])
+
+        #expect(alertsByStopID.keys.contains("120"))
+        #expect(alertsByStopID["120"]?.count == 1)
+        #expect(alertsByStopID["120"]?.first?.header == "Service change")
+        #expect(alertsByStopID["120"]?.first?.description == nil)
+    }
+
+    @Test func serviceAlertPeriodsPreserveOpenEndedRanges() {
+        var startOnly = TransitRealtime_TimeRange()
+        startOnly.start = 1_800_000_000
+        var endOnly = TransitRealtime_TimeRange()
+        endOnly.end = 1_800_000_100
+
+        let periods = timeRangesToServiceAlertPeriods(timeRanges: [startOnly, endOnly])
+
+        #expect(periods.count == 2)
+        #expect(periods[0].start == Date(timeIntervalSince1970: 1_800_000_000))
+        #expect(periods[0].end == nil)
+        #expect(periods[0].contains(Date(timeIntervalSince1970: 1_800_000_050)))
+        #expect(periods[1].start == nil)
+        #expect(periods[1].end == Date(timeIntervalSince1970: 1_800_000_100))
+        #expect(periods[1].contains(Date(timeIntervalSince1970: 1_800_000_050)))
+    }
+
+    @Test func missingServiceAlertPeriodIsActiveWhileInFeed() {
+        let periods = timeRangesToServiceAlertPeriods(timeRanges: [])
+
+        #expect(periods.count == 1)
+        #expect(periods[0].start == nil)
+        #expect(periods[0].end == nil)
+        #expect(periods[0].contains(Date(timeIntervalSince1970: 1_800_000_000)))
     }
 
     @Test func nyctTripDescriptorDirectionBeatsTripIDSuffix() {
@@ -413,6 +467,33 @@ struct EncodingUtilsTests {
         ])
         #expect(Set(arrivals.map(\.id)).count == 2)
     }
+
+    @Test func bundledStationCSVHasKnownSubwayRoutes() throws {
+        let rows = try stationCSVRows().filter { $0["Division"] != "SIR" }
+        #expect(rows.count > 400)
+
+        let rowsWithoutRoutes = rows.filter {
+            ($0["Daytime Routes"] ?? "").split(separator: " ").isEmpty
+        }
+        #expect(rowsWithoutRoutes.isEmpty)
+
+        let unknownRoutes = rows.flatMap { row in
+            (row["Daytime Routes"] ?? "")
+                .split(separator: " ")
+                .map(String.init)
+                .filter { MTATrain(rawValue: $0) == nil }
+                .map { "\(row["GTFS Stop ID"] ?? "?"):\($0)" }
+        }
+        #expect(unknownRoutes.isEmpty)
+    }
+}
+
+private func translatedString(_ text: String) -> TransitRealtime_TranslatedString {
+    var translation = TransitRealtime_TranslatedString.Translation()
+    translation.text = text
+    var translatedString = TransitRealtime_TranslatedString()
+    translatedString.translation = [translation]
+    return translatedString
 }
 
 private func stopValue(gtfsStopID: String) -> MTAStopValue {
@@ -492,4 +573,21 @@ private func makeStopTimeUpdate(
     }
 
     return stopTimeUpdate
+}
+
+private func stationCSVRows() throws -> [[String: String]] {
+    let testFileURL = URL(fileURLWithPath: #filePath)
+    let packageRoot = testFileURL
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+    let csvURL = packageRoot.appending(path: "Resources/Stations.csv")
+    let dataFrame = try DataFrame(contentsOfCSVFile: csvURL)
+    return dataFrame.rows.map { row in
+        [
+            "Division": row["Division"] as? String ?? "",
+            "Daytime Routes": row["Daytime Routes"] as? String ?? "",
+            "GTFS Stop ID": row["GTFS Stop ID"] as? String ?? "",
+        ]
+    }
 }
