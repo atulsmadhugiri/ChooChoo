@@ -70,6 +70,10 @@ public struct TrainArrivalEntry: Identifiable, Equatable, Sendable {
   }
 
   public func isActive(at now: Date = Date()) -> Bool {
+    if let estimatedDepartureTime {
+      return estimatedDepartureTime > now
+    }
+
     switch vehicleStatus {
     case .incomingAt, .stoppedAt:
       return true
@@ -77,9 +81,6 @@ public struct TrainArrivalEntry: Identifiable, Equatable, Sendable {
       break
     }
 
-    if let estimatedDepartureTime {
-      return estimatedDepartureTime > now
-    }
     guard let estimatedArrivalTime else {
       return false
     }
@@ -87,6 +88,10 @@ public struct TrainArrivalEntry: Identifiable, Equatable, Sendable {
   }
 
   public func displayStatus(at now: Date = Date()) -> TrainArrivalDisplayStatus {
+    guard isActive(at: now) else {
+      return .departed
+    }
+
     switch vehicleStatus {
     case .incomingAt:
       return .arriving
@@ -94,10 +99,6 @@ public struct TrainArrivalEntry: Identifiable, Equatable, Sendable {
       return .boarding
     case .inTransitTo, nil:
       break
-    }
-
-    guard isActive(at: now) else {
-      return .departed
     }
 
     if let estimatedArrivalTime,

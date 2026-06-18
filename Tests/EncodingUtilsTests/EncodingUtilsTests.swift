@@ -676,6 +676,24 @@ struct EncodingUtilsTests {
         #expect(arrival.displayStatus(at: now) == .departed)
     }
 
+    @Test func departureTimestampBeatsMatchedVehicleStateForVisibility() {
+        let arrival = TrainArrivalEntry(
+            id: "trip-120N",
+            arrivalTimestamp: 1_800_000_100,
+            departureTimestamp: 1_800_000_200,
+            vehicleStatus: .stoppedAt,
+            train: .one,
+            terminalStation: "Terminal",
+            direction: .north,
+            directionLabel: "North"
+        )
+
+        let now = Date(timeIntervalSince1970: 1_800_000_200)
+
+        #expect(!arrival.isActive(at: now))
+        #expect(arrival.displayStatus(at: now) == .departed)
+    }
+
     @Test func skippedSelectedStopIsIgnoredEvenWhenItHasATime() {
         var entity = TransitRealtime_FeedEntity()
         entity.id = "trip"

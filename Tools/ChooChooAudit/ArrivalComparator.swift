@@ -17,6 +17,10 @@ struct ComparableArrival: Hashable, Comparable {
   }
 
   func isActive(at now: Date) -> Bool {
+    if let departureTimestamp {
+      return Date(timeIntervalSince1970: Double(departureTimestamp)) > now
+    }
+
     switch vehicleStatus {
     case .incomingAt, .stoppedAt:
       return true
@@ -24,9 +28,6 @@ struct ComparableArrival: Hashable, Comparable {
       break
     }
 
-    if let departureTimestamp {
-      return Date(timeIntervalSince1970: Double(departureTimestamp)) > now
-    }
     return arrivalTime > now
   }
 
