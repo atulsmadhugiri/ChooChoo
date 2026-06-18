@@ -22,37 +22,7 @@ enum StationCSV {
     }
 
     let dataFrame = try DataFrame(contentsOfCSVFile: url)
-    return dataFrame.rows.compactMap(MTAStopValue.init(row:))
-  }
-}
-
-extension MTAStopValue {
-  init?(row: DataFrame.Row) {
-    guard row["Division"] as? String != "SIR",
-      let complexID = row["Complex ID"] as? Int,
-      let gtfsStopID = row["GTFS Stop ID"] as? String,
-      let division = row["Division"] as? String,
-      let line = row["Line"] as? String,
-      let stopName = row["Stop Name"] as? String,
-      let daytimeRoutesString = row["Daytime Routes"] as? String,
-      let latitude = row["GTFS Latitude"] as? Double,
-      let longitude = row["GTFS Longitude"] as? Double
-    else {
-      return nil
-    }
-
-    self.init(
-      gtfsStopID: gtfsStopID,
-      complexID: complexID,
-      division: division,
-      line: line,
-      stopName: stopName,
-      daytimeRoutesString: daytimeRoutesString,
-      gtfsLatitude: latitude,
-      gtfsLongitude: longitude,
-      northDirectionLabel: row["North Direction Label"] as? String ?? "",
-      southDirectionLabel: row["South Direction Label"] as? String ?? ""
-    )
+    return dataFrame.rows.compactMap(MTAStopValue.init(csvRow:))
   }
 }
 

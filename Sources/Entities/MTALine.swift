@@ -1,5 +1,50 @@
 import Foundation
 
+public enum MTAFeedEndpoint: String, Sendable {
+  case main = "nyct%2Fgtfs"
+  case ace = "nyct%2Fgtfs-ace"
+  case bdfm = "nyct%2Fgtfs-bdfm"
+  case g = "nyct%2Fgtfs-g"
+  case jz = "nyct%2Fgtfs-jz"
+  case l = "nyct%2Fgtfs-l"
+  case nqrw = "nyct%2Fgtfs-nqrw"
+  case serviceAlerts = "camsys%2Fsubway-alerts"
+
+  private static let baseURLString =
+    "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds"
+
+  public var url: URL {
+    get throws {
+      try Self.url(for: rawValue)
+    }
+  }
+
+  public var jsonURL: URL {
+    get throws {
+      try Self.url(for: "\(rawValue).json")
+    }
+  }
+
+  private static func url(for feedID: String) throws -> URL {
+    let urlString = "\(baseURLString)/\(feedID)"
+    guard let url = URL(string: urlString) else {
+      throw MTAFeedEndpointError.invalidURL(urlString)
+    }
+    return url
+  }
+}
+
+public enum MTAFeedEndpointError: Error, LocalizedError, Sendable {
+  case invalidURL(String)
+
+  public var errorDescription: String? {
+    switch self {
+    case .invalidURL(let endpoint):
+      return "Invalid MTA feed URL: \(endpoint)"
+    }
+  }
+}
+
 public enum MTALine: Hashable, Sendable {
   case oneTwoThree
   case fourFiveSix
@@ -12,46 +57,24 @@ public enum MTALine: Hashable, Sendable {
   case nqrw
   case s
 
-  public var endpoint: String {
-    endpoints[0]
-  }
-
-  public var endpoints: [String] {
+  public var endpoints: [MTAFeedEndpoint] {
     switch self {
     case .ace:
-      return [
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace"
-      ]
+      return [.ace]
     case .bdfm:
-      return [
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm"
-      ]
+      return [.bdfm]
     case .g:
-      return [
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-g"
-      ]
+      return [.g]
     case .jz:
-      return [
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-jz"
-      ]
+      return [.jz]
     case .nqrw:
-      return [
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-nqrw"
-      ]
+      return [.nqrw]
     case .l:
-      return [
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l"
-      ]
+      return [.l]
     case .s:
-      return [
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs",
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm",
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace",
-      ]
+      return [.main, .bdfm, .ace]
     default:
-      return [
-        "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs"
-      ]
+      return [.main]
     }
   }
 }

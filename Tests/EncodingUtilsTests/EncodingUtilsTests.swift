@@ -29,9 +29,19 @@ struct EncodingUtilsTests {
     }
 
     @Test func shuttleLineReadsAllShuttleFeeds() {
-        #expect(MTALine.s.endpoints.contains { $0.hasSuffix("nyct%2Fgtfs") })
-        #expect(MTALine.s.endpoints.contains { $0.hasSuffix("nyct%2Fgtfs-bdfm") })
-        #expect(MTALine.s.endpoints.contains { $0.hasSuffix("nyct%2Fgtfs-ace") })
+        #expect(MTALine.s.endpoints == [.main, .bdfm, .ace])
+    }
+
+    @Test func feedEndpointsBuildEncodedMTAURLs() throws {
+        #expect(
+            try MTAFeedEndpoint.main.url.absoluteString
+                == "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs")
+        #expect(
+            try MTAFeedEndpoint.main.jsonURL.absoluteString
+                == "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs.json")
+        #expect(
+            try MTAFeedEndpoint.serviceAlerts.url.absoluteString
+                == "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts")
     }
 
     @Test func stopValueDirectionLabelsUseSharedInversionRules() {
@@ -545,18 +555,18 @@ struct EncodingUtilsTests {
     }
 
     @Test func bundledStationCSVHasKnownSubwayRoutes() throws {
-        let rows = try stationCSVRows().filter { $0["Division"] != "SIR" }
-        #expect(rows.count > 400)
+        let stops = try stationCSVStops()
+        #expect(stops.count > 400)
 
-        let rowsWithoutRoutes = rows.filter {
-            MTATrain.routeTokens(in: $0["Daytime Routes"] ?? "").isEmpty
+        let stopsWithoutRoutes = stops.filter {
+            MTATrain.routeTokens(in: $0.daytimeRoutesString).isEmpty
         }
-        #expect(rowsWithoutRoutes.isEmpty)
+        #expect(stopsWithoutRoutes.isEmpty)
 
-        let unknownRoutes = rows.flatMap { row in
-            MTATrain.routeTokens(in: row["Daytime Routes"] ?? "")
+        let unknownRoutes = stops.flatMap { stop in
+            MTATrain.routeTokens(in: stop.daytimeRoutesString)
                 .filter { MTATrain(rawValue: $0) == nil }
-                .map { "\(row["GTFS Stop ID"] ?? "?"):\($0)" }
+                .map { "\(stop.gtfsStopID):\($0)" }
         }
         #expect(unknownRoutes.isEmpty)
     }
@@ -684,7 +694,7 @@ private func makeStopTimeUpdate(
     return stopTimeUpdate
 }
 
-private func stationCSVRows() throws -> [[String: String]] {
+private func stationCSVStops() throws -> [MTAStopValue] {
     let testFileURL = URL(fileURLWithPath: #filePath)
     let packageRoot = testFileURL
         .deletingLastPathComponent()
@@ -692,11 +702,5 @@ private func stationCSVRows() throws -> [[String: String]] {
         .deletingLastPathComponent()
     let csvURL = packageRoot.appending(path: "Resources/Stations.csv")
     let dataFrame = try DataFrame(contentsOfCSVFile: csvURL)
-    return dataFrame.rows.map { row in
-        [
-            "Division": row["Division"] as? String ?? "",
-            "Daytime Routes": row["Daytime Routes"] as? String ?? "",
-            "GTFS Stop ID": row["GTFS Stop ID"] as? String ?? "",
-        ]
-    }
+    return dataFrame.rows.compactMap(MTAStopValue.init(csvRow:))
 }

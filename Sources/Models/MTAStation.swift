@@ -156,24 +156,6 @@ func getFeedData(
 }
 
 func getArrivals(
-  lines: [MTALine],
-  stops: [MTAStopValue],
-  stopNamesByGTFSID: [String: String],
-  feedClient: MTAFeedClient = .shared
-) async
-  -> [TrainArrivalEntry]
-{
-  await getArrivals(
-    for: MTAStationSnapshot(
-      lines: lines,
-      stops: stops,
-      stopNamesByGTFSID: stopNamesByGTFSID
-    ),
-    feedClient: feedClient
-  )
-}
-
-func getArrivals(
   for station: MTAStationSnapshot,
   feedClient: MTAFeedClient = .shared
 ) async -> [TrainArrivalEntry] {
@@ -195,19 +177,4 @@ func getArrivals(
   return arrivalEntries.uniqued(on: \.id)
     .filter { $0.arrivalTime > now }
     .sorted { $0.arrivalTime < $1.arrivalTime }
-}
-
-private func extractTripAlerts(
-  from feed: [TransitRealtime_FeedEntity]
-) -> [TransitRealtime_Alert] {
-  return feed.compactMap { $0.hasAlert ? $0.alert : nil }
-}
-
-func getTripDelays(
-  lines: [MTALine],
-  stops: [MTAStopValue],
-  feedClient: MTAFeedClient = .shared
-) async -> [TransitRealtime_Alert] {
-  let feedData = await getFeedData(lines: lines, feedClient: feedClient)
-  return feedData.values.flatMap { extractTripAlerts(from: $0.entity) }
 }

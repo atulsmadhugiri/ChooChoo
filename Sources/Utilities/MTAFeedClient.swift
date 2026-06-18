@@ -39,13 +39,10 @@ actor MTAFeedClient {
   }
 
   func data(
-    from endpoint: String,
+    from endpoint: MTAFeedEndpoint,
     cachePolicy: MTAFeedCachePolicy = .realtime
   ) async throws -> Data {
-    guard let url = URL(string: endpoint) else {
-      throw NetworkUtils.NetworkError.invalidURL(endpoint)
-    }
-    return try await data(from: url, cachePolicy: cachePolicy)
+    try await data(from: endpoint.url, cachePolicy: cachePolicy)
   }
 
   func data(
@@ -122,16 +119,23 @@ actor MTAFeedClient {
 }
 
 func fetchMTARealtimePayloads(
-  from endpoints: [String],
+  from endpoints: [MTAFeedEndpoint],
   using feedClient: MTAFeedClient = .shared
 ) async throws -> [Data] {
-  var payloads: [Data] = []
-  payloads.reserveCapacity(endpoints.count)
-  for endpoint in endpoints {
-    let data = try await feedClient.data(from: endpoint, cachePolicy: .realtime)
-    payloads.append(data)
+  try await withThrowingTaskGroup(of: Data.self) { group in
+    for endpoint in endpoints {
+      group.addTask {
+        try await feedClient.data(from: endpoint, cachePolicy: .realtime)
+      }
+    }
+
+    var payloads: [Data] = []
+    payloads.reserveCapacity(endpoints.count)
+    for try await data in group {
+      payloads.append(data)
+    }
+    return payloads
   }
-  return payloads
 }
 
 func decodeMTARealtimeFeeds(
@@ -149,7 +153,7 @@ func fetchMTAServiceAlerts(
   using feedClient: MTAFeedClient = .shared
 ) async throws -> [TransitRealtime_Alert] {
   let data = try await feedClient.data(
-    from: MTAServiceAlertFeedURL,
+    from: .serviceAlerts,
     cachePolicy: .serviceAlerts
   )
   let feed = try TransitRealtime_FeedMessage(serializedBytes: data)

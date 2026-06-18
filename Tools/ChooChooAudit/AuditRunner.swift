@@ -76,22 +76,24 @@ struct AuditRunner {
   }
 
   private static func fetchPayload(
-    endpoint: String,
+    endpoint: MTAFeedEndpoint,
     includingJSON shouldFetchJSON: Bool
   ) async throws -> FeedPayload {
-    guard let protobufURL = URL(string: endpoint) else {
-      throw AuditError.network("invalid feed URL \(endpoint)")
-    }
+    let protobufURL = try endpoint.url
     let protobuf = try await HTTPClient.fetch(protobufURL)
     let json = shouldFetchJSON ? await Self.freshJSONFeed(for: endpoint) : nil
     return FeedPayload(protobuf: protobuf, json: json)
   }
 
-  private static func freshJSONFeed(for endpoint: String) async -> Data? {
-    guard let jsonURL = URL(string: "\(endpoint).json") else {
-      print("Skipping invalid JSON feed URL \(endpoint).json")
+  private static func freshJSONFeed(for endpoint: MTAFeedEndpoint) async -> Data? {
+    let jsonURL: URL
+    do {
+      jsonURL = try endpoint.jsonURL
+    } catch {
+      print("Skipping invalid JSON feed URL \(endpoint.rawValue).json")
       return nil
     }
+
     do {
       let json = try await HTTPClient.fetch(jsonURL)
       if !isLikelyJSON(json) {

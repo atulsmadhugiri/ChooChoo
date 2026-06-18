@@ -176,9 +176,6 @@ extension TransitRealtime_TripUpdate.StopTimeUpdate {
   }
 }
 
-let MTAServiceAlertFeedURL =
-  "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts"
-
 func getServiceAlerts(
   feedClient: MTAFeedClient = .shared
 ) async -> [TransitRealtime_Alert] {

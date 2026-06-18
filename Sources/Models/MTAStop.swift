@@ -51,30 +51,24 @@ class MTAStop {
 
 extension MTAStop {
   convenience init?(from row: DataFrame.Row) {
-    guard
-      let complexID = row["Complex ID"] as? Int,
-      let gtfsStopID = row["GTFS Stop ID"] as? String,
-      let division = row["Division"] as? String,
-      let line = row["Line"] as? String,
-      let stopName = row["Stop Name"] as? String,
-      let daytimeRoutesString = row["Daytime Routes"] as? String,
-      let gtfsLatitude = row["GTFS Latitude"] as? Double,
-      let gtfsLongitude = row["GTFS Longitude"] as? Double
-    else {
+    guard let value = MTAStopValue(csvRow: row) else {
       return nil
     }
+    self.init(value: value)
+  }
 
+  convenience init(value: MTAStopValue) {
     self.init(
-      gtfsStopID: gtfsStopID,
-      complexID: complexID,
-      division: division,
-      line: line,
-      stopName: stopName,
-      daytimeRoutesString: daytimeRoutesString,
-      gtfsLatitude: gtfsLatitude,
-      gtfsLongitude: gtfsLongitude,
-      northDirectionLabel: row["North Direction Label"] as? String ?? "",
-      southDirectionLabel: row["South Direction Label"] as? String ?? ""
+      gtfsStopID: value.gtfsStopID,
+      complexID: value.complexID,
+      division: value.division,
+      line: value.line,
+      stopName: value.stopName,
+      daytimeRoutesString: value.daytimeRoutesString,
+      gtfsLatitude: value.gtfsLatitude,
+      gtfsLongitude: value.gtfsLongitude,
+      northDirectionLabel: value.northDirectionLabel,
+      southDirectionLabel: value.southDirectionLabel
     )
   }
 }
@@ -94,9 +88,6 @@ extension MTAStop {
     do {
       let df = try DataFrame(contentsOfCSVFile: stationsFile)
       return df.rows.compactMap { MTAStop(from: $0) }
-        .filter {
-          $0.division != "SIR"
-        }
     } catch {
       print("Error reading CSV file: \(error)")
       return []
