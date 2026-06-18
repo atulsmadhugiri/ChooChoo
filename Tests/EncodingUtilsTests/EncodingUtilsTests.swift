@@ -12,6 +12,13 @@ struct EncodingUtilsTests {
         #expect(tripDirection(for: "ABC..S12") == .south)
     }
 
+    @Test func tripDirectionSuffixRequiresNorthOrSouth() {
+        #expect(tripDirectionFromTripIDSuffix("ABC..N12") == .north)
+        #expect(tripDirectionFromTripIDSuffix("ABC..S12") == .south)
+        #expect(tripDirectionFromTripIDSuffix("ABC..X12") == nil)
+        #expect(tripDirection(for: "ABC..X12") == .north)
+    }
+
     @Test func tripDirectionStorageValuesAreStable() {
         #expect(TripDirection(storageValue: "north") == .north)
         #expect(TripDirection(storageValue: "south") == .south)
@@ -34,6 +41,15 @@ struct EncodingUtilsTests {
     @Test func routeIDMapsExpressSixAndSevenToLocalBadges() {
         #expect(MTATrain(routeID: "6X") == .six)
         #expect(MTATrain(routeID: "7X") == .seven)
+    }
+
+    @Test func routeTerminalFallbackNamesKnownShuttleTerminals() {
+        #expect(
+            MTATrain.terminalStationName(
+                routeID: "GS",
+                direction: .north,
+                stopNamesByGTFSID: ["902": "Times Sq-42 St"]
+            ) == "Times Sq-42 St")
     }
 
     @Test func shuttleLineReadsAllShuttleFeeds() {
@@ -444,6 +460,35 @@ struct EncodingUtilsTests {
             ]
         )
 
+        #expect(arrivals.first?.terminalStation == "Grand Central-42 St")
+    }
+
+    @Test func shuttleFallbackUsesStopIDDirectionWhenTripIDSuffixIsMissing() {
+        var entity = TransitRealtime_FeedEntity()
+        entity.id = "trip"
+        entity.tripUpdate = makeTripUpdateWithoutNYCTDirection(
+            tripID: "MALFORMED",
+            routeID: "GS",
+            stopUpdates: [
+                makeStopTimeUpdate(stopID: "902S", arrival: 1_800_000_000),
+                makeStopTimeUpdate(
+                    stopID: "901S",
+                    arrival: nil,
+                    relationship: .noData
+                ),
+            ]
+        )
+
+        let arrivals = getTrainArrivalsForStop(
+            stop: stopValue(gtfsStopID: "902"),
+            feed: [entity],
+            stopNamesByGTFSID: [
+                "901": "Grand Central-42 St",
+                "902": "Times Sq-42 St",
+            ]
+        )
+
+        #expect(arrivals.first?.direction == .south)
         #expect(arrivals.first?.terminalStation == "Grand Central-42 St")
     }
 

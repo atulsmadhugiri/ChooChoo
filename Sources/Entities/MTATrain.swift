@@ -131,6 +131,22 @@ extension MTATrain {
     self = routeID.train
   }
 
+  public static func terminalStopID(
+    routeID: String,
+    direction: TripDirection
+  ) -> String? {
+    MTARouteID(rawValue: routeID)?.terminalStopID(for: direction)
+  }
+
+  public static func terminalStationName(
+    routeID: String,
+    direction: TripDirection,
+    stopNamesByGTFSID: [String: String]
+  ) -> String? {
+    terminalStopID(routeID: routeID, direction: direction)
+      .flatMap { stopNamesByGTFSID[$0] }
+  }
+
   static func routes(in routeString: String) -> [MTATrain] {
     routeTokens(in: routeString).compactMap(MTATrain.init(rawValue:))
   }

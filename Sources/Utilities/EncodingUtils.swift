@@ -55,10 +55,10 @@ extension TripDirection {
   }
 }
 
-public func tripDirection(for tripID: String) -> TripDirection {
+public func tripDirectionFromTripIDSuffix(_ tripID: String) -> TripDirection? {
   let components = tripID.components(separatedBy: "..")
   guard components.count == 2 else {
-    return .north
+    return nil
   }
 
   let suffix = components[1]
@@ -66,9 +66,15 @@ public func tripDirection(for tripID: String) -> TripDirection {
   switch suffix.prefix(1) {
   case "N":
     return .north
-  default:
+  case "S":
     return .south
+  default:
+    return nil
   }
+}
+
+public func tripDirection(for tripID: String) -> TripDirection {
+  tripDirectionFromTripIDSuffix(tripID) ?? .north
 }
 
 public func standardizeTripIDForSevenTrain(_ tripID: String) -> String {

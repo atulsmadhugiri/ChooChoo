@@ -186,7 +186,11 @@ private func createTrainArrivalEntry(
 
   guard let train = MTATrain(routeID: trip.routeID) else { return nil }
 
-  let direction = tripDirection(for: trip, fallbackTripID: tripID)
+  let direction = tripDirection(
+    for: trip,
+    stopID: stopTimeUpdate.stopID,
+    fallbackTripID: tripID
+  )
   guard let displayTimestamp = stopTimeUpdate.displayTimestamp else {
     return nil
   }
@@ -215,6 +219,7 @@ private func terminalStationName(
   if tripUpdate.stopTimeUpdate.last?.isUsableArrival == false,
     let fallback = fallbackTerminalStationName(
       for: tripUpdate.trip,
+      stopID: tripUpdate.stopTimeUpdate.last(where: \.isUsableArrival)?.stopID,
       stopNamesByGTFSID: stopNamesByGTFSID
     )
   {
@@ -231,23 +236,32 @@ private func terminalStationName(
 
   return fallbackTerminalStationName(
     for: tripUpdate.trip,
+    stopID: tripUpdate.stopTimeUpdate.last(where: \.isUsableArrival)?.stopID,
     stopNamesByGTFSID: stopNamesByGTFSID
   ) ?? "Unknown Destination."
 }
 
 private func fallbackTerminalStationName(
   for trip: TransitRealtime_TripDescriptor,
+  stopID: String?,
   stopNamesByGTFSID: [String: String]
 ) -> String? {
   let tripID = standardizeTripIDForSevenTrain(trip.tripID)
-  let direction = tripDirection(for: trip, fallbackTripID: tripID)
-  return MTARouteID(rawValue: trip.routeID)?
-    .terminalStopID(for: direction)
-    .flatMap { stopNamesByGTFSID[$0] }
+  let direction = tripDirection(
+    for: trip,
+    stopID: stopID,
+    fallbackTripID: tripID
+  )
+  return MTATrain.terminalStationName(
+    routeID: trip.routeID,
+    direction: direction,
+    stopNamesByGTFSID: stopNamesByGTFSID
+  )
 }
 
 private func tripDirection(
   for trip: TransitRealtime_TripDescriptor,
+  stopID: String? = nil,
   fallbackTripID: String
 ) -> TripDirection {
   if trip.hasNyctTripDescriptor, trip.nyctTripDescriptor.hasDirection {
@@ -261,7 +275,11 @@ private func tripDirection(
     }
   }
 
-  return tripDirection(for: fallbackTripID)
+  if let stopIDDirection = stopID.map(GTFSStopID.init)?.direction {
+    return stopIDDirection
+  }
+
+  return tripDirectionFromTripIDSuffix(fallbackTripID) ?? .north
 }
 
 extension TransitRealtime_TripUpdate.StopTimeUpdate {
