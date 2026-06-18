@@ -21,7 +21,6 @@ struct PinButton: View {
         } else {
           unlikeFeedback.impactOccurred()
         }
-        logPinToggled(for: station, pinned: nextPinnedValue)
       } catch {
         modelContext.rollback()
         print("Failed to save pinned station: \(error)")

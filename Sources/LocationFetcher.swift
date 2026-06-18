@@ -14,15 +14,15 @@ final class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelega
     super.init()
     locationManager.delegate = self
     locationManager.pausesLocationUpdatesAutomatically = true
-    configureAccuracy()
     updateAuthorizationState()
   }
 
   func locationManager(
     _ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]
   ) {
-    guard locations.last != nil else { return }
-    location = locations.last
+    if let latestLocation = locations.last {
+      location = latestLocation
+    }
   }
 
   func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {

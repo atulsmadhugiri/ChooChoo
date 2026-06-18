@@ -3,12 +3,11 @@ import SwiftUI
 
 struct StationSign: View {
   var station: MTAStation
-  var trains: [MTATrain]
 
   let distance: CLLocationDistance?
   let serviceAlerts: [MTAServiceAlert]
 
-  @State var alertSheetActive: Bool = false
+  @State private var alertSheetActive = false
 
   var body: some View {
     VStack(spacing: 0) {
@@ -31,8 +30,8 @@ struct StationSign: View {
         HStack {
           ScrollView(.horizontal) {
             HStack {
-              ForEach(trains) { route in
-                TrainBadge(train: route, badgeSize: .small)
+              ForEach(station.daytimeRoutes) { route in
+                TrainBadge(train: route)
               }
               Spacer()
             }
@@ -103,9 +102,6 @@ struct StationSign: View {
           ])
           .presentationDragIndicator(.visible)
           .presentationBackground(.thickMaterial)
-          .onAppear {
-            logServiceAlertsViewed(for: station)
-          }
       }
   }
 

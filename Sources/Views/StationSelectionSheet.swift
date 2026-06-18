@@ -9,7 +9,7 @@ struct StationWithDistance: Identifiable {
 }
 
 struct StationSelectionSheet: View {
-  @Query var stations: [MTAStation]
+  @Query(sort: \MTAStation.name) var stations: [MTAStation]
 
   var location: CLLocation?
   @State private var searchTerm = ""
@@ -17,7 +17,7 @@ struct StationSelectionSheet: View {
   @Binding var isPresented: Bool
   @Binding var selectedStation: MTAStation?
 
-  @Binding var serviceAlerts: [String: [MTAServiceAlert]]
+  let serviceAlerts: [String: [MTAServiceAlert]]
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
@@ -30,10 +30,17 @@ struct StationSelectionSheet: View {
 
   var sortedStationEntries: [StationWithDistance] {
     let distanceLocation = sheetLocation ?? location
+    guard let distanceLocation else {
+      let entries = filteredStationEntries.map { station in
+        StationWithDistance(station: station, distance: nil)
+      }
+      return entries.filter { $0.station.pinned } + entries.filter { !$0.station.pinned }
+    }
+
     let stationDistances = filteredStationEntries.map { station in
       StationWithDistance(
         station: station,
-        distance: distanceLocation.map { $0.distance(from: station.location) }
+        distance: distanceLocation.distance(from: station.location)
       )
     }
 
@@ -55,7 +62,6 @@ struct StationSelectionSheet: View {
       List(stationEntries) { entry in
         StationSign(
           station: entry.station,
-          trains: entry.station.daytimeRoutes,
           distance: entry.distance,
           serviceAlerts: entry.station.serviceAlerts(in: serviceAlerts)
         )
@@ -64,7 +70,6 @@ struct StationSelectionSheet: View {
             tapHaptic.impactOccurred()
             selectedStation = entry.station
             isPresented = false
-            logStationSelected(entry.station)
           }
           .compositingGroup()
           .shadow(color: .black.opacity(0.14), radius: 2, x: 0, y: 1)
@@ -93,17 +98,11 @@ struct StationSelectionSheet: View {
       )
     }
     .onAppear {
-      tapHaptic.prepare()
       sheetLocation = location
     }
     .onChange(of: location) { _, newLocation in
       if sheetLocation == nil {
         sheetLocation = newLocation
-      }
-    }
-    .onChange(of: searchTerm) { _, newTerm in
-      if !newTerm.isEmpty {
-        logSearch(term: newTerm)
       }
     }
   }

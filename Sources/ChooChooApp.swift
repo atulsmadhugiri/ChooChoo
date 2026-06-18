@@ -5,7 +5,7 @@ import SwiftUI
 struct ChooChooApp: App {
   private static let stationsSeedSignatureKey = "stationsSeedSignature"
 
-  var modelContainer = Self.makeModelContainer()
+  private let modelContainer = Self.makeModelContainer()
 
   private static func makeModelContainer() -> ModelContainer {
     do {

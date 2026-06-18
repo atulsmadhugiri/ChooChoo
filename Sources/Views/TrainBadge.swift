@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 extension MTALine {
   private var colorSuffix: String {
@@ -28,11 +27,7 @@ extension MTALine {
   }
 
   var color: Color {
-    let colorName = "MTAColors/\(self.colorSuffix)"
-    guard let color = UIColor(named: colorName) else {
-      return .gray
-    }
-    return Color(color)
+    Color("MTAColors/\(colorSuffix)")
   }
 }
 
@@ -42,23 +37,17 @@ extension MTATrain {
   }
 }
 
-enum BadgeSize {
-  case small
-  case large
-}
-
 struct TrainBadge: View {
   let train: MTATrain
-  let badgeSize: BadgeSize
 
   var body: some View {
     ZStack {
       Circle()
-        .frame(width: badgeSize == .small ? 45 : 60)
+        .frame(width: 45)
         .foregroundStyle(train.color)
 
       Text(train.rawValue)
-        .font(badgeSize == .small ? .title : .largeTitle)
+        .font(.title)
         .fontWeight(.semibold)
         .foregroundStyle(.white)
     }
@@ -66,5 +55,5 @@ struct TrainBadge: View {
 }
 
 #Preview {
-  TrainBadge(train: .one, badgeSize: .small)
+  TrainBadge(train: .one)
 }

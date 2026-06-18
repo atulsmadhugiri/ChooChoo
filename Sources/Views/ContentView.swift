@@ -1,10 +1,12 @@
 import CoreLocation
+import Foundation
 import Observation
 import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-  @Query var stations: [MTAStation]
+  @Environment(\.scenePhase) private var scenePhase
+  @Query(sort: \MTAStation.name) var stations: [MTAStation]
 
   @AppStorage("lastVisibleStationID") private var lastVisibleStationID = 0
   @AppStorage("lastSelectedDirection") private var persistedSelectedDirection =
@@ -13,7 +15,7 @@ struct ContentView: View {
   @StateObject private var locationFetcher = LocationFetcher()
   @State private var viewModel = ContentViewModel()
 
-  @State var selectionSheetActive: Bool = false
+  @State private var selectionSheetActive = false
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
@@ -24,13 +26,11 @@ struct ContentView: View {
       if let visibleStation {
         StationSign(
           station: visibleStation,
-          trains: visibleStation.daytimeRoutes,
           distance: locationFetcher.location?.distance(from: visibleStation.location),
           serviceAlerts: visibleStation.serviceAlerts(in: viewModel.serviceAlerts)
         ).onTapGesture {
           tapHaptic.impactOccurred()
           selectionSheetActive = true
-          logStationSignTapped(for: visibleStation)
         }.padding(12).shadow(radius: 2)
       } else {
         Button {
@@ -91,37 +91,38 @@ struct ContentView: View {
     .onChange(of: locationFetcher.location) {
       if viewModel.selectedStation != nil { return }
       viewModel.setNearestStation(from: stations, location: locationFetcher.location)
-    }.onChange(of: viewModel.selectedStation) { _, newValue in
-      if let station = newValue {
-        lastVisibleStationID = station.id
-        logStationSelected(station)
-      }
     }.onChange(of: viewModel.selectedDirection) { _, newDirection in
       persistedSelectedDirection = newDirection.storageValue
-      logDirectionChanged(newDirection, station: viewModel.visibleStation)
     }.onChange(of: viewModel.visibleStation?.id) { _, stationID in
       if let stationID {
         lastVisibleStationID = stationID
+        viewModel.prepareForStationChange()
       }
     }.sheet(isPresented: $selectionSheetActive) {
       StationSelectionSheet(
         location: locationFetcher.location,
         isPresented: $selectionSheetActive,
         selectedStation: $viewModel.selectedStation,
-        serviceAlerts: $viewModel.serviceAlerts)
-    }.onAppear {
-      tapHaptic.prepare()
-    }.task {
-      try? await Task.sleep(for: .milliseconds(250))
-      await configureAnalyticsIfNeeded()
+        serviceAlerts: viewModel.serviceAlerts)
+    }.task(id: scenePhase) {
+      switch scenePhase {
+      case .active:
+        try? await Task.sleep(for: .milliseconds(250))
+        await recordAnalyticsAppOpenIfNeeded()
+      case .background:
+        await recordAnalyticsAppBackgrounded()
+      default:
+        break
+      }
     }.task {
       await viewModel.loadServiceAlerts()
-    }.task(id: visibleStation?.id) {
+    }.task(id: RefreshLoopID(stationID: visibleStation?.id, scenePhase: scenePhase)) {
       viewModel.restoreLaunchState(
         stations: stations,
         preferredStation: launchStation,
         directionStorageValue: persistedSelectedDirection
       )
+      guard scenePhase == .active else { return }
       await viewModel.refreshLoop(stations: stations)
     }
   }
@@ -140,7 +141,7 @@ struct ContentView: View {
     return stations
       .lazy
       .filter(\.pinned)
-      .min { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+      .first
   }
 }
 
@@ -195,6 +196,11 @@ final class ContentViewModel {
     serviceAlerts = alerts
   }
 
+  func prepareForStationChange() {
+    trainArrivals = []
+    loading = true
+  }
+
   func refreshLoop(stations: [MTAStation]) async {
     guard visibleStation != nil else {
       loading = false
@@ -205,7 +211,7 @@ final class ContentViewModel {
 
     while !Task.isCancelled {
       do {
-        try await Task.sleep(for: .seconds(20))
+        try await Task.sleep(for: refreshInterval)
       } catch {
         return
       }
@@ -243,8 +249,6 @@ final class ContentViewModel {
       return
     }
 
-    logRefresh(for: station)
-
     let snapshot = station.snapshot(
       stopNamesByGTFSID: stopNamesByGTFSID(from: stations)
     )
@@ -259,9 +263,16 @@ final class ContentViewModel {
     let sameDirectionExists = arrivals.contains {
       $0.direction == selectedDirection
     }
-    if !sameDirectionExists {
+    let flippedDirectionExists = arrivals.contains {
+      $0.direction == selectedDirection.flipped
+    }
+    if !sameDirectionExists, flippedDirectionExists {
       selectedDirection = selectedDirection.flipped
     }
+  }
+
+  private var refreshInterval: Duration {
+    ProcessInfo.processInfo.isLowPowerModeEnabled ? .seconds(45) : .seconds(20)
   }
 
   private func stopNamesByGTFSID(from stations: [MTAStation]) -> [String: String] {
@@ -274,6 +285,11 @@ final class ContentViewModel {
     cachedStopNamesByGTFSID = MTAStation.stopNamesByGTFSID(from: stations)
     return cachedStopNamesByGTFSID
   }
+}
+
+private struct RefreshLoopID: Equatable {
+  let stationID: MTAStation.ID?
+  let scenePhase: ScenePhase
 }
 
 #Preview {

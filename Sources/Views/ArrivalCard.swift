@@ -6,10 +6,12 @@ struct ArrivalCard: View {
   @State private var arrivingGlow: Bool = false
 
   var body: some View {
-    let remainingTime = arrival.arrivalTime.timeIntervalSince(Date())
+    let now = Date()
+    let status = arrival.displayStatus(at: now)
+    let remainingTime = arrival.displayTime.timeIntervalSince(now)
 
     HStack {
-      TrainBadge(train: arrival.train, badgeSize: .small)
+      TrainBadge(train: arrival.train)
       VStack(alignment: .leading, spacing: -2) {
         Text(arrival.terminalStation)
           .font(.headline)
@@ -21,7 +23,8 @@ struct ArrivalCard: View {
       Spacer()
       VStack(alignment: .trailing, spacing: -2) {
 
-        if remainingTime < 60 {
+        switch status {
+        case .arriving:
           Text("Arriving")
             .font(.headline)
             .fontDesign(.rounded)
@@ -40,21 +43,50 @@ struct ArrivalCard: View {
                 arrivingGlow.toggle()
               }
             }
-        } else {
+        case .boarding:
+          Text("Arriving")
+            .font(.headline)
+            .fontDesign(.rounded)
+            .foregroundStyle(.green)
+        case .upcoming:
           Text(
-            "\(formatTimeInterval(interval: remainingTime))"
+            countdownText(remainingTime: remainingTime)
           )
           .font(.headline)
           .fontDesign(.rounded)
+        case .departed:
+          Text("Departed")
+            .font(.headline)
+            .fontDesign(.rounded)
+            .foregroundStyle(.secondary)
         }
 
         Text(
-          arrival.arrivalTime.formatted(date: .omitted, time: .shortened)
+          secondaryTime(for: status).formatted(date: .omitted, time: .shortened)
         )
         .font(.subheadline)
         .foregroundStyle(.tertiary)
       }
     }
+  }
+
+  private func secondaryTime(for status: TrainArrivalDisplayStatus) -> Date {
+    if status == .boarding,
+      let departureTime = arrival.estimatedDepartureTime
+    {
+      return departureTime
+    }
+
+    return arrival.estimatedArrivalTime
+      ?? arrival.estimatedDepartureTime
+      ?? arrival.displayTime
+  }
+
+  private func countdownText(remainingTime: TimeInterval) -> String {
+    if remainingTime < 60 {
+      return "<1m"
+    }
+    return formatTimeInterval(interval: remainingTime)
   }
 }
 
