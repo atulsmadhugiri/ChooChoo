@@ -28,7 +28,7 @@ public enum MTATrain: String, CaseIterable, Identifiable, Sendable {
   public var id: String { self.rawValue }
 }
 
-public enum MTARouteID: String, Sendable {
+enum MTARouteID: String, Sendable {
   case one = "1"
   case two = "2"
   case three = "3"
@@ -131,15 +131,15 @@ extension MTATrain {
     self = routeID.train
   }
 
-  public static func routes(in routeString: String) -> [MTATrain] {
+  static func routes(in routeString: String) -> [MTATrain] {
     routeTokens(in: routeString).compactMap(MTATrain.init(rawValue:))
   }
 
-  public static func lines(in routeString: String) -> Set<MTALine> {
+  static func lines(in routeString: String) -> Set<MTALine> {
     Set(routes(in: routeString).map(\.line))
   }
 
-  public static func routeTokens(in routeString: String) -> [String] {
+  static func routeTokens(in routeString: String) -> [String] {
     routeString.split(separator: " ").map(String.init)
   }
 }

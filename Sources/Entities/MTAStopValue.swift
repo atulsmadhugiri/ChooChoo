@@ -1,7 +1,7 @@
 import Foundation
 import TabularData
 
-public enum StationCSVColumn: String, Sendable {
+fileprivate enum StationCSVColumn: String, Sendable {
   case complexID = "Complex ID"
   case gtfsStopID = "GTFS Stop ID"
   case division = "Division"

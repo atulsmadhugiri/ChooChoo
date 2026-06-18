@@ -9,29 +9,37 @@ func parseMTARealtimeFeed(
   )
 }
 
-public func getTrainArrivalsForStop(
-  stop: MTAStopValue,
+public func getTrainArrivalsForStops(
+  stops: [MTAStopValue],
   feedData: Data,
   stopNamesByGTFSID: [String: String]
 ) throws -> [TrainArrivalEntry] {
   let feed = try parseMTARealtimeFeed(from: feedData)
-  return getTrainArrivalsForStop(
-    stop: stop,
-    feed: feed.entity,
+  return getTrainArrivalsForStops(
+    stops: stops,
+    feedMessages: [feed],
     stopNamesByGTFSID: stopNamesByGTFSID
   )
 }
 
-func getTrainArrivalsForStop(
-  stop: MTAStopValue,
-  feed: [TransitRealtime_FeedEntity],
+func getTrainArrivalsForStops(
+  stops: [MTAStopValue],
+  feedMessages: [TransitRealtime_FeedMessage],
   stopNamesByGTFSID: [String: String]
 ) -> [TrainArrivalEntry] {
-  getTrainArrivalsForStops(
-    stops: [stop],
-    feed: feed,
+  guard let context = TrainArrivalParseContext(
+    stops: stops,
     stopNamesByGTFSID: stopNamesByGTFSID
-  )
+  ) else {
+    return []
+  }
+
+  var arrivals: [TrainArrivalEntry] = []
+  for feed in feedMessages {
+    arrivals.append(contentsOf: trainArrivals(in: feed, context: context))
+  }
+
+  return arrivals.sorted { $0.arrivalTime < $1.arrivalTime }
 }
 
 func getTrainArrivalsForStops(
@@ -39,57 +47,139 @@ func getTrainArrivalsForStops(
   feed: [TransitRealtime_FeedEntity],
   stopNamesByGTFSID: [String: String]
 ) -> [TrainArrivalEntry] {
-  guard !stops.isEmpty else { return [] }
+  guard let context = TrainArrivalParseContext(
+    stops: stops,
+    stopNamesByGTFSID: stopNamesByGTFSID
+  ) else {
+    return []
+  }
 
-  let stopsByGTFSID = Dictionary(
-    stops.map { ($0.gtfsStopID, $0) },
-    uniquingKeysWith: { first, _ in first }
+  return trainArrivals(
+    in: feed,
+    vehicleStatesByTripID: vehicleStatesByTripID(in: feed),
+    context: context
   )
-  let tripUpdates = extractTripUpdates(from: feed)
-  let arrivalsForStop =
-    tripUpdates
-    .flatMap { tripUpdate in
-      let terminalStation = terminalStationName(
-        for: tripUpdate,
-        stopNamesByGTFSID: stopNamesByGTFSID
-      )
-      var arrivals: [TrainArrivalEntry] = []
-      arrivals.reserveCapacity(tripUpdate.stopTimeUpdate.count)
+    .sorted { $0.arrivalTime < $1.arrivalTime }
+}
 
-      for stopTimeUpdate in tripUpdate.stopTimeUpdate {
-        guard stopTimeUpdate.isUsableArrival,
-          let stop = stopsByGTFSID[stopTimeUpdate.baseStopID]
-        else {
-          continue
-        }
+private struct TrainArrivalParseContext {
+  let stopsByGTFSID: [String: MTAStopValue]
+  let stopNamesByGTFSID: [String: String]
 
-        guard let arrival = createTrainArrivalEntry(
+  init?(stops: [MTAStopValue], stopNamesByGTFSID: [String: String]) {
+    guard !stops.isEmpty else { return nil }
+    self.stopsByGTFSID = Dictionary(
+      stops.map { ($0.gtfsStopID, $0) },
+      uniquingKeysWith: { first, _ in first }
+    )
+    self.stopNamesByGTFSID = stopNamesByGTFSID
+  }
+}
+
+private func trainArrivals(
+  in feed: TransitRealtime_FeedMessage,
+  context: TrainArrivalParseContext
+) -> [TrainArrivalEntry] {
+  trainArrivals(
+    in: feed.entity,
+    vehicleStatesByTripID: vehicleStatesByTripID(in: feed.entity),
+    context: context
+  )
+}
+
+private func trainArrivals(
+  in feed: [TransitRealtime_FeedEntity],
+  vehicleStatesByTripID: [String: VehicleStopState],
+  context: TrainArrivalParseContext
+) -> [TrainArrivalEntry] {
+  var arrivals: [TrainArrivalEntry] = []
+  for entity in feed where entity.hasTripUpdate {
+    let tripUpdate = entity.tripUpdate
+    let tripID = standardizeTripIDForSevenTrain(tripUpdate.trip.tripID)
+    let terminalStation = terminalStationName(
+      for: tripUpdate,
+      stopNamesByGTFSID: context.stopNamesByGTFSID
+    )
+
+    for stopTimeUpdate in tripUpdate.stopTimeUpdate {
+      guard stopTimeUpdate.isUsableArrival,
+        let stop = context.stopsByGTFSID[stopTimeUpdate.baseStopID],
+        let arrival = createTrainArrivalEntry(
           from: stopTimeUpdate,
           trip: tripUpdate.trip,
           stop: stop,
-          terminalStation: terminalStation
-        ) else {
-          continue
-        }
-        arrivals.append(arrival)
+          terminalStation: terminalStation,
+          vehicleState: vehicleStatesByTripID[tripID]
+        )
+      else {
+        continue
       }
-
-      return arrivals
+      arrivals.append(arrival)
     }
-  return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
+  }
+
+  return arrivals
 }
 
-private func extractTripUpdates(
-  from feed: [TransitRealtime_FeedEntity]
-) -> [TransitRealtime_TripUpdate] {
-  return feed.compactMap { $0.hasTripUpdate ? $0.tripUpdate : nil }
+private struct VehicleStopState {
+  let stopID: String
+  let status: TrainArrivalVehicleStatus
+  let timestamp: UInt64?
+
+  func matches(stopID selectedStopID: String) -> Bool {
+    if stopID == selectedStopID { return true }
+
+    let currentStop = GTFSStopID(stopID)
+    let selectedStop = GTFSStopID(selectedStopID)
+    guard currentStop.baseID == selectedStop.baseID else { return false }
+
+    return currentStop.direction == nil
+      || selectedStop.direction == nil
+      || currentStop.direction == selectedStop.direction
+  }
+}
+
+private func vehicleStatesByTripID(
+  in feed: [TransitRealtime_FeedEntity]
+) -> [String: VehicleStopState] {
+  var states: [String: VehicleStopState] = [:]
+
+  for entity in feed where entity.hasVehicle {
+    let vehicle = entity.vehicle
+    guard vehicle.hasTrip,
+      !vehicle.trip.tripID.isEmpty,
+      vehicle.hasStopID,
+      !vehicle.stopID.isEmpty
+    else {
+      continue
+    }
+
+    let tripID = standardizeTripIDForSevenTrain(vehicle.trip.tripID)
+    let state = VehicleStopState(
+      stopID: vehicle.stopID,
+      status: TrainArrivalVehicleStatus(vehicle.currentStatus),
+      timestamp: vehicle.hasTimestamp ? vehicle.timestamp : nil
+    )
+
+    guard let existingState = states[tripID] else {
+      states[tripID] = state
+      continue
+    }
+
+    if state.timestamp ?? 0 >= existingState.timestamp ?? 0 {
+      states[tripID] = state
+    }
+  }
+
+  return states
 }
 
 private func createTrainArrivalEntry(
   from stopTimeUpdate: TransitRealtime_TripUpdate.StopTimeUpdate,
   trip: TransitRealtime_TripDescriptor,
   stop: MTAStopValue,
-  terminalStation: String
+  terminalStation: String,
+  vehicleState: VehicleStopState?
 ) -> TrainArrivalEntry? {
 
   let tripID = standardizeTripIDForSevenTrain(trip.tripID)
@@ -97,15 +187,20 @@ private func createTrainArrivalEntry(
   guard let train = MTATrain(routeID: trip.routeID) else { return nil }
 
   let direction = tripDirection(for: trip, fallbackTripID: tripID)
-  guard let arrivalTimestamp = stopTimeUpdate.bestArrivalTimestamp else {
+  guard let displayTimestamp = stopTimeUpdate.displayTimestamp else {
     return nil
+  }
+  let vehicleStatus = vehicleState.flatMap { state in
+    state.matches(stopID: stopTimeUpdate.stopID) ? state.status : nil
   }
 
   return TrainArrivalEntry(
-    id: "\(tripID)-\(stopTimeUpdate.stopID)-\(arrivalTimestamp)",
+    id: "\(tripID)-\(stopTimeUpdate.stopID)-\(displayTimestamp)",
     tripID: tripID,
     stopID: stopTimeUpdate.stopID,
-    arrivalTimestamp: arrivalTimestamp,
+    arrivalTimestamp: stopTimeUpdate.arrivalTimestamp,
+    departureTimestamp: stopTimeUpdate.departureTimestamp,
+    vehicleStatus: vehicleStatus,
     train: train,
     terminalStation: terminalStation,
     direction: direction,
@@ -174,14 +269,22 @@ extension TransitRealtime_TripUpdate.StopTimeUpdate {
     GTFSStopID(stopID).baseID
   }
 
-  fileprivate var bestArrivalTimestamp: Int64? {
+  fileprivate var arrivalTimestamp: Int64? {
     if hasArrival, arrival.time > 0 {
       return arrival.time
     }
+    return nil
+  }
+
+  fileprivate var departureTimestamp: Int64? {
     if hasDeparture, departure.time > 0 {
       return departure.time
     }
     return nil
+  }
+
+  fileprivate var displayTimestamp: Int64? {
+    arrivalTimestamp ?? departureTimestamp
   }
 
   fileprivate var isUsableArrival: Bool {
@@ -189,9 +292,22 @@ extension TransitRealtime_TripUpdate.StopTimeUpdate {
 
     switch scheduleRelationship {
     case .scheduled:
-      return bestArrivalTimestamp != nil
+      return displayTimestamp != nil
     case .skipped, .noData:
       return false
+    }
+  }
+}
+
+private extension TrainArrivalVehicleStatus {
+  init(_ status: TransitRealtime_VehiclePosition.VehicleStopStatus) {
+    switch status {
+    case .incomingAt:
+      self = .incomingAt
+    case .stoppedAt:
+      self = .stoppedAt
+    case .inTransitTo:
+      self = .inTransitTo
     }
   }
 }
@@ -219,13 +335,7 @@ func timeRangesToServiceAlertPeriods(
       ? Date(timeIntervalSince1970: Double(timeRange.start)) : nil
     let end = timeRange.hasEnd
       ? Date(timeIntervalSince1970: Double(timeRange.end)) : nil
-    if start == nil, end == nil {
-      return MTAServiceAlertTimeRange(start: nil, end: nil)
-    }
-    guard let start, let end else {
-      return MTAServiceAlertTimeRange(start: start, end: end)
-    }
-    guard start <= end else { return nil }
+    if let start, let end, start > end { return nil }
     return MTAServiceAlertTimeRange(start: start, end: end)
   }
 }
@@ -252,12 +362,13 @@ func constructServiceAlerts(
       entity.hasStopID ? GTFSStopID(entity.stopID).baseID : nil
     })
 
+    let activePeriod = timeRangesToServiceAlertPeriods(timeRanges: alert.activePeriod)
     return stopIDs.sorted().map { stopID in
       return MTAServiceAlert(
         stopID: stopID,
         header: headerText,
         description: descriptionText,
-        activePeriod: timeRangesToServiceAlertPeriods(timeRanges: alert.activePeriod)
+        activePeriod: activePeriod
       )
     }
   }

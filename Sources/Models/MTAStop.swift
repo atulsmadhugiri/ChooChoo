@@ -99,13 +99,6 @@ extension MTAStop {
     }
   }
 
-  static func loadStopsFromCSV() -> [MTAStop] {
-    guard let stationsFile = stationsCSVURL() else {
-      print("Stations.csv not found.")
-      return []
-    }
-    return loadStopsFromCSV(at: stationsFile)
-  }
 }
 
 extension MTAStop {

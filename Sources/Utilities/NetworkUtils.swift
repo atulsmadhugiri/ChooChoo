@@ -1,6 +1,6 @@
 import Foundation
 
-struct NetworkUtils {
+enum NetworkUtils {
   enum NetworkError: Error, LocalizedError, Sendable {
     case invalidResponse(URL)
     case badStatus(URL, Int)

@@ -118,35 +118,37 @@ actor MTAFeedClient {
   }
 }
 
-func fetchMTARealtimePayloads(
+func fetchMTARealtimeFeeds(
   from endpoints: [MTAFeedEndpoint],
   using feedClient: MTAFeedClient = .shared
-) async throws -> [Data] {
-  try await withThrowingTaskGroup(of: Data.self) { group in
+) async -> [TransitRealtime_FeedMessage] {
+  let endpoints = endpoints.uniqued()
+  guard !endpoints.isEmpty else { return [] }
+
+  var results: [TransitRealtime_FeedMessage] = []
+  results.reserveCapacity(endpoints.count)
+
+  await withTaskGroup(of: TransitRealtime_FeedMessage?.self) { group in
     for endpoint in endpoints {
       group.addTask {
-        try await feedClient.data(from: endpoint, cachePolicy: .realtime)
+        do {
+          let payload = try await feedClient.data(from: endpoint, cachePolicy: .realtime)
+          return try parseMTARealtimeFeed(from: payload)
+        } catch {
+          print("Failed to fetch feed for endpoint \(endpoint): \(error)")
+          return nil
+        }
       }
     }
 
-    var payloads: [Data] = []
-    payloads.reserveCapacity(endpoints.count)
-    for try await data in group {
-      payloads.append(data)
+    for await feed in group {
+      if let feed {
+        results.append(feed)
+      }
     }
-    return payloads
   }
-}
 
-func decodeMTARealtimeFeeds(
-  from payloads: [Data]
-) throws -> TransitRealtime_FeedMessage {
-  var mergedFeed = TransitRealtime_FeedMessage()
-  for payload in payloads {
-    let feed = try parseMTARealtimeFeed(from: payload)
-    mergedFeed.entity.append(contentsOf: feed.entity)
-  }
-  return mergedFeed
+  return results
 }
 
 func fetchMTAServiceAlerts(
@@ -158,4 +160,11 @@ func fetchMTAServiceAlerts(
   )
   let feed = try TransitRealtime_FeedMessage(serializedBytes: data)
   return feed.entity.compactMap { $0.hasAlert ? $0.alert : nil }
+}
+
+private extension Sequence where Element: Hashable {
+  func uniqued() -> [Element] {
+    var seen = Set<Element>()
+    return filter { seen.insert($0).inserted }
+  }
 }

@@ -34,10 +34,10 @@ public enum MTAFeedEndpoint: String, Sendable {
   }
 }
 
-public enum MTAFeedEndpointError: Error, LocalizedError, Sendable {
+private enum MTAFeedEndpointError: Error, LocalizedError, Sendable {
   case invalidURL(String)
 
-  public var errorDescription: String? {
+  var errorDescription: String? {
     switch self {
     case .invalidURL(let endpoint):
       return "Invalid MTA feed URL: \(endpoint)"

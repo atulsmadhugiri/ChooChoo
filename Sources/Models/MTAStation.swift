@@ -1,4 +1,3 @@
-import Algorithms
 import CoreLocation
 import Foundation
 import SwiftData
@@ -31,20 +30,23 @@ class MTAStation {
   }
 
   var daytimeRoutes: [MTATrain] {
-    let sortedStops = self.stops.sorted { stopA, stopB -> Bool in
-      let firstRouteA = stopA.daytimeRoutes.first?.rawValue ?? stopA.daytimeRoutesString
-      let firstRouteB = stopB.daytimeRoutes.first?.rawValue ?? stopB.daytimeRoutesString
+    let stopsWithRoutes = stops.map { stop in
+      (stop: stop, routes: stop.daytimeRoutes)
+    }
+    let sortedStops = stopsWithRoutes.sorted { stopA, stopB -> Bool in
+      let firstRouteA = stopA.routes.first?.rawValue ?? stopA.stop.daytimeRoutesString
+      let firstRouteB = stopB.routes.first?.rawValue ?? stopB.stop.daytimeRoutesString
       if firstRouteA != firstRouteB {
         return firstRouteA < firstRouteB
       }
-      return stopA.gtfsStopID < stopB.gtfsStopID
+      return stopA.stop.gtfsStopID < stopB.stop.gtfsStopID
     }
 
-    return Array(sortedStops.flatMap(\.daytimeRoutes).uniqued())
+    return sortedStops.flatMap(\.routes).uniqued()
   }
 
   var lines: [MTALine] {
-    return Array(self.daytimeRoutes.map(\.line).uniqued())
+    return daytimeRoutes.map(\.line).uniqued()
   }
 
   func getLabelFor(direction: TripDirection) -> String {
@@ -117,42 +119,12 @@ extension MTAStation {
 func getFeedData(
   lines: [MTALine],
   feedClient: MTAFeedClient = .shared
-) async -> [MTALine:
-  TransitRealtime_FeedMessage]
+) async -> [TransitRealtime_FeedMessage]
 {
-  guard !lines.isEmpty else { return [:] }
-  var results = [MTALine: TransitRealtime_FeedMessage]()
-
-  await withTaskGroup(of: (MTALine, [Data])?.self) {
-    group in
-
-    for line in lines {
-      group.addTask {
-        do {
-          let payloads = try await fetchMTARealtimePayloads(
-            from: line.endpoints,
-            using: feedClient
-          )
-          return (line, payloads)
-        } catch {
-          print("Failed to fetch feed for line \(line): \(error)")
-          return nil
-        }
-      }
-    }
-
-    for await taskResult in group {
-      if let (line, payloads) = taskResult {
-        do {
-          results[line] = try decodeMTARealtimeFeeds(from: payloads)
-        } catch {
-          print("Failed to decode feed for line \(line): \(error)")
-        }
-      }
-    }
-
-  }
-  return results
+  await fetchMTARealtimeFeeds(
+    from: lines.flatMap(\.endpoints),
+    using: feedClient
+  )
 }
 
 func getArrivals(
@@ -166,15 +138,26 @@ func getArrivals(
   let feedData = await getFeedData(lines: lines, feedClient: feedClient)
   let now = Date()
 
-  let arrivalEntries = feedData.values.flatMap { feed in
-    getTrainArrivalsForStops(
-      stops: stops,
-      feed: feed.entity,
-      stopNamesByGTFSID: station.stopNamesByGTFSID
-    )
-  }
+  let arrivalEntries = getTrainArrivalsForStops(
+    stops: stops,
+    feedMessages: feedData,
+    stopNamesByGTFSID: station.stopNamesByGTFSID
+  )
 
-  return arrivalEntries.uniqued(on: \.id)
-    .filter { $0.arrivalTime > now }
-    .sorted { $0.arrivalTime < $1.arrivalTime }
+  return arrivalEntries.uniqued(by: \.id)
+    .filter { $0.isActive(at: now) }
+}
+
+private extension Sequence where Element: Hashable {
+  func uniqued() -> [Element] {
+    var seen = Set<Element>()
+    return filter { seen.insert($0).inserted }
+  }
+}
+
+private extension Sequence {
+  func uniqued<ID: Hashable>(by keyPath: KeyPath<Element, ID>) -> [Element] {
+    var seen = Set<ID>()
+    return filter { seen.insert($0[keyPath: keyPath]).inserted }
+  }
 }
