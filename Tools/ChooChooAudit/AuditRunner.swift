@@ -34,44 +34,28 @@ struct AuditRunner {
 
   private func fetchFeeds(
     for stations: [StationGroup]
-  ) async throws -> [MTALine: LineFeeds] {
-    let lines = Set(stations.flatMap(\.lines))
+  ) async throws -> [MTAFeedEndpoint: FeedPayload] {
+    let endpoints = stations
+      .flatMap(\.lines)
+      .flatMap(\.endpoints)
+      .uniqued()
     let shouldFetchJSON = comparisonMode.includesGTFSJSON
-    return try await withThrowingTaskGroup(of: (MTALine, LineFeeds).self) { group in
-      for line in lines {
+    return try await withThrowingTaskGroup(of: (MTAFeedEndpoint, FeedPayload).self) { group in
+      for endpoint in endpoints {
         group.addTask {
-          let payloads = try await Self.fetchPayloads(
-            for: line,
+          let payload = try await Self.fetchPayload(
+            endpoint: endpoint,
             includingJSON: shouldFetchJSON
           )
-          return (line, LineFeeds(payloads: payloads))
+          return (endpoint, payload)
         }
       }
 
-      var result: [MTALine: LineFeeds] = [:]
-      for try await (line, feeds) in group {
-        result[line] = feeds
+      var result: [MTAFeedEndpoint: FeedPayload] = [:]
+      for try await (endpoint, payload) in group {
+        result[endpoint] = payload
       }
       return result
-    }
-  }
-
-  private static func fetchPayloads(
-    for line: MTALine,
-    includingJSON shouldFetchJSON: Bool
-  ) async throws -> [FeedPayload] {
-    try await withThrowingTaskGroup(of: FeedPayload.self) { group in
-      for endpoint in line.endpoints {
-        group.addTask {
-          try await Self.fetchPayload(endpoint: endpoint, includingJSON: shouldFetchJSON)
-        }
-      }
-
-      var payloads: [FeedPayload] = []
-      for try await payload in group {
-        payloads.append(payload)
-      }
-      return payloads
     }
   }
 
@@ -113,44 +97,43 @@ struct AuditRunner {
 
   private func compare(
     station: StationGroup,
-    feedData: [MTALine: LineFeeds],
+    feedData: [MTAFeedEndpoint: FeedPayload],
     now: Date
   ) async throws -> StationAuditResult {
     var appArrivals: [ComparableArrival] = []
     var jsonComparableAppArrivals: [ComparableArrival] = []
     var jsonArrivals: [ComparableArrival] = []
 
-    for line in station.lines {
-      guard let feeds = feedData[line] else { continue }
-      for payload in feeds.payloads {
-        let payloadAppArrivals = try getTrainArrivalsForStops(
-          stops: station.stops,
-          feedData: payload.protobuf,
-          stopNamesByGTFSID: stopNameByGTFSID
+    let endpoints = station.lines.flatMap(\.endpoints).uniqued()
+    for endpoint in endpoints {
+      guard let payload = feedData[endpoint] else { continue }
+      let payloadAppArrivals = try getTrainArrivalsForStops(
+        stops: station.stops,
+        feedData: payload.protobuf,
+        stopNamesByGTFSID: stopNameByGTFSID
+      )
+      .filter { $0.isActive(at: now) }
+      .map { ComparableArrival(appArrival: $0) }
+
+      if comparisonMode.includesMTAWeb {
+        appArrivals.append(contentsOf: payloadAppArrivals)
+      }
+
+      guard comparisonMode.includesGTFSJSON,
+        let json = payload.json
+      else {
+        continue
+      }
+
+      jsonComparableAppArrivals.append(contentsOf: payloadAppArrivals)
+      jsonArrivals.append(
+        contentsOf: try JSONArrivalDecoder.arrivals(
+          for: station.stops,
+          feedData: json,
+          stopNameByGTFSID: stopNameByGTFSID
         )
         .filter { $0.isActive(at: now) }
-        .map { ComparableArrival(appArrival: $0) }
-
-        if comparisonMode.includesMTAWeb {
-          appArrivals.append(contentsOf: payloadAppArrivals)
-        }
-
-        guard comparisonMode.includesGTFSJSON,
-          let json = payload.json
-        else {
-          continue
-        }
-
-        jsonComparableAppArrivals.append(contentsOf: payloadAppArrivals)
-        jsonArrivals.append(
-          contentsOf: try JSONArrivalDecoder.arrivals(
-            for: station.stops,
-            feedData: json,
-            stopNameByGTFSID: stopNameByGTFSID
-          )
-          .filter { $0.isActive(at: now) }
-        )
-      }
+      )
     }
 
     var comparisons: [ArrivalComparisonResult] = []
@@ -215,10 +198,6 @@ struct FeedPayload {
   let json: Data?
 }
 
-struct LineFeeds {
-  let payloads: [FeedPayload]
-}
-
 func isLikelyJSON(_ data: Data) -> Bool {
   data
     .drop { byte in
@@ -227,6 +206,13 @@ func isLikelyJSON(_ data: Data) -> Bool {
     .first
     .map { $0 == 0x5B || $0 == 0x7B }
     ?? false
+}
+
+private extension Sequence where Element: Hashable {
+  func uniqued() -> [Element] {
+    var seen = Set<Element>()
+    return filter { seen.insert($0).inserted }
+  }
 }
 
 func isFreshMTAJSONFeed(

@@ -188,11 +188,10 @@ enum JSONArrivalDecoder {
     let vehicleStatesByTripID = vehicleStatesByTripID(in: feed.entity)
 
     return tripUpdates.flatMap { tripUpdate in
-      let terminalStopID = tripUpdate.stopTimeUpdate
-        .last(where: \.isUsableArrival)?
-        .baseStopID
-      let terminal = terminalStopID.flatMap { stopNameByGTFSID[$0] }
-        ?? "Unknown Destination."
+      let terminal = terminalStationName(
+        for: tripUpdate,
+        stopNameByGTFSID: stopNameByGTFSID
+      )
 
       var arrivals: [ComparableArrival] = []
       for stopTimeUpdate in tripUpdate.stopTimeUpdate {
@@ -210,6 +209,7 @@ enum JSONArrivalDecoder {
         }
         let direction = tripDirection(
           nyctDirection: tripUpdate.trip.nyctTripDescriptor?.direction,
+          stopID: stopTimeUpdate.stopID,
           fallbackTripID: tripID
         )
 
@@ -228,6 +228,41 @@ enum JSONArrivalDecoder {
 
       return arrivals
     }
+  }
+
+  private static func terminalStationName(
+    for tripUpdate: MTAJSONTripUpdate,
+    stopNameByGTFSID: [String: String]
+  ) -> String {
+    let tripID = standardizeTripIDForSevenTrain(tripUpdate.trip.tripID)
+    let lastUsableStopUpdate = tripUpdate.stopTimeUpdate.last(where: \.isUsableArrival)
+    let direction = tripDirection(
+      nyctDirection: tripUpdate.trip.nyctTripDescriptor?.direction,
+      stopID: lastUsableStopUpdate?.stopID,
+      fallbackTripID: tripID
+    )
+
+    if tripUpdate.stopTimeUpdate.last?.isUsableArrival == false,
+      let fallback = MTATrain.terminalStationName(
+        routeID: tripUpdate.trip.routeID,
+        direction: direction,
+        stopNamesByGTFSID: stopNameByGTFSID
+      )
+    {
+      return fallback
+    }
+
+    if let terminalStopID = lastUsableStopUpdate?.baseStopID,
+      let terminal = stopNameByGTFSID[terminalStopID]
+    {
+      return terminal
+    }
+
+    return MTATrain.terminalStationName(
+      routeID: tripUpdate.trip.routeID,
+      direction: direction,
+      stopNamesByGTFSID: stopNameByGTFSID
+    ) ?? "Unknown Destination."
   }
 
   private struct VehicleStopState {
@@ -295,6 +330,7 @@ enum JSONArrivalDecoder {
 
   private static func tripDirection(
     nyctDirection: Int?,
+    stopID: String?,
     fallbackTripID: String
   ) -> TripDirection {
     switch nyctDirection {
@@ -303,7 +339,10 @@ enum JSONArrivalDecoder {
     case 3:
       return .south
     default:
-      return ChooChooCore.tripDirection(for: fallbackTripID)
+      if let stopIDDirection = stopID.map(GTFSStopID.init)?.direction {
+        return stopIDDirection
+      }
+      return tripDirectionFromTripIDSuffix(fallbackTripID) ?? .north
     }
   }
 }
