@@ -49,9 +49,10 @@ struct StationSelectionSheet: View {
   }
 
   var body: some View {
+    let stationEntries = sortedStationEntries
 
     NavigationView {
-      List(sortedStationEntries) { entry in
+      List(stationEntries) { entry in
         StationSign(
           station: entry.station,
           trains: entry.station.daytimeRoutes,
@@ -82,7 +83,7 @@ struct StationSelectionSheet: View {
         prompt: "Search stations"
       )
       .overlay {
-        if sortedStationEntries.isEmpty, !searchTerm.isEmpty {
+        if stationEntries.isEmpty, !searchTerm.isEmpty {
           ContentUnavailableView.search(text: searchTerm)
         }
       }
