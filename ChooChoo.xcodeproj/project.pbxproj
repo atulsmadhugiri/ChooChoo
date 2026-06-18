@@ -13,7 +13,6 @@
 		B701CC382CC7510800EB1AB0 /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC372CC7510800EB1AB0 /* AlertSheet.swift */; };
 		B705AA022D50D00100AA0001 /* MTAFeedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B705AA012D50D00100AA0001 /* MTAFeedClient.swift */; };
 		B705AA042D50D00100AA0001 /* MTAStationSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B705AA032D50D00100AA0001 /* MTAStationSnapshot.swift */; };
-		B71E2ADA2CADE447004E63DD /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = B71E2AD92CADE447004E63DD /* Algorithms */; };
 		B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B37582CA37FC100FAC872 /* LoggingUtils.swift */; };
 		B74C73282CB488FC00B8E2E1 /* MTAStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73272CB488FC00B8E2E1 /* MTAStop.swift */; };
 		B74C732A2CB49D4400B8E2E1 /* MTAStation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74C73292CB49D4400B8E2E1 /* MTAStation.swift */; };
@@ -25,7 +24,6 @@
 		B77807C32C6D740C00216D68 /* ArrivalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77807C22C6D740C00216D68 /* ArrivalCard.swift */; };
 		B78613AB2C4EE9B900F8A35B /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613AA2C4EE9B900F8A35B /* NetworkUtils.swift */; };
 		B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = B78613AF2C4EEAEA00F8A35B /* SwiftProtobuf */; };
-		B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B78613B12C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary */; };
 		B78613B82C4EF39B00F8A35B /* nyct-subway.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613B72C4EF39B00F8A35B /* nyct-subway.pb.swift */; };
 		B78613BA2C4EF3A000F8A35B /* gtfs-realtime.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78613B92C4EF3A000F8A35B /* gtfs-realtime.pb.swift */; };
 		B78613C32C4EFD9D00F8A35B /* Stations.csv in Resources */ = {isa = PBXBuildFile; fileRef = B78613C22C4EFD9D00F8A35B /* Stations.csv */; };
@@ -102,9 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B71E2ADA2CADE447004E63DD /* Algorithms in Frameworks */,
 				B752EDB02CA1FB5E00525072 /* PostHog in Frameworks */,
-				B78613B22C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary in Frameworks */,
 				B78613B02C4EEAEA00F8A35B /* SwiftProtobuf in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -311,7 +307,6 @@
 			packageReferences = (
 				B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */,
 				B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */,
-				B71E2AD82CADE447004E63DD /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = B7A8568E2BB3848D00D571AA /* Products */;
 			projectDirPath = "";
@@ -675,14 +670,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B71E2AD82CADE447004E63DD /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-algorithms.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
-			};
-		};
 		B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/PostHog/posthog-ios.git";
@@ -702,11 +689,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B71E2AD92CADE447004E63DD /* Algorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B71E2AD82CADE447004E63DD /* XCRemoteSwiftPackageReference "swift-algorithms" */;
-			productName = Algorithms;
-		};
 		B752EDAF2CA1FB5E00525072 /* PostHog */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B752EDAE2CA1FB5E00525072 /* XCRemoteSwiftPackageReference "posthog-ios" */;
@@ -716,11 +698,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */;
 			productName = SwiftProtobuf;
-		};
-		B78613B12C4EEAEA00F8A35B /* SwiftProtobufPluginLibrary */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B78613AE2C4EEAEA00F8A35B /* XCRemoteSwiftPackageReference "swift-protobuf" */;
-			productName = SwiftProtobufPluginLibrary;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
