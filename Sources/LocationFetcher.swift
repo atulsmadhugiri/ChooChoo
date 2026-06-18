@@ -1,10 +1,13 @@
 import CoreLocation
 import Foundation
 
-final class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelegate {
-  let locationManager = CLLocationManager()
+@MainActor
+final class LocationFetcher: NSObject, ObservableObject, @preconcurrency CLLocationManagerDelegate {
+  private let locationManager = CLLocationManager()
 
-  @Published var location: CLLocation?
+  @Published private(set) var location: CLLocation?
+
+  private var isUpdatingLocation = false
 
   private var distanceThreshold: CLLocationDistance {
     ProcessInfo.processInfo.isLowPowerModeEnabled ? 500 : 100
@@ -22,6 +25,11 @@ final class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelega
   ) {
     if let latestLocation = locations.last {
       location = latestLocation
+      if latestLocation.horizontalAccuracy >= 0,
+        latestLocation.horizontalAccuracy <= distanceThreshold
+      {
+        stopUpdatingLocation()
+      }
     }
   }
 
@@ -36,13 +44,22 @@ final class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelega
     print("Location update failed: \(error)")
   }
 
+  func refreshAuthorizationState() {
+    updateAuthorizationState()
+  }
+
+  func stopUpdatingLocation() {
+    locationManager.stopUpdatingLocation()
+    isUpdatingLocation = false
+  }
+
   private func updateAuthorizationState() {
     switch locationManager.authorizationStatus {
     case .authorizedAlways, .authorizedWhenInUse:
       configureAccuracy()
-      locationManager.startUpdatingLocation()
+      startUpdatingLocation()
     case .denied, .restricted:
-      locationManager.stopUpdatingLocation()
+      stopUpdatingLocation()
     case .notDetermined:
       locationManager.requestWhenInUseAuthorization()
     @unknown default:
@@ -55,5 +72,11 @@ final class LocationFetcher: NSObject, ObservableObject, CLLocationManagerDelega
       ? kCLLocationAccuracyKilometer
       : kCLLocationAccuracyHundredMeters
     locationManager.distanceFilter = distanceThreshold
+  }
+
+  private func startUpdatingLocation() {
+    guard !isUpdatingLocation else { return }
+    locationManager.startUpdatingLocation()
+    isUpdatingLocation = true
   }
 }

@@ -107,9 +107,18 @@ struct ContentView: View {
     }.task(id: scenePhase) {
       switch scenePhase {
       case .active:
-        try? await Task.sleep(for: .milliseconds(250))
+        locationFetcher.refreshAuthorizationState()
+        do {
+          try await Task.sleep(for: .milliseconds(250))
+        } catch {
+          return
+        }
+        guard !Task.isCancelled else { return }
         await recordAnalyticsAppOpenIfNeeded()
+      case .inactive:
+        locationFetcher.stopUpdatingLocation()
       case .background:
+        locationFetcher.stopUpdatingLocation()
         await recordAnalyticsAppBackgrounded()
       default:
         break
