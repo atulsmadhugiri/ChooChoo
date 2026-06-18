@@ -39,24 +39,28 @@ struct ChooChooApp: App {
     configuration.personProfiles = .always
     PostHogSDK.shared.setup(configuration)
 
-    let stopEntries = MTAStop.loadStopsFromCSV()
-    seedStationsIfNeeded(from: stopEntries)
+    seedStationsIfNeeded()
   }
 
-  private func seedStationsIfNeeded(from stopEntries: [MTAStop]) {
-    guard !stopEntries.isEmpty else {
-      print("Skipping station seed because Stations.csv produced no stops.")
+  private func seedStationsIfNeeded() {
+    guard let stationsFile = MTAStop.stationsCSVURL() else {
+      print("Stations.csv not found.")
       return
     }
 
-    let signature = MTAStop.seedSignature(for: stopEntries)
-    let defaults = UserDefaults.standard
-    let storedSignature = defaults.string(forKey: Self.stationsSeedSignatureKey)
     let context = modelContainer.mainContext
-
     do {
+      let signature = try MTAStop.csvSignature(for: stationsFile)
+      let defaults = UserDefaults.standard
+      let storedSignature = defaults.string(forKey: Self.stationsSeedSignatureKey)
       let currentStationCount = try context.fetchCount(FetchDescriptor<MTAStation>())
       guard storedSignature != signature || currentStationCount == 0 else {
+        return
+      }
+
+      let stopEntries = MTAStop.loadStopsFromCSV(at: stationsFile)
+      guard !stopEntries.isEmpty else {
+        print("Skipping station seed because Stations.csv produced no stops.")
         return
       }
 

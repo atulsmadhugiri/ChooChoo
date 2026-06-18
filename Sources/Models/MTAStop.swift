@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import SwiftData
 import TabularData
@@ -74,17 +75,21 @@ extension MTAStop {
 }
 
 extension MTAStop {
-  static func loadStopsFromCSV() -> [MTAStop] {
-    guard
-      let stationsFile = Bundle.main.url(
-        forResource: "Stations",
-        withExtension: "csv"
-      )
-    else {
-      print("Stations.csv not found.")
-      return []
-    }
+  static func stationsCSVURL(in bundle: Bundle = .main) -> URL? {
+    bundle.url(
+      forResource: "Stations",
+      withExtension: "csv"
+    )
+  }
 
+  static func csvSignature(for url: URL) throws -> String {
+    let data = try Data(contentsOf: url)
+    return SHA256.hash(data: data)
+      .map { String(format: "%02x", $0) }
+      .joined()
+  }
+
+  static func loadStopsFromCSV(at stationsFile: URL) -> [MTAStop] {
     do {
       let df = try DataFrame(contentsOfCSVFile: stationsFile)
       return df.rows.compactMap { MTAStop(from: $0) }
@@ -94,20 +99,12 @@ extension MTAStop {
     }
   }
 
-  static func seedSignature(for stops: [MTAStop]) -> String {
-    stops
-      .sorted { $0.gtfsStopID < $1.gtfsStopID }
-      .map {
-        [
-          $0.gtfsStopID,
-          String($0.complexID),
-          $0.daytimeRoutesString,
-          $0.stopName,
-          $0.northDirectionLabel,
-          $0.southDirectionLabel,
-        ].joined(separator: ":")
-      }
-      .joined(separator: "|")
+  static func loadStopsFromCSV() -> [MTAStop] {
+    guard let stationsFile = stationsCSVURL() else {
+      print("Stations.csv not found.")
+      return []
+    }
+    return loadStopsFromCSV(at: stationsFile)
   }
 }
 

@@ -30,6 +30,26 @@ public struct GTFSStopID: Hashable, Sendable {
 }
 
 extension TripDirection {
+  public init?(storageValue: String) {
+    switch storageValue {
+    case "north":
+      self = .north
+    case "south":
+      self = .south
+    default:
+      return nil
+    }
+  }
+
+  public var storageValue: String {
+    switch self {
+    case .north:
+      return "north"
+    case .south:
+      return "south"
+    }
+  }
+
   public var flipped: TripDirection {
     return self == .north ? .south : .north
   }

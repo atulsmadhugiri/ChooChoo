@@ -12,6 +12,14 @@ struct EncodingUtilsTests {
         #expect(tripDirection(for: "ABC..S12") == .south)
     }
 
+    @Test func tripDirectionStorageValuesAreStable() {
+        #expect(TripDirection(storageValue: "north") == .north)
+        #expect(TripDirection(storageValue: "south") == .south)
+        #expect(TripDirection.north.storageValue == "north")
+        #expect(TripDirection.south.storageValue == "south")
+        #expect(TripDirection(storageValue: "Uptown & The Bronx") == nil)
+    }
+
     @Test func standardizeTripID() {
         #expect(standardizeTripIDForSevenTrain("XYZ_7X..NB") == "XYZ_7..NB")
     }
@@ -255,6 +263,43 @@ struct EncodingUtilsTests {
         )
 
         #expect(arrivals.first?.terminalStation == "Usable Terminal")
+    }
+
+    @Test func multiStopArrivalsMatchSingleStopUnion() {
+        var entity = TransitRealtime_FeedEntity()
+        entity.id = "trip"
+        entity.tripUpdate = makeTripUpdate(
+            tripID: "ABC..N",
+            routeID: "1",
+            nyctDirection: .north,
+            stopUpdates: [
+                makeStopTimeUpdate(stopID: "120N", arrival: 1_800_000_000),
+                makeStopTimeUpdate(stopID: "121N", arrival: 1_800_000_100),
+                makeStopTimeUpdate(stopID: "122N", arrival: 1_800_000_200),
+            ]
+        )
+
+        let stops = [
+            stopValue(gtfsStopID: "120"),
+            stopValue(gtfsStopID: "121"),
+        ]
+        let stopNamesByGTFSID = ["122": "Terminal"]
+
+        let multiStopArrivals = getTrainArrivalsForStops(
+            stops: stops,
+            feed: [entity],
+            stopNamesByGTFSID: stopNamesByGTFSID
+        )
+        let singleStopArrivals = stops.flatMap {
+            getTrainArrivalsForStop(
+                stop: $0,
+                feed: [entity],
+                stopNamesByGTFSID: stopNamesByGTFSID
+            )
+        }
+
+        #expect(multiStopArrivals.map(\.id) == singleStopArrivals.map(\.id))
+        #expect(multiStopArrivals.map(\.stopID) == ["120N", "121N"])
     }
 
     @Test func rockawayShuttleUsesTerminalFallbackForNoDataTerminal() {

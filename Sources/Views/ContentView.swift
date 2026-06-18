@@ -6,6 +6,10 @@ import SwiftUI
 struct ContentView: View {
   @Query var stations: [MTAStation]
 
+  @AppStorage("lastVisibleStationID") private var lastVisibleStationID = 0
+  @AppStorage("lastSelectedDirection") private var persistedSelectedDirection =
+    TripDirection.south.storageValue
+
   @StateObject private var locationFetcher = LocationFetcher()
   @State private var viewModel = ContentViewModel()
 
@@ -14,8 +18,9 @@ struct ContentView: View {
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
   var body: some View {
+    let visibleStation = viewModel.visibleStation ?? launchStation
+
     VStack(spacing: 0) {
-      let visibleStation = viewModel.visibleStation
       if let visibleStation {
         StationSign(
           station: visibleStation,
@@ -88,10 +93,16 @@ struct ContentView: View {
       viewModel.setNearestStation(from: stations, location: locationFetcher.location)
     }.onChange(of: viewModel.selectedStation) { _, newValue in
       if let station = newValue {
+        lastVisibleStationID = station.id
         logStationSelected(station)
       }
     }.onChange(of: viewModel.selectedDirection) { _, newDirection in
+      persistedSelectedDirection = newDirection.storageValue
       logDirectionChanged(newDirection, station: viewModel.visibleStation)
+    }.onChange(of: viewModel.visibleStation?.id) { _, stationID in
+      if let stationID {
+        lastVisibleStationID = stationID
+      }
     }.sheet(isPresented: $selectionSheetActive) {
       StationSelectionSheet(
         location: locationFetcher.location,
@@ -102,13 +113,31 @@ struct ContentView: View {
       tapHaptic.prepare()
     }.task {
       await viewModel.loadServiceAlerts()
-    }.task(id: viewModel.visibleStation?.id) {
+    }.task(id: visibleStation?.id) {
+      viewModel.restoreLaunchState(
+        stations: stations,
+        preferredStation: launchStation,
+        directionStorageValue: persistedSelectedDirection
+      )
       await viewModel.refreshLoop(stations: stations)
     }
   }
 
   private func refreshSelectedStation() async {
     await viewModel.refreshSelectedStation(stations: stations)
+  }
+
+  private var launchStation: MTAStation? {
+    if lastVisibleStationID != 0,
+      let station = stations.first(where: { $0.id == lastVisibleStationID })
+    {
+      return station
+    }
+
+    return stations
+      .lazy
+      .filter(\.pinned)
+      .min { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
   }
 }
 
@@ -125,8 +154,36 @@ final class ContentViewModel {
   @ObservationIgnored
   private var refreshGeneration = 0
 
+  @ObservationIgnored
+  private var cachedStopNameStationIDs: [Int] = []
+
+  @ObservationIgnored
+  private var cachedStopNamesByGTFSID: [String: String] = [:]
+
   var visibleStation: MTAStation? {
     selectedStation ?? nearestStation
+  }
+
+  func restoreLaunchState(
+    stations: [MTAStation],
+    preferredStation: MTAStation?,
+    directionStorageValue: String
+  ) {
+    if let direction = TripDirection(storageValue: directionStorageValue) {
+      selectedDirection = direction
+    }
+
+    if let selectedStation {
+      if let replacement = stations.first(where: { $0.id == selectedStation.id }) {
+        self.selectedStation = replacement
+        return
+      }
+      self.selectedStation = nil
+    }
+
+    if nearestStation != nil { return }
+
+    selectedStation = preferredStation
   }
 
   func loadServiceAlerts() async {
@@ -155,9 +212,17 @@ final class ContentViewModel {
 
   func setNearestStation(from stations: [MTAStation], location: CLLocation?) {
     guard let location else { return }
-    nearestStation = stations.min {
-      location.distance(from: $0.location) < location.distance(from: $1.location)
+    var closestStation: MTAStation?
+    var closestDistance = CLLocationDistance.greatestFiniteMagnitude
+
+    for station in stations {
+      let distance = location.distance(from: station.location)
+      guard distance < closestDistance else { continue }
+      closestStation = station
+      closestDistance = distance
     }
+
+    nearestStation = closestStation
   }
 
   func refreshSelectedStation(stations: [MTAStation]) async {
@@ -178,7 +243,7 @@ final class ContentViewModel {
     logRefresh(for: station)
 
     let snapshot = station.snapshot(
-      stopNamesByGTFSID: MTAStation.stopNamesByGTFSID(from: stations)
+      stopNamesByGTFSID: stopNamesByGTFSID(from: stations)
     )
 
     loading = true
@@ -188,12 +253,23 @@ final class ContentViewModel {
 
     trainArrivals = arrivals
     loading = false
-    let sameDirection = arrivals.filter {
+    let sameDirectionExists = arrivals.contains {
       $0.direction == selectedDirection
     }
-    if sameDirection.isEmpty {
+    if !sameDirectionExists {
       selectedDirection = selectedDirection.flipped
     }
+  }
+
+  private func stopNamesByGTFSID(from stations: [MTAStation]) -> [String: String] {
+    let stationIDs = stations.map(\.id).sorted()
+    guard stationIDs != cachedStopNameStationIDs else {
+      return cachedStopNamesByGTFSID
+    }
+
+    cachedStopNameStationIDs = stationIDs
+    cachedStopNamesByGTFSID = MTAStation.stopNamesByGTFSID(from: stations)
+    return cachedStopNamesByGTFSID
   }
 }
 

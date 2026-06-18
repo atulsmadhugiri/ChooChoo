@@ -27,7 +27,24 @@ func getTrainArrivalsForStop(
   feed: [TransitRealtime_FeedEntity],
   stopNamesByGTFSID: [String: String]
 ) -> [TrainArrivalEntry] {
+  getTrainArrivalsForStops(
+    stops: [stop],
+    feed: feed,
+    stopNamesByGTFSID: stopNamesByGTFSID
+  )
+}
 
+func getTrainArrivalsForStops(
+  stops: [MTAStopValue],
+  feed: [TransitRealtime_FeedEntity],
+  stopNamesByGTFSID: [String: String]
+) -> [TrainArrivalEntry] {
+  guard !stops.isEmpty else { return [] }
+
+  let stopsByGTFSID = Dictionary(
+    stops.map { ($0.gtfsStopID, $0) },
+    uniquingKeysWith: { first, _ in first }
+  )
   let tripUpdates = extractTripUpdates(from: feed)
   let arrivalsForStop =
     tripUpdates
@@ -36,15 +53,28 @@ func getTrainArrivalsForStop(
         for: tripUpdate,
         stopNamesByGTFSID: stopNamesByGTFSID
       )
-      return filterStopTimeUpdates(for: stop, from: tripUpdate).compactMap {
-        stopTimeUpdate in
-        createTrainArrivalEntry(
+      var arrivals: [TrainArrivalEntry] = []
+      arrivals.reserveCapacity(tripUpdate.stopTimeUpdate.count)
+
+      for stopTimeUpdate in tripUpdate.stopTimeUpdate {
+        guard stopTimeUpdate.isUsableArrival,
+          let stop = stopsByGTFSID[stopTimeUpdate.baseStopID]
+        else {
+          continue
+        }
+
+        guard let arrival = createTrainArrivalEntry(
           from: stopTimeUpdate,
           trip: tripUpdate.trip,
           stop: stop,
           terminalStation: terminalStation
-        )
+        ) else {
+          continue
+        }
+        arrivals.append(arrival)
       }
+
+      return arrivals
     }
   return arrivalsForStop.sorted { $0.arrivalTime < $1.arrivalTime }
 }
@@ -53,16 +83,6 @@ private func extractTripUpdates(
   from feed: [TransitRealtime_FeedEntity]
 ) -> [TransitRealtime_TripUpdate] {
   return feed.compactMap { $0.hasTripUpdate ? $0.tripUpdate : nil }
-}
-
-private func filterStopTimeUpdates(
-  for stop: MTAStopValue,
-  from tripUpdate: TransitRealtime_TripUpdate
-) -> [TransitRealtime_TripUpdate.StopTimeUpdate] {
-  return tripUpdate.stopTimeUpdate.filter { stopTimeUpdate in
-    guard stopTimeUpdate.isUsableArrival else { return false }
-    return GTFSStopID(stopTimeUpdate.stopID).baseID == stop.gtfsStopID
-  }
 }
 
 private func createTrainArrivalEntry(

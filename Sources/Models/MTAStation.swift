@@ -166,9 +166,9 @@ func getArrivals(
   let feedData = await getFeedData(lines: lines, feedClient: feedClient)
   let now = Date()
 
-  let arrivalEntries = product(feedData.values, stops).flatMap { feed, stop in
-    getTrainArrivalsForStop(
-      stop: stop,
+  let arrivalEntries = feedData.values.flatMap { feed in
+    getTrainArrivalsForStops(
+      stops: stops,
       feed: feed.entity,
       stopNamesByGTFSID: station.stopNamesByGTFSID
     )
