@@ -52,6 +52,25 @@ struct EncodingUtilsTests {
                 == "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts")
     }
 
+    @Test func realtimeFeedFetchDedupesSharedEndpoints() async throws {
+        let payload = try emptyFeedPayload()
+        let recorder = FeedFetchRecorder(responses: [payload, payload, payload])
+        let client = MTAFeedClient(fetch: { url in
+            try await recorder.fetch(url)
+        })
+
+        let feeds = await fetchMTARealtimeFeeds(
+            from: MTALine.s.endpoints + MTALine.ace.endpoints,
+            using: client
+        )
+        let requestedURLs = await recorder.requestedURLs()
+        let requestedURLStrings = requestedURLs.map(\.absoluteString)
+
+        #expect(feeds.count == 3)
+        #expect(requestedURLStrings.count == 3)
+        #expect(Set(requestedURLStrings).count == 3)
+    }
+
     @Test func stopValueDirectionLabelsUseSharedInversionRules() {
         let hudsonYards = MTAStopValue(
             gtfsStopID: "726",
@@ -265,7 +284,7 @@ struct EncodingUtilsTests {
         #expect(arrivals.first?.terminalStation == "Usable Terminal")
     }
 
-    @Test func multiStopArrivalsMatchSingleStopUnion() {
+    @Test func multiStopArrivalsMatchSingleStopUnion() throws {
         var entity = TransitRealtime_FeedEntity()
         entity.id = "trip"
         entity.tripUpdate = makeTripUpdate(
@@ -300,6 +319,16 @@ struct EncodingUtilsTests {
 
         #expect(multiStopArrivals.map(\.id) == singleStopArrivals.map(\.id))
         #expect(multiStopArrivals.map(\.stopID) == ["120N", "121N"])
+
+        var feed = TransitRealtime_FeedMessage()
+        feed.header.gtfsRealtimeVersion = "2.0"
+        feed.entity = [entity]
+        let feedDataArrivals = try getTrainArrivalsForStops(
+            stops: stops,
+            feedData: feed.serializedData(),
+            stopNamesByGTFSID: stopNamesByGTFSID
+        )
+        #expect(feedDataArrivals.map(\.id) == multiStopArrivals.map(\.id))
     }
 
     @Test func rockawayShuttleUsesTerminalFallbackForNoDataTerminal() {
@@ -468,6 +497,138 @@ struct EncodingUtilsTests {
         )
 
         #expect(arrivals.first?.arrivalTime.timeIntervalSince1970 == 1_800_000_100)
+        #expect(arrivals.first?.estimatedArrivalTime?.timeIntervalSince1970 == 1_800_000_100)
+        #expect(arrivals.first?.estimatedDepartureTime?.timeIntervalSince1970 == 1_800_000_200)
+    }
+
+    @Test func vehicleIncomingAtSelectedStopMarksArrivalAsArriving() {
+        var tripEntity = TransitRealtime_FeedEntity()
+        tripEntity.id = "trip"
+        tripEntity.tripUpdate = makeTripUpdate(
+            tripID: "ABC..N",
+            routeID: "1",
+            nyctDirection: .north,
+            stopUpdates: [
+                makeStopTimeUpdate(stopID: "120N", arrival: 1_800_000_300),
+                makeStopTimeUpdate(stopID: "121N", arrival: 1_800_000_400),
+            ]
+        )
+
+        let vehicleEntity = makeVehicleEntity(
+            tripID: "ABC..N",
+            routeID: "1",
+            stopID: "120N",
+            status: .incomingAt
+        )
+
+        let arrivals = getTrainArrivalsForStop(
+            stop: stopValue(gtfsStopID: "120"),
+            feed: [tripEntity, vehicleEntity],
+            stopNamesByGTFSID: ["121": "Terminal"]
+        )
+
+        #expect(arrivals.first?.vehicleStatus == .incomingAt)
+        #expect(
+            arrivals.first?.displayStatus(at: Date(timeIntervalSince1970: 1_800_000_000))
+                == .arriving)
+    }
+
+    @Test func vehicleStoppedAtSelectedStopMarksArrivalAsBoarding() {
+        var tripEntity = TransitRealtime_FeedEntity()
+        tripEntity.id = "trip"
+        tripEntity.tripUpdate = makeTripUpdate(
+            tripID: "ABC..N",
+            routeID: "1",
+            nyctDirection: .north,
+            stopUpdates: [
+                makeStopTimeUpdate(stopID: "120N", arrival: 1_800_000_300),
+                makeStopTimeUpdate(stopID: "121N", arrival: 1_800_000_400),
+            ]
+        )
+
+        let vehicleEntity = makeVehicleEntity(
+            tripID: "ABC..N",
+            routeID: "1",
+            stopID: "120N",
+            status: .stoppedAt
+        )
+
+        let arrivals = getTrainArrivalsForStop(
+            stop: stopValue(gtfsStopID: "120"),
+            feed: [tripEntity, vehicleEntity],
+            stopNamesByGTFSID: ["121": "Terminal"]
+        )
+
+        #expect(arrivals.first?.vehicleStatus == .stoppedAt)
+        #expect(
+            arrivals.first?.displayStatus(at: Date(timeIntervalSince1970: 1_800_000_000))
+                == .boarding)
+    }
+
+    @Test func vehicleStateForAnotherStopDoesNotOverrideCountdownStatus() {
+        var tripEntity = TransitRealtime_FeedEntity()
+        tripEntity.id = "trip"
+        tripEntity.tripUpdate = makeTripUpdate(
+            tripID: "ABC..N",
+            routeID: "1",
+            nyctDirection: .north,
+            stopUpdates: [
+                makeStopTimeUpdate(stopID: "120N", arrival: 1_800_000_300),
+                makeStopTimeUpdate(stopID: "121N", arrival: 1_800_000_400),
+            ]
+        )
+
+        let vehicleEntity = makeVehicleEntity(
+            tripID: "ABC..N",
+            routeID: "1",
+            stopID: "121N",
+            status: .stoppedAt
+        )
+
+        let arrivals = getTrainArrivalsForStop(
+            stop: stopValue(gtfsStopID: "120"),
+            feed: [tripEntity, vehicleEntity],
+            stopNamesByGTFSID: ["121": "Terminal"]
+        )
+
+        #expect(arrivals.first?.vehicleStatus == nil)
+        #expect(
+            arrivals.first?.displayStatus(at: Date(timeIntervalSince1970: 1_800_000_000))
+                == .upcoming)
+    }
+
+    @Test func arrivalBetweenArrivalAndDepartureIsBoardingFallback() {
+        let arrival = TrainArrivalEntry(
+            id: "trip-120N",
+            arrivalTimestamp: 1_800_000_100,
+            departureTimestamp: 1_800_000_200,
+            train: .one,
+            terminalStation: "Terminal",
+            direction: .north,
+            directionLabel: "North"
+        )
+
+        let now = Date(timeIntervalSince1970: 1_800_000_150)
+
+        #expect(arrival.isActive(at: now))
+        #expect(arrival.displayStatus(at: now) == .boarding)
+    }
+
+    @Test func departureAtOrBeforeNowIsDeparted() {
+        let arrival = TrainArrivalEntry(
+            id: "trip-120N",
+            arrivalTimestamp: 1_800_000_100,
+            departureTimestamp: 1_800_000_200,
+            train: .one,
+            terminalStation: "Terminal",
+            direction: .north,
+            directionLabel: "North"
+        )
+
+        let now = Date(timeIntervalSince1970: 1_800_000_200)
+
+        #expect(!arrival.isActive(at: now))
+        #expect(arrival.displayStatus(at: now) == .departed)
     }
 
     @Test func skippedSelectedStopIsIgnoredEvenWhenItHasATime() {
@@ -650,6 +811,18 @@ private actor FeedFetchRecorder {
     func requestCount() -> Int {
         requests.count
     }
+
+    func requestedURLs() -> [URL] {
+        requests
+    }
+}
+
+private func emptyFeedPayload() throws -> Data {
+    var header = TransitRealtime_FeedHeader()
+    header.gtfsRealtimeVersion = "2.0"
+    var feed = TransitRealtime_FeedMessage()
+    feed.header = header
+    return try feed.serializedData()
 }
 
 private func translatedString(_ text: String) -> TransitRealtime_TranslatedString {
@@ -672,6 +845,18 @@ private func stopValue(gtfsStopID: String) -> MTAStopValue {
         gtfsLongitude: 0,
         northDirectionLabel: "North",
         southDirectionLabel: "South"
+    )
+}
+
+private func getTrainArrivalsForStop(
+    stop: MTAStopValue,
+    feed: [TransitRealtime_FeedEntity],
+    stopNamesByGTFSID: [String: String]
+) -> [TrainArrivalEntry] {
+    getTrainArrivalsForStops(
+        stops: [stop],
+        feed: feed,
+        stopNamesByGTFSID: stopNamesByGTFSID
     )
 }
 
@@ -712,6 +897,29 @@ private func makeTripUpdateWithoutNYCTDirection(
     tripUpdate.trip = tripDescriptor
     tripUpdate.stopTimeUpdate = stopUpdates
     return tripUpdate
+}
+
+private func makeVehicleEntity(
+    tripID: String,
+    routeID: String,
+    stopID: String,
+    status: TransitRealtime_VehiclePosition.VehicleStopStatus,
+    timestamp: UInt64 = 1_800_000_000
+) -> TransitRealtime_FeedEntity {
+    var tripDescriptor = TransitRealtime_TripDescriptor()
+    tripDescriptor.tripID = tripID
+    tripDescriptor.routeID = routeID
+
+    var vehicle = TransitRealtime_VehiclePosition()
+    vehicle.trip = tripDescriptor
+    vehicle.stopID = stopID
+    vehicle.currentStatus = status
+    vehicle.timestamp = timestamp
+
+    var entity = TransitRealtime_FeedEntity()
+    entity.id = "vehicle-\(tripID)-\(stopID)"
+    entity.vehicle = vehicle
+    return entity
 }
 
 private func makeStopTimeUpdate(
