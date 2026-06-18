@@ -122,43 +122,41 @@ struct AuditRunner {
 
     for line in station.lines {
       guard let feeds = feedData[line] else { continue }
-      for stopValue in station.stops {
-        for payload in feeds.payloads {
-          let payloadAppArrivals = try getTrainArrivalsForStop(
-            stop: stopValue,
-            feedData: payload.protobuf,
-            stopNamesByGTFSID: stopNameByGTFSID
-          )
-          .filter { $0.arrivalTime > now }
-          .map { ComparableArrival(appArrival: $0) }
+      for payload in feeds.payloads {
+        let payloadAppArrivals = try getTrainArrivalsForStops(
+          stops: station.stops,
+          feedData: payload.protobuf,
+          stopNamesByGTFSID: stopNameByGTFSID
+        )
+        .filter { $0.isActive(at: now) }
+        .map { ComparableArrival(appArrival: $0) }
 
+        if comparisonMode.includesMTAWeb {
           appArrivals.append(contentsOf: payloadAppArrivals)
-
-          guard comparisonMode.includesGTFSJSON,
-            let json = payload.json
-          else {
-            continue
-          }
-
-          jsonComparableAppArrivals.append(contentsOf: payloadAppArrivals)
-          jsonArrivals.append(
-            contentsOf: try JSONArrivalDecoder.arrivals(
-              for: stopValue,
-              feedData: json,
-              stopNameByGTFSID: stopNameByGTFSID
-            )
-            .filter { $0.arrivalTime > now }
-          )
         }
+
+        guard comparisonMode.includesGTFSJSON,
+          let json = payload.json
+        else {
+          continue
+        }
+
+        jsonComparableAppArrivals.append(contentsOf: payloadAppArrivals)
+        jsonArrivals.append(
+          contentsOf: try JSONArrivalDecoder.arrivals(
+            for: station.stops,
+            feedData: json,
+            stopNameByGTFSID: stopNameByGTFSID
+          )
+          .filter { $0.isActive(at: now) }
+        )
       }
     }
 
-    let appSet = Set(appArrivals)
-    let uniqueAppArrivals = Array(appSet)
-    let uniqueJSONComparableAppArrivals = Array(Set(jsonComparableAppArrivals))
-    let uniqueJSONArrivals = Array(Set(jsonArrivals))
     var comparisons: [ArrivalComparisonResult] = []
     if comparisonMode.includesGTFSJSON {
+      let uniqueJSONComparableAppArrivals = Array(Set(jsonComparableAppArrivals))
+      let uniqueJSONArrivals = Array(Set(jsonArrivals))
       if uniqueJSONComparableAppArrivals.isEmpty, uniqueJSONArrivals.isEmpty {
         comparisons.append(
           ArrivalComparisonResult(
@@ -181,6 +179,7 @@ struct AuditRunner {
     }
 
     if comparisonMode.includesMTAWeb {
+      let uniqueAppArrivals = Array(Set(appArrivals))
       var webArrivals: [ComparableArrival] = []
       for stop in station.stops {
         let data = try await HTTPClient.fetch(
@@ -191,7 +190,7 @@ struct AuditRunner {
             for: stop,
             feedData: data
           )
-          .filter { $0.arrivalTime > now }
+          .filter { $0.isActive(at: now) }
         )
       }
 
@@ -206,7 +205,6 @@ struct AuditRunner {
 
     return StationAuditResult(
       station: station,
-      appCount: appSet.count,
       comparisons: comparisons
     )
   }

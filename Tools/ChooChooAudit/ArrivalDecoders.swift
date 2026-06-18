@@ -59,6 +59,8 @@ enum MTAWebArrivalDecoder {
             stopID: stopID,
             train: train.rawValue,
             arrivalTimestamp: Int64(departure.timeIntervalSince1970),
+            departureTimestamp: Int64(departure.timeIntervalSince1970),
+            vehicleStatus: nil,
             terminalStation: time.tripHeadsign ?? group.headsign,
             direction: direction,
             directionLabel: stop.getLabelFor(direction: direction)
@@ -77,9 +79,11 @@ struct MTAJSONFeed: Decodable {
 
 struct MTAJSONEntity: Decodable {
   let tripUpdate: MTAJSONTripUpdate?
+  let vehicle: MTAJSONVehicle?
 
   enum CodingKeys: String, CodingKey {
     case tripUpdate = "trip_update"
+    case vehicle
   }
 }
 
@@ -126,18 +130,26 @@ struct MTAJSONStopTimeUpdate: Decodable {
     GTFSStopID(stopID).baseID
   }
 
-  var bestArrivalTimestamp: Int64? {
+  var arrivalTimestamp: Int64? {
     if let time = arrival?.time, time > 0 {
       return time
     }
+    return nil
+  }
+
+  var departureTimestamp: Int64? {
     if let time = departure?.time, time > 0 {
       return time
     }
     return nil
   }
 
+  var displayTimestamp: Int64? {
+    arrivalTimestamp ?? departureTimestamp
+  }
+
   var isUsableArrival: Bool {
-    (scheduleRelationship ?? 0) == 0 && bestArrivalTimestamp != nil
+    (scheduleRelationship ?? 0) == 0 && displayTimestamp != nil
   }
 }
 
@@ -145,16 +157,35 @@ struct MTAJSONStopTimeEvent: Decodable {
   let time: Int64?
 }
 
+struct MTAJSONVehicle: Decodable {
+  let trip: MTAJSONTrip
+  let currentStatus: Int?
+  let stopID: String?
+  let timestamp: UInt64?
+
+  enum CodingKeys: String, CodingKey {
+    case trip
+    case currentStatus = "current_status"
+    case stopID = "stop_id"
+    case timestamp
+  }
+}
+
 enum JSONArrivalDecoder {
   static func arrivals(
-    for stop: MTAStopValue,
+    for stops: [MTAStopValue],
     feedData: Data,
     stopNameByGTFSID: [String: String]
   ) throws -> [ComparableArrival] {
     let feed = try JSONDecoder().decode(MTAJSONFeed.self, from: feedData)
+    let stopsByGTFSID = Dictionary(
+      stops.map { ($0.gtfsStopID, $0) },
+      uniquingKeysWith: { first, _ in first }
+    )
     let tripUpdates: [MTAJSONTripUpdate] = feed.entity.compactMap { entity in
       entity.tripUpdate
     }
+    let vehicleStatesByTripID = vehicleStatesByTripID(in: feed.entity)
 
     return tripUpdates.flatMap { tripUpdate in
       let terminalStopID = tripUpdate.stopTimeUpdate
@@ -166,14 +197,17 @@ enum JSONArrivalDecoder {
       var arrivals: [ComparableArrival] = []
       for stopTimeUpdate in tripUpdate.stopTimeUpdate {
         guard stopTimeUpdate.isUsableArrival,
-          stopTimeUpdate.baseStopID == stop.gtfsStopID,
-          let timestamp = stopTimeUpdate.bestArrivalTimestamp,
+          let stop = stopsByGTFSID[stopTimeUpdate.baseStopID],
+          let timestamp = stopTimeUpdate.displayTimestamp,
           let train = MTATrain(routeID: tripUpdate.trip.routeID)
         else {
           continue
         }
 
         let tripID = standardizeTripIDForSevenTrain(tripUpdate.trip.tripID)
+        let vehicleStatus = vehicleStatesByTripID[tripID].flatMap { state in
+          state.matches(stopID: stopTimeUpdate.stopID) ? state.status : nil
+        }
         let direction = tripDirection(
           nyctDirection: tripUpdate.trip.nyctTripDescriptor?.direction,
           fallbackTripID: tripID
@@ -184,6 +218,8 @@ enum JSONArrivalDecoder {
           stopID: stopTimeUpdate.stopID,
           train: train.rawValue,
           arrivalTimestamp: timestamp,
+          departureTimestamp: stopTimeUpdate.departureTimestamp,
+          vehicleStatus: vehicleStatus,
           terminalStation: terminal,
           direction: direction,
           directionLabel: stop.getLabelFor(direction: direction)
@@ -191,6 +227,69 @@ enum JSONArrivalDecoder {
       }
 
       return arrivals
+    }
+  }
+
+  private struct VehicleStopState {
+    let stopID: String
+    let status: TrainArrivalVehicleStatus
+    let timestamp: UInt64?
+
+    func matches(stopID selectedStopID: String) -> Bool {
+      if stopID == selectedStopID { return true }
+
+      let currentStop = GTFSStopID(stopID)
+      let selectedStop = GTFSStopID(selectedStopID)
+      guard currentStop.baseID == selectedStop.baseID else { return false }
+
+      return currentStop.direction == nil
+        || selectedStop.direction == nil
+        || currentStop.direction == selectedStop.direction
+    }
+  }
+
+  private static func vehicleStatesByTripID(
+    in entities: [MTAJSONEntity]
+  ) -> [String: VehicleStopState] {
+    var states: [String: VehicleStopState] = [:]
+
+    for entity in entities {
+      guard let vehicle = entity.vehicle,
+        !vehicle.trip.tripID.isEmpty,
+        let stopID = vehicle.stopID,
+        !stopID.isEmpty
+      else {
+        continue
+      }
+
+      let tripID = standardizeTripIDForSevenTrain(vehicle.trip.tripID)
+      let state = VehicleStopState(
+        stopID: stopID,
+        status: vehicleStatus(from: vehicle.currentStatus),
+        timestamp: vehicle.timestamp
+      )
+
+      guard let existingState = states[tripID] else {
+        states[tripID] = state
+        continue
+      }
+
+      if state.timestamp ?? 0 >= existingState.timestamp ?? 0 {
+        states[tripID] = state
+      }
+    }
+
+    return states
+  }
+
+  private static func vehicleStatus(from rawValue: Int?) -> TrainArrivalVehicleStatus {
+    switch rawValue {
+    case 0:
+      return .incomingAt
+    case 1:
+      return .stoppedAt
+    default:
+      return .inTransitTo
     }
   }
 

@@ -10,6 +10,7 @@ struct AuditOptions {
 
   init(arguments: ArraySlice<String>) throws {
     var index = arguments.startIndex
+    var duration: TimeInterval?
     while index < arguments.endIndex {
       let argument = arguments[index]
       switch argument {
@@ -20,6 +21,7 @@ struct AuditOptions {
         stationSelectors = value.split(separator: ",").map {
           String($0).trimmingCharacters(in: .whitespacesAndNewlines)
         }
+        .filter { !$0.isEmpty }
       case "--samples":
         let value = try Self.value(after: argument, in: arguments, index: &index)
         guard let parsed = Int(value), parsed > 0 else {
@@ -28,10 +30,10 @@ struct AuditOptions {
         samples = parsed
       case "--duration":
         let value = try Self.value(after: argument, in: arguments, index: &index)
-        guard let duration = TimeInterval(value), duration >= 0 else {
+        guard let parsed = TimeInterval(value), parsed >= 0 else {
           throw AuditError.invalidArgument("--duration must be a non-negative number")
         }
-        samples = max(1, Int(ceil(duration / interval)))
+        duration = parsed
       case "--interval":
         let value = try Self.value(after: argument, in: arguments, index: &index)
         guard let parsed = TimeInterval(value), parsed > 0 else {
@@ -55,6 +57,10 @@ struct AuditOptions {
         throw AuditError.invalidArgument("unknown argument \(argument)")
       }
       arguments.formIndex(after: &index)
+    }
+
+    if let duration {
+      samples = max(1, Int(ceil(duration / interval)))
     }
   }
 

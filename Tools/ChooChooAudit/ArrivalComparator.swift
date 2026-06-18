@@ -6,42 +6,28 @@ struct ComparableArrival: Hashable, Comparable {
   let stopID: String
   let train: String
   let arrivalTimestamp: Int64
+  let departureTimestamp: Int64?
+  let vehicleStatus: TrainArrivalVehicleStatus?
   let terminalStation: String
   let direction: TripDirection
   let directionLabel: String
 
-  init(
-    tripID: String,
-    stopID: String,
-    train: String,
-    arrivalTimestamp: Int64,
-    terminalStation: String,
-    direction: TripDirection,
-    directionLabel: String
-  ) {
-    self.tripID = tripID
-    self.stopID = stopID
-    self.train = train
-    self.arrivalTimestamp = arrivalTimestamp
-    self.terminalStation = terminalStation
-    self.direction = direction
-    self.directionLabel = directionLabel
-  }
-
-  init(appArrival: TrainArrivalEntry) {
-    self.init(
-      tripID: appArrival.tripID,
-      stopID: appArrival.stopID,
-      train: appArrival.train.rawValue,
-      arrivalTimestamp: Int64(appArrival.arrivalTime.timeIntervalSince1970),
-      terminalStation: appArrival.terminalStation,
-      direction: appArrival.direction,
-      directionLabel: appArrival.directionLabel
-    )
-  }
-
   var arrivalTime: Date {
     Date(timeIntervalSince1970: Double(arrivalTimestamp))
+  }
+
+  func isActive(at now: Date) -> Bool {
+    switch vehicleStatus {
+    case .incomingAt, .stoppedAt:
+      return true
+    case .inTransitTo, nil:
+      break
+    }
+
+    if let departureTimestamp {
+      return Date(timeIntervalSince1970: Double(departureTimestamp)) > now
+    }
+    return arrivalTime > now
   }
 
   static func < (lhs: ComparableArrival, rhs: ComparableArrival) -> Bool {
@@ -54,8 +40,7 @@ struct ComparableArrival: Hashable, Comparable {
   }
 
   var summary: String {
-    let minutes = max(0, Int((arrivalTime.timeIntervalSinceNow / 60).rounded()))
-    return "\(train) \(stopID) \(minutes)m to \(terminalStation) \(directionLabel) [\(tripID)]"
+    "\(train) \(stopID) \(minutesAway)m to \(terminalStation) \(directionLabel) [\(tripID)]"
   }
 }
 
@@ -98,11 +83,7 @@ enum ArrivalMismatch {
     case .onlyInReference:
       return "only \(referenceName)"
     case .differentDetails(_, _, let differences):
-      return differences
-        .map { difference in
-          difference.hasPrefix("time ") ? "time" : difference
-        }
-        .joined(separator: "+")
+      return differences.joined(separator: "+")
     }
   }
 }
@@ -162,7 +143,6 @@ enum ArrivalComparator {
     referenceName: String
   ) -> ArrivalComparisonResult {
     let pairingTolerance: Int64 = 90
-    let timingMismatchThreshold = pairingTolerance
     let appHorizon = appArrivals.reduce(into: [ArrivalSeriesKey: Int64]()) {
       result, arrival in
       result[arrival.seriesKey] = max(
@@ -212,8 +192,7 @@ enum ArrivalComparator {
         let app = appMatches.remove(at: matchIndex)
         let differences = detailDifferences(
           app: app,
-          reference: reference,
-          timingMismatchThreshold: timingMismatchThreshold
+          reference: reference
         )
         if !differences.isEmpty {
           mismatches.append(
@@ -253,14 +232,9 @@ enum ArrivalComparator {
 
   private static func detailDifferences(
     app: ComparableArrival,
-    reference: ComparableArrival,
-    timingMismatchThreshold: Int64
+    reference: ComparableArrival
   ) -> [String] {
     var differences: [String] = []
-    let timingDelta = app.arrivalTimestamp - reference.arrivalTimestamp
-    if abs(timingDelta) > timingMismatchThreshold {
-      differences.append("time \(timingDelta)s")
-    }
     if normalizedText(app.terminalStation) != normalizedText(reference.terminalStation) {
       differences.append("terminal")
     }
@@ -277,6 +251,20 @@ struct ArrivalSeriesKey: Hashable {
 }
 
 extension ComparableArrival {
+  init(appArrival: TrainArrivalEntry) {
+    self.init(
+      tripID: appArrival.tripID,
+      stopID: appArrival.stopID,
+      train: appArrival.train.rawValue,
+      arrivalTimestamp: appArrival.displayTimestamp,
+      departureTimestamp: appArrival.departureTimestamp,
+      vehicleStatus: appArrival.vehicleStatus,
+      terminalStation: appArrival.terminalStation,
+      direction: appArrival.direction,
+      directionLabel: appArrival.directionLabel
+    )
+  }
+
   var seriesKey: ArrivalSeriesKey {
     ArrivalSeriesKey(stopID: stopID, train: train)
   }

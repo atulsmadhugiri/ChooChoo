@@ -2,7 +2,6 @@ import Foundation
 
 struct StationAuditResult {
   let station: StationGroup
-  let appCount: Int
   let comparisons: [ArrivalComparisonResult]
 
   var mismatchCount: Int {
