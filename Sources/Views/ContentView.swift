@@ -112,6 +112,9 @@ struct ContentView: View {
     }.onAppear {
       tapHaptic.prepare()
     }.task {
+      try? await Task.sleep(for: .milliseconds(250))
+      await configureAnalyticsIfNeeded()
+    }.task {
       await viewModel.loadServiceAlerts()
     }.task(id: visibleStation?.id) {
       viewModel.restoreLaunchState(
