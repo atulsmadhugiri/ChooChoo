@@ -115,6 +115,7 @@ struct ContentView: View {
         }
         guard !Task.isCancelled else { return }
         await recordAnalyticsAppOpenIfNeeded()
+        await viewModel.loadServiceAlerts()
       case .inactive:
         locationFetcher.stopUpdatingLocation()
       case .background:
@@ -123,8 +124,6 @@ struct ContentView: View {
       default:
         break
       }
-    }.task {
-      await viewModel.loadServiceAlerts()
     }.task(id: RefreshLoopID(stationID: visibleStation?.id, scenePhase: scenePhase)) {
       viewModel.restoreLaunchState(
         stations: stations,
@@ -161,6 +160,7 @@ final class ContentViewModel {
   var selectedDirection: TripDirection = .south
   var selectedStation: MTAStation?
   var nearestStation: MTAStation?
+  var launchFallbackStation: MTAStation?
   var loading = true
   var serviceAlerts: [String: [MTAServiceAlert]] = [:]
 
@@ -174,7 +174,7 @@ final class ContentViewModel {
   private var cachedStopNamesByGTFSID: [String: String] = [:]
 
   var visibleStation: MTAStation? {
-    selectedStation ?? nearestStation
+    selectedStation ?? nearestStation ?? launchFallbackStation
   }
 
   func restoreLaunchState(
@@ -194,9 +194,7 @@ final class ContentViewModel {
       self.selectedStation = nil
     }
 
-    if nearestStation != nil { return }
-
-    selectedStation = preferredStation
+    launchFallbackStation = preferredStation
   }
 
   func loadServiceAlerts() async {
@@ -229,7 +227,10 @@ final class ContentViewModel {
   }
 
   func setNearestStation(from stations: [MTAStation], location: CLLocation?) {
-    guard let location else { return }
+    guard let location else {
+      nearestStation = nil
+      return
+    }
     var closestStation: MTAStation?
     var closestDistance = CLLocationDistance.greatestFiniteMagnitude
 

@@ -59,6 +59,7 @@ final class LocationFetcher: NSObject, ObservableObject, @preconcurrency CLLocat
       configureAccuracy()
       startUpdatingLocation()
     case .denied, .restricted:
+      location = nil
       stopUpdatingLocation()
     case .notDetermined:
       locationManager.requestWhenInUseAuthorization()
