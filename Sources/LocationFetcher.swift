@@ -13,6 +13,10 @@ final class LocationFetcher: NSObject, ObservableObject, @preconcurrency CLLocat
     ProcessInfo.processInfo.isLowPowerModeEnabled ? 500 : 100
   }
 
+  private var maximumAcceptedAccuracy: CLLocationDistance {
+    ProcessInfo.processInfo.isLowPowerModeEnabled ? 1_000 : 250
+  }
+
   override init() {
     super.init()
     locationManager.delegate = self
@@ -23,13 +27,13 @@ final class LocationFetcher: NSObject, ObservableObject, @preconcurrency CLLocat
   func locationManager(
     _ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]
   ) {
-    if let latestLocation = locations.last {
-      location = latestLocation
-      if latestLocation.horizontalAccuracy >= 0,
-        latestLocation.horizontalAccuracy <= distanceThreshold
-      {
-        stopUpdatingLocation()
-      }
+    guard let latestLocation = locations.reversed().first(where: isUsableLocation) else {
+      return
+    }
+
+    location = latestLocation
+    if latestLocation.horizontalAccuracy <= distanceThreshold {
+      stopUpdatingLocation()
     }
   }
 
@@ -79,5 +83,11 @@ final class LocationFetcher: NSObject, ObservableObject, @preconcurrency CLLocat
     guard !isUpdatingLocation else { return }
     locationManager.startUpdatingLocation()
     isUpdatingLocation = true
+  }
+
+  private func isUsableLocation(_ location: CLLocation) -> Bool {
+    location.horizontalAccuracy >= 0
+      && location.horizontalAccuracy <= maximumAcceptedAccuracy
+      && abs(location.timestamp.timeIntervalSinceNow) <= 5 * 60
   }
 }
