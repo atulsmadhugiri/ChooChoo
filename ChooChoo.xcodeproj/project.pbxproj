@@ -29,6 +29,7 @@
 		B78613C32C4EFD9D00F8A35B /* Stations.csv in Resources */ = {isa = PBXBuildFile; fileRef = B78613C22C4EFD9D00F8A35B /* Stations.csv */; };
 		B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78BC6362C4DDC8D00414D5F /* TrainBadge.swift */; };
 		B791D0462CC3227200699275 /* AlertBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = B791D0452CC3227200699275 /* AlertBox.swift */; };
+		B7E91A122D60000100AA0001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B7E91A112D60000100AA0001 /* PrivacyInfo.xcprivacy */; };
 		B7A856912BB3848D00D571AA /* ChooChooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856902BB3848D00D571AA /* ChooChooApp.swift */; };
 		B7A856932BB3848D00D571AA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A856922BB3848D00D571AA /* ContentView.swift */; };
 		B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B7A856942BB3848E00D571AA /* Assets.xcassets */; };
@@ -80,6 +81,7 @@
 		B7D9D6B72C94C75500BD13F3 /* MTALine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTALine.swift; sourceTree = "<group>"; };
 		B7D9D6B92C94C9FE00BD13F3 /* MTATrain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTATrain.swift; sourceTree = "<group>"; };
 		B7D9D6BC2C94CFF300BD13F3 /* EncodingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingUtils.swift; sourceTree = "<group>"; };
+		B7E91A112D60000100AA0001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B7E3FA1A2C4F0A7B0036CCDF /* LocationFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationFetcher.swift; sourceTree = "<group>"; };
 		B7F3283B2C9104F2005E4EA9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -179,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				B7F3283B2C9104F2005E4EA9 /* Info.plist */,
+				B7E91A112D60000100AA0001 /* PrivacyInfo.xcprivacy */,
 				B78613C12C4EFD8600F8A35B /* Resources */,
 				B7A8568F2BB3848D00D571AA /* Sources */,
 				B78613B42C4EF29900F8A35B /* Generated */,
@@ -331,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B78613C32C4EFD9D00F8A35B /* Stations.csv in Resources */,
+				B7E91A122D60000100AA0001 /* PrivacyInfo.xcprivacy in Resources */,
 				B7A856982BB3848E00D571AA /* Preview Assets.xcassets in Resources */,
 				B7A856952BB3848E00D571AA /* Assets.xcassets in Resources */,
 			);
@@ -485,7 +489,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -548,7 +552,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -578,7 +582,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Sources/Preview Content\"";
 				DEVELOPMENT_TEAM = HM6Y2RQS2R;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ChooChoo;
@@ -613,7 +617,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Sources/Preview Content\"";
 				DEVELOPMENT_TEAM = HM6Y2RQS2R;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ChooChoo;

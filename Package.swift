@@ -27,6 +27,7 @@ let package = Package(
         "Info.plist",
         "LICENSE",
         "Misc",
+        "PrivacyInfo.xcprivacy",
         "README.md",
         "Resources",
         "Sources/Assets.xcassets",
