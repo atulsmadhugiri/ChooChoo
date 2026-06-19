@@ -24,7 +24,7 @@ private actor Analytics {
     guard !configured else { return }
 
     let configuration = PostHogConfig(apiKey: Self.apiKey, host: Self.host)
-    configuration.personProfiles = .always
+    configuration.personProfiles = .never
     configuration.captureApplicationLifecycleEvents = false
     configuration.captureScreenViews = false
     configuration.preloadFeatureFlags = false
