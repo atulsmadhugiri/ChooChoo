@@ -17,14 +17,14 @@ struct StationSelectionSheet: View {
   @Binding var isPresented: Bool
   @Binding var selectedStation: MTAStation?
 
-  let serviceAlerts: [String: [MTAServiceAlert]]
+  let serviceAlerts: MTAServiceAlerts
 
   let tapHaptic = UIImpactFeedbackGenerator(style: .medium)
 
   var filteredStationEntries: [MTAStation] {
     guard !searchTerm.isEmpty else { return stations }
     return stations.filter {
-      $0.name.localizedCaseInsensitiveContains(searchTerm)
+      $0.matchesSearchTerm(searchTerm)
     }
   }
 

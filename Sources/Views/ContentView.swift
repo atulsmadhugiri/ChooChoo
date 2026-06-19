@@ -115,7 +115,7 @@ struct ContentView: View {
         }
         guard !Task.isCancelled else { return }
         await recordAnalyticsAppOpenIfNeeded()
-        await viewModel.loadServiceAlerts()
+        await viewModel.loadServiceAlerts(force: true)
       case .inactive:
         locationFetcher.stopUpdatingLocation()
       case .background:
@@ -136,7 +136,7 @@ struct ContentView: View {
   }
 
   private func refreshSelectedStation() async {
-    await viewModel.refreshSelectedStation(stations: stations)
+    await viewModel.refreshSelectedStationAndAlerts(stations: stations)
   }
 
   private var launchStation: MTAStation? {
@@ -162,10 +162,13 @@ final class ContentViewModel {
   var nearestStation: MTAStation?
   var launchFallbackStation: MTAStation?
   var loading = true
-  var serviceAlerts: [String: [MTAServiceAlert]] = [:]
+  var serviceAlerts: MTAServiceAlerts = .empty
 
   @ObservationIgnored
   private var refreshGeneration = 0
+
+  @ObservationIgnored
+  private var lastServiceAlertRefresh: Date?
 
   @ObservationIgnored
   private var cachedStopNameStationIDs: [Int] = []
@@ -197,7 +200,16 @@ final class ContentViewModel {
     launchFallbackStation = preferredStation
   }
 
-  func loadServiceAlerts() async {
+  func loadServiceAlerts(force: Bool = false) async {
+    let now = Date()
+    if !force,
+      let lastServiceAlertRefresh,
+      now.timeIntervalSince(lastServiceAlertRefresh) < serviceAlertRefreshInterval
+    {
+      return
+    }
+
+    lastServiceAlertRefresh = now
     let alerts = await constructServiceAlertsForStop()
     guard !Task.isCancelled else { return }
     serviceAlerts = alerts
@@ -214,6 +226,7 @@ final class ContentViewModel {
       return
     }
 
+    await loadServiceAlerts()
     await refreshSelectedStation(stations: stations)
 
     while !Task.isCancelled {
@@ -222,6 +235,7 @@ final class ContentViewModel {
       } catch {
         return
       }
+      await loadServiceAlerts()
       await refreshSelectedStation(stations: stations)
     }
   }
@@ -248,6 +262,11 @@ final class ContentViewModel {
     refreshGeneration += 1
     let generation = refreshGeneration
     await refreshData(generation: generation, stations: stations)
+  }
+
+  func refreshSelectedStationAndAlerts(stations: [MTAStation]) async {
+    await loadServiceAlerts(force: true)
+    await refreshSelectedStation(stations: stations)
   }
 
   private func refreshData(
@@ -283,6 +302,10 @@ final class ContentViewModel {
 
   private var refreshInterval: Duration {
     ProcessInfo.processInfo.isLowPowerModeEnabled ? .seconds(45) : .seconds(20)
+  }
+
+  private var serviceAlertRefreshInterval: TimeInterval {
+    ProcessInfo.processInfo.isLowPowerModeEnabled ? 15 * 60 : 5 * 60
   }
 
   private func stopNamesByGTFSID(from stations: [MTAStation]) -> [String: String] {

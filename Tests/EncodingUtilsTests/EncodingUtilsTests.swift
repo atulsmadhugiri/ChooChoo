@@ -142,10 +142,52 @@ struct EncodingUtilsTests {
 
         let alertsByStopID = constructServiceAlerts(from: [alert])
 
-        #expect(alertsByStopID.keys.contains("120"))
-        #expect(alertsByStopID["120"]?.count == 1)
-        #expect(alertsByStopID["120"]?.first?.header == "Service change")
-        #expect(alertsByStopID["120"]?.first?.description == nil)
+        #expect(alertsByStopID.stopIDs.contains("120"))
+        #expect(alertsByStopID.alerts(forStopID: "120").count == 1)
+        #expect(alertsByStopID.alerts(forStopID: "120").first?.header == "Service change")
+        #expect(alertsByStopID.alerts(forStopID: "120").first?.description == nil)
+    }
+
+    @Test func routeOnlyServiceAlertsAreIndexedByRoute() {
+        var alert = TransitRealtime_Alert()
+        alert.headerText = translatedString("Route-wide delay")
+        var entity = TransitRealtime_EntitySelector()
+        entity.routeID = "R"
+        alert.informedEntity = [entity]
+
+        let alerts = constructServiceAlerts(from: [alert])
+
+        #expect(alerts.stopIDs.isEmpty)
+        #expect(alerts.alerts(for: .r).count == 1)
+        #expect(alerts.alerts(for: .r).first?.header == "Route-wide delay")
+    }
+
+    @Test func serviceAlertsNormalizeRouteIDs() {
+        var alert = TransitRealtime_Alert()
+        alert.headerText = translatedString("Express delay")
+        var entity = TransitRealtime_EntitySelector()
+        entity.routeID = "6X"
+        alert.informedEntity = [entity]
+
+        let alerts = constructServiceAlerts(from: [alert])
+
+        #expect(alerts.alerts(for: .six).first?.header == "Express delay")
+    }
+
+    @Test func serviceAlertsKeepMixedStopAndRouteTargetsTogether() throws {
+        var alert = TransitRealtime_Alert()
+        alert.headerText = translatedString("Station and route notice")
+        var stopEntity = TransitRealtime_EntitySelector()
+        stopEntity.stopID = "120N"
+        var routeEntity = TransitRealtime_EntitySelector()
+        routeEntity.routeID = "R"
+        alert.informedEntity = [stopEntity, routeEntity]
+
+        let alerts = constructServiceAlerts(from: [alert])
+        let stopAlert = try #require(alerts.alerts(forStopID: "120").first)
+        let routeAlert = try #require(alerts.alerts(for: .r).first)
+
+        #expect(stopAlert.id == routeAlert.id)
     }
 
     @Test func serviceAlertPeriodsPreserveOpenEndedRanges() {
@@ -213,7 +255,7 @@ struct EncodingUtilsTests {
             now: Date(timeIntervalSince1970: 1_800_000_000)
         )
 
-        #expect(alertsByStopID["120"]?.first?.header == "Future alert")
+        #expect(alertsByStopID.alerts(forStopID: "120").first?.header == "Future alert")
     }
 
     @Test func serviceAlertIDsAreStableForSameContent() {
@@ -237,7 +279,10 @@ struct EncodingUtilsTests {
             now: Date(timeIntervalSince1970: 1_800_000_100)
         )
 
-        #expect(first["120"]?.first?.id == second["120"]?.first?.id)
+        #expect(
+            first.alerts(forStopID: "120").first?.id
+                == second.alerts(forStopID: "120").first?.id
+        )
     }
 
     @Test func mtaFeedClientUsesFreshCacheWithoutRefetching() async throws {

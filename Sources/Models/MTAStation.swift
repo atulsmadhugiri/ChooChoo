@@ -49,6 +49,16 @@ class MTAStation {
     return daytimeRoutes.map(\.line).uniqued()
   }
 
+  var stopNames: [String] {
+    stops.map(\.stopName).uniqued()
+  }
+
+  func matchesSearchTerm(_ searchTerm: String) -> Bool {
+    stopNames.contains {
+      $0.localizedCaseInsensitiveContains(searchTerm)
+    }
+  }
+
   func getLabelFor(direction: TripDirection) -> String {
     let labels = Set(self.stops.map { $0.getLabelFor(direction: direction) })
       .filter { !$0.isEmpty }
@@ -75,13 +85,23 @@ class MTAStation {
     return labels.sorted().joined(separator: " & ")
   }
 
-  func serviceAlerts(in alertsByStopID: [String: [MTAServiceAlert]]) -> [MTAServiceAlert] {
+  func serviceAlerts(
+    in alerts: MTAServiceAlerts,
+    now: Date = Date()
+  ) -> [MTAServiceAlert] {
     var seen = Set<MTAServiceAlertDisplayKey>()
-    return stops.flatMap { stop in
-      alertsByStopID[GTFSStopID(stop.gtfsStopID).baseID] ?? []
-    }.filter { alert in
-      seen.insert(MTAServiceAlertDisplayKey(alert)).inserted
+    let stopAlerts = stops.flatMap { stop in
+      alerts.alerts(forStopID: GTFSStopID(stop.gtfsStopID).baseID)
     }
+    let routeAlerts = daytimeRoutes.flatMap { route in
+      alerts.alerts(for: route)
+    }
+
+    return (stopAlerts + routeAlerts)
+      .filter { $0.isRelevant(at: now) }
+      .filter { alert in
+        seen.insert(MTAServiceAlertDisplayKey(alert)).inserted
+      }
   }
 
   func snapshot(stopNamesByGTFSID: [String: String]) -> MTAStationSnapshot {

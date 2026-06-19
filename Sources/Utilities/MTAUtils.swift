@@ -360,7 +360,7 @@ func timeRangesToServiceAlertPeriods(
 
 func constructServiceAlertsForStop(
   feedClient: MTAFeedClient = .shared
-) async -> [String: [MTAServiceAlert]] {
+) async -> MTAServiceAlerts {
   let serviceAlerts = await getServiceAlerts(feedClient: feedClient)
   return constructServiceAlerts(from: serviceAlerts)
 }
@@ -368,33 +368,38 @@ func constructServiceAlertsForStop(
 func constructServiceAlerts(
   from serviceAlerts: [TransitRealtime_Alert],
   now: Date = Date()
-) -> [String: [MTAServiceAlert]] {
-  let mtaServiceAlerts = serviceAlerts.flatMap { alert -> [MTAServiceAlert] in
+) -> MTAServiceAlerts {
+  let mtaServiceAlerts = serviceAlerts.compactMap { alert -> MTAServiceAlert? in
     guard let headerText = alert.headerText.translation.first(where: \.hasText)?.text,
       !headerText.isEmpty
     else {
-      return []
+      return nil
     }
     let descriptionText = alert.descriptionText.translation.first(where: \.hasText)?.text
 
     let stopIDs = Set(alert.informedEntity.compactMap { entity in
       entity.hasStopID ? GTFSStopID(entity.stopID).baseID : nil
     })
+    let routes = Set(alert.informedEntity.compactMap { entity in
+      entity.hasRouteID ? MTATrain(routeID: entity.routeID) : nil
+    })
+    guard !stopIDs.isEmpty || !routes.isEmpty else {
+      return nil
+    }
 
     let activePeriod = timeRangesToServiceAlertPeriods(timeRanges: alert.activePeriod)
     guard activePeriod.contains(where: { $0.isRelevant(at: now) }) else {
-      return []
+      return nil
     }
 
-    return stopIDs.sorted().map { stopID in
-      return MTAServiceAlert(
-        stopID: stopID,
-        header: headerText,
-        description: descriptionText,
-        activePeriod: activePeriod
-      )
-    }
+    return MTAServiceAlert(
+      stopIDs: stopIDs,
+      routes: routes,
+      header: headerText,
+      description: descriptionText,
+      activePeriod: activePeriod
+    )
   }
 
-  return Dictionary(grouping: mtaServiceAlerts, by: { $0.stopID })
+  return MTAServiceAlerts(mtaServiceAlerts)
 }
