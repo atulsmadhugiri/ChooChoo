@@ -174,6 +174,72 @@ struct EncodingUtilsTests {
         #expect(periods[0].contains(Date(timeIntervalSince1970: 1_800_000_000)))
     }
 
+    @Test func expiredServiceAlertsAreDropped() {
+        var activePeriod = TransitRealtime_TimeRange()
+        activePeriod.start = 1_800_000_000
+        activePeriod.end = 1_800_000_100
+
+        var entity = TransitRealtime_EntitySelector()
+        entity.stopID = "120N"
+
+        var alert = TransitRealtime_Alert()
+        alert.headerText = translatedString("Expired alert")
+        alert.informedEntity = [entity]
+        alert.activePeriod = [activePeriod]
+
+        let alertsByStopID = constructServiceAlerts(
+            from: [alert],
+            now: Date(timeIntervalSince1970: 1_800_000_100)
+        )
+
+        #expect(alertsByStopID.isEmpty)
+    }
+
+    @Test func futureServiceAlertsAreKept() {
+        var activePeriod = TransitRealtime_TimeRange()
+        activePeriod.start = 1_800_000_100
+        activePeriod.end = 1_800_000_200
+
+        var entity = TransitRealtime_EntitySelector()
+        entity.stopID = "120N"
+
+        var alert = TransitRealtime_Alert()
+        alert.headerText = translatedString("Future alert")
+        alert.informedEntity = [entity]
+        alert.activePeriod = [activePeriod]
+
+        let alertsByStopID = constructServiceAlerts(
+            from: [alert],
+            now: Date(timeIntervalSince1970: 1_800_000_000)
+        )
+
+        #expect(alertsByStopID["120"]?.first?.header == "Future alert")
+    }
+
+    @Test func serviceAlertIDsAreStableForSameContent() {
+        var activePeriod = TransitRealtime_TimeRange()
+        activePeriod.start = 1_800_000_000
+
+        var entity = TransitRealtime_EntitySelector()
+        entity.stopID = "120N"
+
+        var alert = TransitRealtime_Alert()
+        alert.headerText = translatedString("Stable alert")
+        alert.informedEntity = [entity]
+        alert.activePeriod = [activePeriod]
+
+        let first = constructServiceAlerts(
+            from: [alert],
+            now: Date(timeIntervalSince1970: 1_800_000_100)
+        )
+        let second = constructServiceAlerts(
+            from: [alert],
+            now: Date(timeIntervalSince1970: 1_800_000_100)
+        )
+
+        #expect(first["120"]?.first?.id == second["120"]?.first?.id)
+    }
+
     @Test func mtaFeedClientUsesFreshCacheWithoutRefetching() async throws {
         let url = try #require(URL(string: "https://example.com/feed"))
         let firstPayload = Data("first".utf8)

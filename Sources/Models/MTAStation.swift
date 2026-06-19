@@ -76,8 +76,11 @@ class MTAStation {
   }
 
   func serviceAlerts(in alertsByStopID: [String: [MTAServiceAlert]]) -> [MTAServiceAlert] {
-    stops.flatMap { stop in
+    var seen = Set<MTAServiceAlertDisplayKey>()
+    return stops.flatMap { stop in
       alertsByStopID[GTFSStopID(stop.gtfsStopID).baseID] ?? []
+    }.filter { alert in
+      seen.insert(MTAServiceAlertDisplayKey(alert)).inserted
     }
   }
 
@@ -87,6 +90,18 @@ class MTAStation {
       stops: stops.map(\.value),
       stopNamesByGTFSID: stopNamesByGTFSID
     )
+  }
+}
+
+private struct MTAServiceAlertDisplayKey: Hashable {
+  let header: String
+  let description: String?
+  let activePeriod: [MTAServiceAlertTimeRange]
+
+  init(_ alert: MTAServiceAlert) {
+    self.header = alert.header
+    self.description = alert.description
+    self.activePeriod = alert.activePeriod
   }
 }
 

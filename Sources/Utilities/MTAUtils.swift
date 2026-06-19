@@ -366,7 +366,8 @@ func constructServiceAlertsForStop(
 }
 
 func constructServiceAlerts(
-  from serviceAlerts: [TransitRealtime_Alert]
+  from serviceAlerts: [TransitRealtime_Alert],
+  now: Date = Date()
 ) -> [String: [MTAServiceAlert]] {
   let mtaServiceAlerts = serviceAlerts.flatMap { alert -> [MTAServiceAlert] in
     guard let headerText = alert.headerText.translation.first(where: \.hasText)?.text,
@@ -381,6 +382,10 @@ func constructServiceAlerts(
     })
 
     let activePeriod = timeRangesToServiceAlertPeriods(timeRanges: alert.activePeriod)
+    guard activePeriod.contains(where: { $0.isRelevant(at: now) }) else {
+      return []
+    }
+
     return stopIDs.sorted().map { stopID in
       return MTAServiceAlert(
         stopID: stopID,
