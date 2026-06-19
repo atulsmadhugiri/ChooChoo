@@ -5,6 +5,7 @@ import TabularData
 struct StationGroup {
   let complexID: Int
   let name: String
+  let aliases: [String]
   let stops: [MTAStopValue]
 
   var lines: Set<MTALine> {
@@ -36,6 +37,7 @@ enum StationSelector {
         StationGroup(
           complexID: complexID,
           name: stops.first?.stopName ?? "\(complexID)",
+          aliases: stops.map(\.stopName).uniqued(),
           stops: stops.sorted { $0.gtfsStopID < $1.gtfsStopID }
         )
       }
@@ -74,8 +76,17 @@ enum StationSelector {
       return stopMatches
     }
 
-    return stations.filter {
-      $0.name.range(of: selector, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+    return stations.filter { station in
+      station.aliases.contains {
+        $0.range(of: selector, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+      }
     }
+  }
+}
+
+private extension Sequence where Element: Hashable {
+  func uniqued() -> [Element] {
+    var seen = Set<Element>()
+    return filter { seen.insert($0).inserted }
   }
 }

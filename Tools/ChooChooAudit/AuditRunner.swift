@@ -147,7 +147,8 @@ struct AuditRunner {
             appCount: 0,
             referenceCount: 0,
             mismatches: [],
-            skippedReason: "no fresh JSON reference feed"
+            skippedReason: "no fresh JSON reference feed",
+            sampledAt: now
           )
         )
       } else {
@@ -155,7 +156,8 @@ struct AuditRunner {
           ArrivalComparator.exact(
             appArrivals: uniqueJSONComparableAppArrivals,
             referenceArrivals: uniqueJSONArrivals,
-            referenceName: "gtfs-json"
+            referenceName: "gtfs-json",
+            sampledAt: now
           )
         )
       }
@@ -181,7 +183,8 @@ struct AuditRunner {
         ArrivalComparator.visibleFields(
           appArrivals: uniqueAppArrivals,
           referenceArrivals: webArrivals,
-          referenceName: "mta-web"
+          referenceName: "mta-web",
+          sampledAt: now
         )
       )
     }

@@ -32,7 +32,9 @@ struct StationAuditResult {
           + "\(comparison.referenceCount), mismatches \(comparison.mismatches.count)"
       )
       for mismatch in comparison.mismatches.prefix(20) {
-        print("  \(mismatch.summary(referenceName: comparison.referenceName))")
+        print(
+          "  \(mismatch.summary(referenceName: comparison.referenceName, sampledAt: comparison.sampledAt))"
+        )
       }
       if comparison.mismatches.count > 20 {
         print("  ... \(comparison.mismatches.count - 20) more")
@@ -43,9 +45,21 @@ struct StationAuditResult {
 
 struct AuditRunSummary {
   private var buckets: [MismatchBucket: MismatchBucketSummary] = [:]
+  private var checkedComparisons = 0
+  private var skippedComparisons: [SkippedComparison: Int] = [:]
 
   mutating func record(_ result: StationAuditResult) {
     for comparison in result.comparisons {
+      if let skippedReason = comparison.skippedReason {
+        let skipped = SkippedComparison(
+          referenceName: comparison.referenceName,
+          reason: skippedReason
+        )
+        skippedComparisons[skipped, default: 0] += 1
+        continue
+      }
+
+      checkedComparisons += 1
       for mismatch in comparison.mismatches {
         let bucket = MismatchBucket(
           referenceName: comparison.referenceName,
@@ -54,13 +68,21 @@ struct AuditRunSummary {
           kind: mismatch.bucketKind(referenceName: comparison.referenceName)
         )
         buckets[bucket, default: MismatchBucketSummary()].record(
-          mismatch.summary(referenceName: comparison.referenceName)
+          mismatch.summary(referenceName: comparison.referenceName, sampledAt: comparison.sampledAt)
         )
       }
     }
   }
 
   func printSummary() {
+    print("\nComparison coverage: \(checkedComparisons) checked, \(skippedCount) skipped.")
+    if !skippedComparisons.isEmpty {
+      print("Skipped comparisons:")
+      for (skipped, count) in skippedComparisons.sorted(by: sortSkipped) {
+        print("  \(count)x \(skipped.referenceName): \(skipped.reason)")
+      }
+    }
+
     guard !buckets.isEmpty else {
       print("No mismatch buckets.")
       return
@@ -88,6 +110,23 @@ struct AuditRunSummary {
     }
     return lhs.key.kind < rhs.key.kind
   }
+
+  private var skippedCount: Int {
+    skippedComparisons.values.reduce(0, +)
+  }
+
+  private func sortSkipped(
+    lhs: (key: SkippedComparison, value: Int),
+    rhs: (key: SkippedComparison, value: Int)
+  ) -> Bool {
+    if lhs.value != rhs.value {
+      return lhs.value > rhs.value
+    }
+    if lhs.key.referenceName != rhs.key.referenceName {
+      return lhs.key.referenceName < rhs.key.referenceName
+    }
+    return lhs.key.reason < rhs.key.reason
+  }
 }
 
 struct MismatchBucket: Hashable {
@@ -107,4 +146,9 @@ struct MismatchBucketSummary {
       self.example = example
     }
   }
+}
+
+private struct SkippedComparison: Hashable {
+  let referenceName: String
+  let reason: String
 }

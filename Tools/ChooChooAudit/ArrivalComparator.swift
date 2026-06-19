@@ -40,8 +40,8 @@ struct ComparableArrival: Hashable, Comparable {
     return lhs.tripID < rhs.tripID
   }
 
-  var summary: String {
-    "\(train) \(stopID) \(minutesAway)m to \(terminalStation) \(directionLabel) [\(tripID)]"
+  func summary(at date: Date) -> String {
+    "\(train) \(stopID) \(minutesAway(at: date))m to \(terminalStation) \(directionLabel) [\(tripID)]"
   }
 }
 
@@ -63,15 +63,15 @@ enum ArrivalMismatch {
     }
   }
 
-  func summary(referenceName: String) -> String {
+  func summary(referenceName: String, sampledAt: Date) -> String {
     switch self {
     case .onlyInApp(let arrival):
-      return "only app:  \(arrival.summary)"
+      return "only app:  \(arrival.summary(at: sampledAt))"
     case .onlyInReference(let arrival):
-      return "only \(referenceName): \(arrival.summary)"
+      return "only \(referenceName): \(arrival.summary(at: sampledAt))"
     case .differentDetails(let app, let reference, let differences):
       return
-        "details:   \(app.train) \(app.stopID) \(app.minutesAway)m "
+        "details:   \(app.train) \(app.stopID) \(app.minutesAway(at: sampledAt))m "
         + "app(\(app.visibleDetails)) \(referenceName)(\(reference.visibleDetails)) "
         + differences.joined(separator: "; ")
     }
@@ -95,19 +95,22 @@ struct ArrivalComparisonResult {
   let referenceCount: Int
   let mismatches: [ArrivalMismatch]
   let skippedReason: String?
+  let sampledAt: Date
 
   init(
     referenceName: String,
     appCount: Int,
     referenceCount: Int,
     mismatches: [ArrivalMismatch],
-    skippedReason: String? = nil
+    skippedReason: String? = nil,
+    sampledAt: Date = Date()
   ) {
     self.referenceName = referenceName
     self.appCount = appCount
     self.referenceCount = referenceCount
     self.mismatches = mismatches
     self.skippedReason = skippedReason
+    self.sampledAt = sampledAt
   }
 }
 
@@ -115,7 +118,8 @@ enum ArrivalComparator {
   static func exact(
     appArrivals: [ComparableArrival],
     referenceArrivals: [ComparableArrival],
-    referenceName: String
+    referenceName: String,
+    sampledAt: Date = Date()
   ) -> ArrivalComparisonResult {
     let appArrivals = appArrivals.sorted()
     let referenceArrivals = referenceArrivals.sorted()
@@ -134,14 +138,16 @@ enum ArrivalComparator {
       referenceName: referenceName,
       appCount: appArrivals.count,
       referenceCount: referenceArrivals.count,
-      mismatches: mismatches.sorted { $0.sortArrival < $1.sortArrival }
+      mismatches: mismatches.sorted { $0.sortArrival < $1.sortArrival },
+      sampledAt: sampledAt
     )
   }
 
   static func visibleFields(
     appArrivals: [ComparableArrival],
     referenceArrivals: [ComparableArrival],
-    referenceName: String
+    referenceName: String,
+    sampledAt: Date = Date()
   ) -> ArrivalComparisonResult {
     let pairingTolerance: Int64 = 90
     let appHorizon = appArrivals.reduce(into: [ArrivalSeriesKey: Int64]()) {
@@ -213,7 +219,8 @@ enum ArrivalComparator {
       referenceName: referenceName,
       appCount: boundedAppArrivals.count,
       referenceCount: boundedReferenceArrivals.count,
-      mismatches: mismatches.sorted { $0.sortArrival < $1.sortArrival }
+      mismatches: mismatches.sorted { $0.sortArrival < $1.sortArrival },
+      sampledAt: sampledAt
     )
   }
 
@@ -270,8 +277,8 @@ extension ComparableArrival {
     ArrivalSeriesKey(stopID: stopID, train: train)
   }
 
-  var minutesAway: Int {
-    max(0, Int((arrivalTime.timeIntervalSinceNow / 60).rounded()))
+  func minutesAway(at date: Date) -> Int {
+    max(0, Int((arrivalTime.timeIntervalSince(date) / 60).rounded()))
   }
 
   var visibleDetails: String {
