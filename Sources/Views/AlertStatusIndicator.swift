@@ -2,7 +2,6 @@ import SwiftUI
 
 struct AlertStatusIndicator: View {
   let activePeriods: [MTAServiceAlertTimeRange]
-  private var now: Date { Date() }
 
   private static let customFormatter: DateFormatter = {
     let formatter = DateFormatter()
@@ -11,7 +10,10 @@ struct AlertStatusIndicator: View {
   }()
 
   var body: some View {
-    if let activeInterval = activePeriods.first(where: { $0.contains(now) }) {
+    let now = Date()
+    let periods = sortedPeriods
+
+    if let activeInterval = periods.first(where: { $0.contains(now) }) {
       HStack(spacing: 6) {
         Text(activeText(for: activeInterval))
         .font(.footnote)
@@ -27,7 +29,7 @@ struct AlertStatusIndicator: View {
         RoundedRectangle(cornerRadius: 8)
           .stroke(Color.green, lineWidth: 1)
       )
-    } else if let scheduledInterval = activePeriods.first(where: {
+    } else if let scheduledInterval = periods.first(where: {
       $0.start.map { $0 > now } ?? false
     }) {
       HStack(spacing: 6) {
@@ -47,6 +49,15 @@ struct AlertStatusIndicator: View {
       )
     } else {
       EmptyView()
+    }
+  }
+
+  private var sortedPeriods: [MTAServiceAlertTimeRange] {
+    activePeriods.sorted { lhs, rhs in
+      if lhs.sortStart != rhs.sortStart {
+        return lhs.sortStart < rhs.sortStart
+      }
+      return lhs.sortEnd < rhs.sortEnd
     }
   }
 

@@ -30,28 +30,24 @@ struct StationSelectionSheet: View {
 
   var sortedStationEntries: [StationWithDistance] {
     let distanceLocation = sheetLocation ?? location
-    guard let distanceLocation else {
-      let entries = filteredStationEntries.map { station in
-        StationWithDistance(station: station, distance: nil)
-      }
-      return entries.filter { $0.station.pinned } + entries.filter { !$0.station.pinned }
-    }
-
-    let stationDistances = filteredStationEntries.map { station in
+    let entries = filteredStationEntries.map { station in
       StationWithDistance(
         station: station,
-        distance: distanceLocation.distance(from: station.location)
+        distance: distanceLocation?.distance(from: station.location)
       )
     }
 
-    return stationDistances.sorted { a, b in
+    return entries.sorted { a, b in
       if a.station.pinned != b.station.pinned {
         return a.station.pinned && !b.station.pinned
       }
-      guard let distanceA = a.distance, let distanceB = b.distance else {
-        return a.station.name.localizedStandardCompare(b.station.name) == .orderedAscending
+      if let distanceA = a.distance,
+        let distanceB = b.distance,
+        distanceA != distanceB
+      {
+        return distanceA < distanceB
       }
-      return distanceA < distanceB
+      return a.station.name.localizedStandardCompare(b.station.name) == .orderedAscending
     }
   }
 
