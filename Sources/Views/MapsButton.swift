@@ -4,9 +4,9 @@ import SwiftUI
 
 struct MapsButton: View {
   var station: MTAStation
-  
+
   let feedback = UIImpactFeedbackGenerator(style: .light)
-  
+
   var body: some View {
     Button {
       openMaps()
@@ -17,20 +17,28 @@ struct MapsButton: View {
         .foregroundStyle(.secondary)
         .frame(height: 28)
         .padding(.vertical, 10)
-    }.buttonStyle(.bordered)
-      .tint(.primary)
+    }
+    .buttonStyle(.bordered)
+    .tint(.primary)
   }
-  
+
   private func openMaps() {
     let placemark = MKPlacemark(
-      coordinate: station.location.coordinate,
-      name: station.name
+      coordinate: station.location.coordinate
     )
-    
+
 #if os(iOS) || targetEnvironment(macCatalyst)
+    let stationName = station.name
     let mapItem = MKMapItem(placemark: placemark)
-    mapItem.openInMaps(launchOptions: [.mode: MKLaunchMode.Car]) { success in
-      print("Opened Maps for \(station.name): \(success ? \"success\" : \"failure\")")
+    mapItem.name = stationName
+
+    let launchOptions = [
+      MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving,
+    ]
+
+    mapItem.openInMaps(launchOptions: launchOptions, from: nil) { success in
+      let result = success ? "success" : "failure"
+      print("Opened Maps for \(stationName): \(result)")
     }
 #endif
   }
