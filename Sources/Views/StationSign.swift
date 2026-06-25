@@ -2,7 +2,7 @@ import CoreLocation
 import SwiftUI
 
 struct StationSign: View {
-  var station: MTAStation
+  let station: MTAStation
 
   let distance: CLLocationDistance?
   let serviceAlerts: [MTAServiceAlert]
@@ -27,16 +27,15 @@ struct StationSign: View {
             )
           Spacer()
         }
-        HStack {
-          ScrollView(.horizontal) {
-            HStack {
-              ForEach(station.daytimeRoutes) { route in
-                TrainBadge(train: route)
-              }
-              Spacer()
+        ScrollView(.horizontal, showsIndicators: false) {
+          HStack {
+            ForEach(station.daytimeRoutes) { route in
+              TrainBadge(train: route)
             }
+            Spacer()
           }
-        }.padding(
+        }
+        .padding(
           EdgeInsets(
             top: 0,
             leading: 12,
@@ -44,7 +43,6 @@ struct StationSign: View {
             trailing: 12
           )
         )
-        .scrollIndicators(.hidden)
       }
       .background(.black)
       .overlay(

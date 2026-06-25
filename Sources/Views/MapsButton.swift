@@ -1,45 +1,38 @@
-import CoreLocation
 import MapKit
 import SwiftUI
 
 struct MapsButton: View {
-  var station: MTAStation
+  let station: MTAStation
 
-  let feedback = UIImpactFeedbackGenerator(style: .light)
+  private let feedback = UIImpactFeedbackGenerator(style: .light)
 
   var body: some View {
     Button {
       openMaps()
       feedback.impactOccurred()
     } label: {
-      Label("Open in Maps", systemImage: "map")
-        .font(.headline)
+      Image(systemName: "map")
         .foregroundStyle(.secondary)
-        .frame(height: 28)
-        .padding(.vertical, 10)
+        .frame(height: 22)
+        .imageScale(.large)
     }
     .buttonStyle(.bordered)
     .tint(.primary)
+    .padding(.vertical, 10)
+    .accessibilityLabel("Open \(station.name) in Maps")
   }
 
   private func openMaps() {
-    let placemark = MKPlacemark(
-      coordinate: station.location.coordinate
-    )
-
 #if os(iOS) || targetEnvironment(macCatalyst)
-    let stationName = station.name
+    let placemark = MKPlacemark(coordinate: station.location.coordinate)
     let mapItem = MKMapItem(placemark: placemark)
-    mapItem.name = stationName
+    mapItem.name = station.name
 
     let launchOptions = [
       MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving,
     ]
 
-    mapItem.openInMaps(launchOptions: launchOptions, from: nil) { success in
-      let result = success ? "success" : "failure"
-      print("Opened Maps for \(stationName): \(result)")
-    }
+    mapItem.openInMaps(launchOptions: launchOptions, from: nil)
 #endif
   }
 }
