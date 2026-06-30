@@ -81,7 +81,6 @@ struct StationSign: View {
           )
         }
 
-        MapsButton(station: station)
         PinButton(station: station)
       }.padding(
         EdgeInsets(

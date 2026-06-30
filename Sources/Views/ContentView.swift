@@ -51,14 +51,14 @@ struct ContentView: View {
       }
 
       VStack {
-        Picker("", selection: $viewModel.selectedDirection) {
-          let southLabel = visibleStation?.getLabelFor(direction: .south)
-            ?? TripDirection.south.rawValue
-          let northLabel = visibleStation?.getLabelFor(direction: .north)
+        DirectionPicker(
+          selection: $viewModel.selectedDirection,
+          southLabel: visibleStation?.getLabelFor(direction: .south)
+            ?? TripDirection.south.rawValue,
+          northLabel: visibleStation?.getLabelFor(direction: .north)
             ?? TripDirection.north.rawValue
-          Text(southLabel).tag(TripDirection.south)
-          Text(northLabel).tag(TripDirection.north)
-        }.pickerStyle(.segmented).labelsHidden().padding(.bottom, 8)
+        )
+        .padding(.bottom, 8)
 
         List(visibleArrivals) { arrival in
           ArrivalCard(arrival: arrival).listRowInsets(
@@ -150,6 +150,72 @@ struct ContentView: View {
       .lazy
       .filter(\.pinned)
       .first
+  }
+}
+
+private struct DirectionPicker: View {
+  @Binding var selection: TripDirection
+  let southLabel: String
+  let northLabel: String
+
+  @Namespace private var selectionNamespace
+
+  private let feedback = UIImpactFeedbackGenerator(style: .light)
+  private let animation = Animation.spring(response: 0.24, dampingFraction: 0.88)
+
+  var body: some View {
+    HStack(spacing: 4) {
+      optionButton(title: southLabel, direction: .south)
+      optionButton(title: northLabel, direction: .north)
+    }
+    .padding(3)
+    .frame(maxWidth: .infinity)
+    .background(
+      Capsule(style: .continuous)
+        .fill(Color.secondary.opacity(0.10))
+    )
+    .overlay(
+      Capsule(style: .continuous)
+        .stroke(Color.secondary.opacity(0.10), lineWidth: 1)
+    )
+    .animation(animation, value: selection)
+    .accessibilityElement(children: .contain)
+  }
+
+  private func optionButton(title: String, direction: TripDirection) -> some View {
+    let isSelected = selection == direction
+
+    return Button {
+      guard selection != direction else { return }
+      feedback.impactOccurred(intensity: 0.6)
+      withAnimation(animation) {
+        selection = direction
+      }
+    } label: {
+      Text(title)
+        .font(.subheadline.weight(isSelected ? .semibold : .medium))
+        .foregroundStyle(isSelected ? .primary : .secondary)
+        .lineLimit(1)
+        .minimumScaleFactor(0.75)
+        .frame(maxWidth: .infinity, minHeight: 34)
+        .padding(.horizontal, 8)
+        .background {
+          if isSelected {
+            Capsule(style: .continuous)
+              .fill(Color(.systemBackground).opacity(0.72))
+              .overlay(
+                Capsule(style: .continuous)
+                  .stroke(Color.secondary.opacity(0.16), lineWidth: 1)
+              )
+              .shadow(color: .black.opacity(0.04), radius: 3, x: 0, y: 1)
+              .matchedGeometryEffect(id: "selectedDirection", in: selectionNamespace)
+          }
+        }
+        .contentShape(Capsule(style: .continuous))
+    }
+    .buttonStyle(.plain)
+    .accessibilityLabel(title)
+    .accessibilityAddTraits(isSelected ? .isSelected : [])
   }
 }
 

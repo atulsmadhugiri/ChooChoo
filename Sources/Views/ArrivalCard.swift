@@ -83,9 +83,6 @@ struct ArrivalCard: View {
   }
 
   private func countdownText(remainingTime: TimeInterval) -> String {
-    if remainingTime < 60 {
-      return "<1m"
-    }
     return formatTimeInterval(interval: remainingTime)
   }
 }
