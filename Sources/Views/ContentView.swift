@@ -162,21 +162,22 @@ private struct DirectionPicker: View {
 
   private let feedback = UIImpactFeedbackGenerator(style: .light)
   private let animation = Animation.spring(response: 0.24, dampingFraction: 0.88)
+  private let cornerRadius: CGFloat = 8
 
   var body: some View {
-    HStack(spacing: 4) {
+    HStack(spacing: 0) {
       optionButton(title: southLabel, direction: .south)
       optionButton(title: northLabel, direction: .north)
     }
-    .padding(3)
+    .padding(2)
     .frame(maxWidth: .infinity)
     .background(
-      Capsule(style: .continuous)
-        .fill(Color.secondary.opacity(0.10))
+      RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        .fill(Color(.secondarySystemFill))
     )
     .overlay(
-      Capsule(style: .continuous)
-        .stroke(Color.secondary.opacity(0.10), lineWidth: 1)
+      RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        .stroke(Color.secondary.opacity(0.18), lineWidth: 1)
     )
     .animation(animation, value: selection)
     .accessibilityElement(children: .contain)
@@ -193,25 +194,24 @@ private struct DirectionPicker: View {
       }
     } label: {
       Text(title)
-        .font(.subheadline.weight(isSelected ? .semibold : .medium))
-        .foregroundStyle(isSelected ? .primary : .secondary)
+        .font(.subheadline.weight(.semibold))
+        .foregroundStyle(.primary.opacity(isSelected ? 1 : 0.82))
         .lineLimit(1)
         .minimumScaleFactor(0.75)
-        .frame(maxWidth: .infinity, minHeight: 34)
+        .frame(maxWidth: .infinity, minHeight: 32)
         .padding(.horizontal, 8)
         .background {
           if isSelected {
-            Capsule(style: .continuous)
-              .fill(Color(.systemBackground).opacity(0.72))
+            RoundedRectangle(cornerRadius: cornerRadius - 2, style: .continuous)
+              .fill(Color(.systemBackground))
               .overlay(
-                Capsule(style: .continuous)
-                  .stroke(Color.secondary.opacity(0.16), lineWidth: 1)
+                RoundedRectangle(cornerRadius: cornerRadius - 2, style: .continuous)
+                  .stroke(Color.secondary.opacity(0.12), lineWidth: 1)
               )
-              .shadow(color: .black.opacity(0.04), radius: 3, x: 0, y: 1)
               .matchedGeometryEffect(id: "selectedDirection", in: selectionNamespace)
           }
         }
-        .contentShape(Capsule(style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: cornerRadius - 2, style: .continuous))
     }
     .buttonStyle(.plain)
     .accessibilityLabel(title)

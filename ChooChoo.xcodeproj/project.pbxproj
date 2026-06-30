@@ -11,7 +11,6 @@
 		B701CC342CC72AA800EB1AB0 /* MTAServiceAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC332CC72AA800EB1AB0 /* MTAServiceAlert.swift */; };
 		B701CC362CC7457800EB1AB0 /* AlertIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC352CC7457800EB1AB0 /* AlertIndicator.swift */; };
 		B701CC382CC7510800EB1AB0 /* AlertSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701CC372CC7510800EB1AB0 /* AlertSheet.swift */; };
-		B705AA062D67F00800AA0001 /* MapsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B705AA052D67F00800AA0001 /* MapsButton.swift */; };
 		B705AA022D50D00100AA0001 /* MTAFeedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B705AA012D50D00100AA0001 /* MTAFeedClient.swift */; };
 		B705AA042D50D00100AA0001 /* MTAStationSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B705AA032D50D00100AA0001 /* MTAStationSnapshot.swift */; };
 		B72B37592CA37FC500FAC872 /* LoggingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B37582CA37FC100FAC872 /* LoggingUtils.swift */; };
@@ -50,7 +49,6 @@
 		B701CC332CC72AA800EB1AB0 /* MTAServiceAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAServiceAlert.swift; sourceTree = "<group>"; };
 		B701CC352CC7457800EB1AB0 /* AlertIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertIndicator.swift; sourceTree = "<group>"; };
 		B701CC372CC7510800EB1AB0 /* AlertSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSheet.swift; sourceTree = "<group>"; };
-		B705AA052D67F00800AA0001 /* MapsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapsButton.swift; sourceTree = "<group>"; };
 		B705AA012D50D00100AA0001 /* MTAFeedClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAFeedClient.swift; sourceTree = "<group>"; };
 		B705AA032D50D00100AA0001 /* MTAStationSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTAStationSnapshot.swift; sourceTree = "<group>"; };
 		B72B37582CA37FC100FAC872 /* LoggingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingUtils.swift; sourceTree = "<group>"; };
@@ -151,7 +149,6 @@
 				B7A856922BB3848D00D571AA /* ContentView.swift */,
 				B7D904362C65A745009B4D18 /* StationSelectionSheet.swift */,
 				B77807C22C6D740C00216D68 /* ArrivalCard.swift */,
-				B705AA052D67F00800AA0001 /* MapsButton.swift */,
 				B7AD529B2CB70E060084F49C /* PinButton.swift */,
 				B791D0452CC3227200699275 /* AlertBox.swift */,
 				B701CC352CC7457800EB1AB0 /* AlertIndicator.swift */,
@@ -364,7 +361,6 @@
 				B7D904372C65A745009B4D18 /* StationSelectionSheet.swift in Sources */,
 				B7697CB82C5192AB001B880C /* FormatterUtils.swift in Sources */,
 				B78BC6372C4DDC8D00414D5F /* TrainBadge.swift in Sources */,
-				B705AA062D67F00800AA0001 /* MapsButton.swift in Sources */,
 				B7AD529C2CB70E060084F49C /* PinButton.swift in Sources */,
 				B7D9D6B82C94C75500BD13F3 /* MTALine.swift in Sources */,
 				B701CC382CC7510800EB1AB0 /* AlertSheet.swift in Sources */,
